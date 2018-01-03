@@ -1,11 +1,13 @@
 package GraphBLAS
 
+type Matrix [][]int
+
 type IncidenceMatrix struct {
-	matrix [][]int
+	matrix Matrix
 }
 
 func NewIncidenceMatrix(vertices int, edges int) *IncidenceMatrix {
-	m := make([][]int, vertices)
+	m := make(Matrix, vertices)
 	for i := 0; i < vertices; i++ {
 		m[i] = make([]int, edges)
 	}
@@ -18,12 +20,8 @@ func NewIncidenceMatrixFromGraph(g Graph) *IncidenceMatrix {
 	mat := m.matrix
 	i := 0
 	for _, e := range g.Edges {
-		from := e.Source()
-		to := e.Sink()
-		j := from.Index()
-		k := to.Index()
-		mat[j][i] = -1
-		mat[k][i] = 1
+		mat[e.Source().Index()][i] = -1
+		mat[e.Sink().Index()][i] = 1
 	}
 
 	return m
