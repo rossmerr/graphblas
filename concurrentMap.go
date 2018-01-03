@@ -1,20 +1,28 @@
-// Map type that can be safely shared between
-import "sync"
+package GraphBLAS
 
-// goroutines that require read/write access to a map
+import (
+	"sync"
+)
+
+// Map type that can be safely shared between
 type ConcurrentMap struct {
 	sync.RWMutex
-	items map[string]interface{}
+	items map[int]interface{}
+}
+
+func NewConcurrentMap() *ConcurrentMap {
+	s := ConcurrentMap{items: make(map[int]interface{})}
+	return &s
 }
 
 // Concurrent map item
 type ConcurrentMapItem struct {
-	Key   string
+	Key   int
 	Value interface{}
 }
 
 // Sets a key in a concurrent map
-func (cm *ConcurrentMap) Set(key string, value interface{}) {
+func (cm *ConcurrentMap) Set(key int, value interface{}) {
 	cm.Lock()
 	defer cm.Unlock()
 
@@ -22,7 +30,7 @@ func (cm *ConcurrentMap) Set(key string, value interface{}) {
 }
 
 // Gets a key from a concurrent map
-func (cm *ConcurrentMap) Get(key string) (interface{}, bool) {
+func (cm *ConcurrentMap) Get(key int) (interface{}, bool) {
 	cm.Lock()
 	defer cm.Unlock()
 
