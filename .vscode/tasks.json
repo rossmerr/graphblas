@@ -6,7 +6,7 @@
         {
             "label": "Go Benchmark",
             "type": "shell",
-            "command": "go test -bench=. -benchtime 2s -count 5 -benchmem",
+            "command": "go test -bench=. -count 5",
             "problemMatcher": [
                 "$go"
             ]
