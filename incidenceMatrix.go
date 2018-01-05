@@ -21,10 +21,8 @@ func NewIncidenceMatrixFromGraph(g *Graph) *IncidenceMatrix {
 	mat := m.matrix
 	i := 0
 	for _, e := range g.Edges {
-		source := e.Source().Index()
-		sink := e.Sink().Index()
-		mat[source][i] = 1
-		mat[sink][i] = -1
+		mat[e.Source().Index()][i] = 1
+		mat[e.Sink().Index()][i] = -1
 		i++
 	}
 
