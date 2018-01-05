@@ -15,7 +15,7 @@ func NewIncidenceMatrix(vertices int, edges int) *IncidenceMatrix {
 
 }
 
-func NewIncidenceMatrixFromGraph(g Graph) *IncidenceMatrix {
+func NewIncidenceMatrixFromGraph(g *Graph) *IncidenceMatrix {
 	m := NewIncidenceMatrix(len(g.Vertices), len(g.Edges))
 	mat := m.matrix
 	i := 0
@@ -25,4 +25,8 @@ func NewIncidenceMatrixFromGraph(g Graph) *IncidenceMatrix {
 	}
 
 	return m
+}
+
+func (i *IncidenceMatrix) Element(x int, y int) int {
+	return i.matrix[x][y]
 }
