@@ -16,8 +16,8 @@ func TestIncidenceMatrix(t *testing.T) {
 	g := GraphBLAS.NewGraphNamedNodes(s, tt)
 	i := GraphBLAS.NewIncidenceMatrixFromGraph(g)
 
-	if i.Element(1, 1) != -1 {
-		t.Errorf("Expect -1 got %+v", i.Element(1, 1))
+	if i.Element(2, 1) != -1 {
+		t.Errorf("Expect -1 got %+v", i.Element(2, 1))
 	}
 	// 	I =
 	//    (1,1)       -1
