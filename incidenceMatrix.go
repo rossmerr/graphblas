@@ -2,6 +2,7 @@ package GraphBLAS
 
 type Matrix [][]int
 
+// IncidenceMatrix rows represent vertices and columns represent edges
 type IncidenceMatrix struct {
 	matrix Matrix
 }
@@ -20,8 +21,11 @@ func NewIncidenceMatrixFromGraph(g *Graph) *IncidenceMatrix {
 	mat := m.matrix
 	i := 0
 	for _, e := range g.Edges {
-		mat[e.Source().Index()][i] = -1
-		mat[e.Sink().Index()][i] = 1
+		source := e.Source().Index()
+		sink := e.Sink().Index()
+		mat[source][i] = 1
+		mat[sink][i] = -1
+		i++
 	}
 
 	return m

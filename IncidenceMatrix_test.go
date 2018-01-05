@@ -7,13 +7,13 @@ import (
 )
 
 func TestIncidenceMatrix(t *testing.T) {
-	//s = [1 1 1 1 1];
-	//t = [2 3 4 5 6];
-	s := []string{}
-	s = append(s, "1", "1", "1", "1", "1")
-	tt := []string{}
-	tt = append(tt, "2", "3", "4", "5", "6")
-	g := GraphBLAS.NewGraphNamedNodes(s, tt)
+	//target = [1 1 1 1 1];
+	//target = [2 3 4 5 6];
+	source := []string{}
+	source = append(source, "1", "1", "1", "1", "1")
+	target := []string{}
+	target = append(target, "2", "3", "4", "5", "6")
+	g := GraphBLAS.NewGraphNamedNodes(source, target)
 	i := GraphBLAS.NewIncidenceMatrixFromGraph(g)
 
 	if i.Element(2, 1) != -1 {
