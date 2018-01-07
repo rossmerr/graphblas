@@ -25,7 +25,7 @@ func TestMultiple(t *testing.T) {
 	m[0][2] = 3
 	m[1][0] = 4
 	m[1][1] = 5
-	m[1][1] = 6
+	m[1][2] = 6
 
 	m2 := GraphBLAS.NewMatrix(3, 2, nil)
 	m2[0][0] = 7
@@ -45,4 +45,15 @@ func TestMultiple(t *testing.T) {
 		t.Errorf("Expected 58 got %+v", m3[0][0])
 	}
 
+	if m3[0][1] != 64 {
+		t.Errorf("Expected 64 got %+v", m3[0][1])
+	}
+
+	if m3[1][0] != 139 {
+		t.Errorf("Expected 139 got %+v", m3[1][0])
+	}
+
+	if m3[1][1] != 154 {
+		t.Errorf("Expected 154 got %+v", m3[1][1])
+	}
 }

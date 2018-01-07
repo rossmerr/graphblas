@@ -28,25 +28,19 @@ func (m Matrix) Scalar(s int) Matrix {
 
 // Multiply Multiplies a Matrix structure by another Matrix structure.
 func (m Matrix) Multiply(m2 Matrix) (Matrix, bool) {
-	rA := len(m)
-	cA := len(m[0])
-	rB := len(m2)
-	cB := len(m2[0])
-	if cA != rB {
+	if len(m[0]) != len(m2) {
 		return nil, false
 	}
 
-	matrix := NewMatrix(rA, cB, nil)
-
-	for i := 0; i < rA; i++ {
-		for j := 0; j < cB; j++ {
+	matrix := NewMatrix(len(m), len(m2[0]), func(row []int, x int) {
+		for j := 0; j < len(m2[0]); j++ {
 			temp := 0
-			for k := 0; k < cA; k++ {
-				temp += m[i][k] * m2[k][j]
+			for k := 0; k < len(m[0]); k++ {
+				temp += m[x][k] * m2[k][j]
 			}
-			matrix[i][j] = temp
+			row[j] = temp
 		}
-	}
+	})
 
 	return matrix, true
 }
