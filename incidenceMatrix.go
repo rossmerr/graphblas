@@ -1,6 +1,5 @@
 package GraphBLAS
 
-type Matrix [][]int
 
 // IncidenceMatrix rows represent vertices and columns represent edges
 type IncidenceMatrix struct {
@@ -29,6 +28,6 @@ func NewIncidenceMatrixFromGraph(g *Graph) *IncidenceMatrix {
 	return m
 }
 
-func (i *IncidenceMatrix) Element(x int, y int) int {
+func (i *IncidenceMatrix) At(x int, y int) int {
 	return i.matrix[x][y]
 }
