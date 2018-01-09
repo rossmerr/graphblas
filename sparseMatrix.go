@@ -44,7 +44,7 @@ func (s *SparseMatrix) Set(x, y, value int) {
 	} else {
 		s.rows = append(s.rows, x)
 		s.values = append(s.values, value)
-		s.colStart[y] = len(s.rows)
+		s.colStart[y] = len(s.rows) - 1
 	}
 
 }
