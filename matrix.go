@@ -1,29 +1,30 @@
 package GraphBLAS
 
+// Matrix a dense matrix
 type Matrix [][]int
 
-func NewMatrix(x, y int) Matrix {
-	return newMatrix(x, y, nil)
+func NewMatrix(m, n int) Matrix {
+	return newMatrix(m, n, nil)
 }
 
-func newMatrix(x, y int, initialise func([]int, int)) Matrix {
-	m := make(Matrix, x)
+func newMatrix(m, n int, initialise func([]int, int)) Matrix {
+	s := make(Matrix, m)
 
-	for i := 0; i < x; i++ {
-		m[i] = make([]int, y)
+	for i := 0; i < m; i++ {
+		s[i] = make([]int, n)
 		if initialise != nil {
-			initialise(m[i], i)
+			initialise(s[i], i)
 		}
 	}
 
-	return m
+	return s
 }
 
 // Scalar multiplication
-func (m Matrix) Scalar(s int) Matrix {
-	matrix := newMatrix(len(m), len(m[0]), func(n []int, x int) {
-		for v := 0; v < len(m[0]); v++ {
-			n[v] = s * m[x][v]
+func (s Matrix) Scalar(alpha int) Matrix {
+	matrix := newMatrix(len(s), len(s[0]), func(n []int, x int) {
+		for v := 0; v < len(s[0]); v++ {
+			n[v] = alpha * s[x][v]
 		}
 	})
 
