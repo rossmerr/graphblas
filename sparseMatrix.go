@@ -33,13 +33,16 @@ func (s *SparseMatrix) Set(x, y, value int) {
 
 			if i == x {
 				s.values[i] = value
+				return
 			} else if i > x {
 				s.rows = append(s.rows[:i], append([]int{i}, s.rows[i:]...)...)
 				s.values = append(s.values[:i], append([]int{value}, s.values[i:]...)...)
-				break
+				return
 			}
 
 		}
+
+		// need to insert here
 
 	} else {
 		s.rows = append(s.rows, x)
