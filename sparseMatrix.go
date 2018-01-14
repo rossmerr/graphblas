@@ -15,7 +15,6 @@ type SparseMatrix struct {
 
 // NewSparseMatrix returns an GraphBLAS.SparseMatrix.
 func NewSparseMatrix(r, c int) *SparseMatrix {
-
 	size := r * c
 
 	s := &SparseMatrix{
@@ -24,6 +23,10 @@ func NewSparseMatrix(r, c int) *SparseMatrix {
 		values:   make([]int, size),
 		rows:     make([]int, size),
 		colStart: make([]int, c+1),
+	}
+
+	for i := range s.colStart {
+		s.colStart[i] = i
 	}
 
 	return s
@@ -58,8 +61,8 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 		return
 	}
 
-	// 	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer+1:]...)...)
-	// 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer+1:]...)...)
+	// s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer+1:]...)...)
+	// s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer+1:]...)...)
 
 	s.values[pointer] = value
 	s.rows[pointer] = r
@@ -71,8 +74,8 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 }
 
 func (s *SparseMatrix) remove(pointer, c int) {
-	// 	s.values = append(s.values[:pointer+1], s.values[pointer:]...)
-	// 	s.rows = append(s.rows[:pointer+1], s.rows[pointer:]...)
+	// s.values = append(s.values[:pointer+1], s.values[pointer:]...)
+	// s.rows = append(s.rows[:pointer+1], s.rows[pointer:]...)
 
 	for cc := c + 1; cc < s.c+1; cc++ {
 		s.colStart[cc]--
@@ -80,7 +83,16 @@ func (s *SparseMatrix) remove(pointer, c int) {
 }
 
 func (s *SparseMatrix) searchForRowIndex(r, left, right int) int {
-	if right-left == 0 || r > s.rows[right-1] {
+	if right-left == 0 {
+		return right
+	}
+
+	// if len(s.rows) <= pointer {
+	// 	s.rows = append(s.rows, 0)
+	// 	s.values = append(s.values, 0)
+	// }
+
+	if r > s.rows[right-1] {
 		return right
 	}
 
