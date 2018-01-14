@@ -6,12 +6,11 @@ import (
 
 // SparseMatrix compressed storage by columns (CSC)
 type SparseMatrix struct {
-	r           int // number of rows in the sparse matrix
-	c           int // number of columns in the sparse matrix
-	values      []int
-	rows        []int
-	colStart    []int
-	cardinality int
+	r        int // number of rows in the sparse matrix
+	c        int // number of columns in the sparse matrix
+	values   []int
+	rows     []int
+	colStart []int
 }
 
 // NewSparseMatrix returns an GraphBLAS.SparseMatrix.
@@ -20,12 +19,11 @@ func NewSparseMatrix(r, c int) *SparseMatrix {
 	size := r * c
 
 	s := &SparseMatrix{
-		r:           r,
-		c:           c,
-		values:      make([]int, size),
-		rows:        make([]int, size),
-		colStart:    make([]int, c+1),
-		cardinality: 0,
+		r:        r,
+		c:        c,
+		values:   make([]int, size),
+		rows:     make([]int, size),
+		colStart: make([]int, c+1),
 	}
 
 	return s
@@ -56,10 +54,8 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 		return
 	}
 
-	// if s.cardinality-pointer > 0 {
 	// 	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer+1:]...)...)
 	// 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer+1:]...)...)
-	// }
 
 	s.values[pointer] = value
 	s.rows[pointer] = r
@@ -68,16 +64,11 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 		s.colStart[cc]++
 	}
 
-	//s.cardinality++
 }
 
 func (s *SparseMatrix) remove(pointer, c int) {
-	//s.cardinality--
-
-	// if s.cardinality-pointer > 0 {
 	// 	s.values = append(s.values[:pointer+1], s.values[pointer:]...)
 	// 	s.rows = append(s.rows[:pointer+1], s.rows[pointer:]...)
-	// }
 
 	for cc := c + 1; cc < s.c+1; cc++ {
 		s.colStart[cc]--
@@ -131,13 +122,3 @@ func (s *SparseMatrix) Output() {
 		fmt.Printf("%+v: %+v\n", k, v)
 	}
 }
-
-// rows
-// 0: 0
-// 1: 0
-// 2: 1
-
-// colStart
-// 0: 0
-// 2: 1
-// 1: 2
