@@ -29,16 +29,19 @@ func NewSparseMatrix(r, c int) *SparseMatrix {
 	return s
 }
 
-func (s *SparseMatrix) Set(r, c, value int) {
-	err := s.ensureIndexesAreInBounds(r, c)
-	if err != nil {
-		panic(err)
+func (s *SparseMatrix) Set(r, c, value int) error {
+	if r < 0 || r >= s.r {
+		return fmt.Errorf("Row '%+v' is invalid", r)
+	}
+
+	if c < 0 || c >= s.c {
+		return fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
 	pointer := s.searchForRowIndex(r, s.colStart[c], s.colStart[c+1])
 
 	if pointer < s.colStart[c+1] && s.rows[pointer] == r {
-		if value == 0.0 {
+		if value == 0 {
 			s.remove(pointer, c)
 		} else {
 			s.values[pointer] = value
@@ -46,10 +49,11 @@ func (s *SparseMatrix) Set(r, c, value int) {
 	} else {
 		s.insert(pointer, r, c, value)
 	}
+
+	return nil
 }
 
 func (s *SparseMatrix) insert(pointer, r, c, value int) {
-
 	if value == 0 {
 		return
 	}
@@ -92,18 +96,6 @@ func (s *SparseMatrix) searchForRowIndex(r, left, right int) int {
 	}
 
 	return left
-}
-
-func (s *SparseMatrix) ensureIndexesAreInBounds(r, c int) error {
-	if r < 0 || r >= s.r {
-		return fmt.Errorf("Row '%+v' is invalid", r)
-	}
-
-	if c < 0 || c >= s.c {
-		return fmt.Errorf("Column '%+v' is invalid", c)
-	}
-
-	return nil
 }
 
 func (s *SparseMatrix) Output() {
