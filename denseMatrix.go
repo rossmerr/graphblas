@@ -3,7 +3,7 @@ package GraphBLAS
 // Matrix a dense matrix
 type Matrix [][]int
 
-func NewMatrix(m, n int) Matrix {
+func NewDenseMatrix(m, n int) Matrix {
 	return newMatrix(m, n, nil)
 }
 

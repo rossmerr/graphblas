@@ -6,58 +6,130 @@ import (
 
 // SparseMatrix compressed storage by columns (CSC)
 type SparseMatrix struct {
-	m        int // number of rows in the sparse matrix
-	n        int // number of columns in the sparse matrix
-	values   []int
-	rows     []int
-	colStart map[int]int
+	r           int // number of rows in the sparse matrix
+	c           int // number of columns in the sparse matrix
+	values      []int
+	rows        []int
+	colStart    []int
+	cardinality int
 }
 
 // NewSparseMatrix returns an GraphBLAS.SparseMatrix.
-func NewSparseMatrix(m, n int) *SparseMatrix {
-	s := &SparseMatrix{m: m, n: n, values: make([]int, 0), rows: make([]int, 0), colStart: make(map[int]int)}
+func NewSparseMatrix(r, c int) *SparseMatrix {
+
+	size := r * c
+
+	s := &SparseMatrix{
+		r:           r,
+		c:           c,
+		values:      make([]int, size),
+		rows:        make([]int, size),
+		colStart:    make([]int, c+1),
+		cardinality: 0,
+	}
+
 	return s
 }
 
-// Set the matrix element value at the r-th row and c-th column.
 func (s *SparseMatrix) Set(r, c, value int) {
+	err := s.ensureIndexesAreInBounds(r, c)
+	if err != nil {
+		panic(err)
+	}
+
+	pointer := s.searchForRowIndex(r, s.colStart[c], s.colStart[c+1])
+
+	if pointer < s.colStart[c+1] && s.rows[pointer] == r {
+		if value == 0.0 {
+			s.remove(pointer, c)
+		} else {
+			s.values[pointer] = value
+		}
+	} else {
+		s.insert(pointer, r, c, value)
+	}
+}
+
+func (s *SparseMatrix) insert(pointer, r, c, value int) {
+
 	if value == 0 {
 		return
 	}
 
-	if pointer, ok := s.colStart[c]; ok {
-		indexStart := s.rows[pointer]
+	// if s.cardinality-pointer > 0 {
+	// 	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer+1:]...)...)
+	// 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer+1:]...)...)
+	// }
 
-		if indexStart == r {
-			s.values[indexStart] = value
-			return
-		}
-		pointerEnd := s.colStart[c+1]
+	s.values[pointer] = value
+	s.rows[pointer] = r
 
-		indexEnd := s.rows[pointerEnd]
-
-		for i := indexStart + 1; i < indexEnd; i++ {
-
-			if i == r {
-				s.values[i] = value
-				return
-			} else if i > r {
-				s.rows = append(s.rows[:i], append([]int{i}, s.rows[i:]...)...)
-				s.values = append(s.values[:i], append([]int{value}, s.values[i:]...)...)
-				return
-			}
-
-		}
-
-		// need to insert here
-
-	} else {
-		s.rows = append(s.rows, r)
-		s.values = append(s.values, value)
-		s.colStart[c] = len(s.rows) - 1
-		fmt.Print("hit \n")
+	for cc := c + 1; cc < s.c+1; cc++ {
+		s.colStart[cc]++
 	}
 
+	//s.cardinality++
+}
+
+func (s *SparseMatrix) remove(pointer, c int) {
+	//s.cardinality--
+
+	// if s.cardinality-pointer > 0 {
+	// 	s.values = append(s.values[:pointer+1], s.values[pointer:]...)
+	// 	s.rows = append(s.rows[:pointer+1], s.rows[pointer:]...)
+	// }
+
+	for cc := c + 1; cc < s.c+1; cc++ {
+		s.colStart[cc]--
+	}
+}
+
+func (s *SparseMatrix) searchForRowIndex(r, left, right int) int {
+	if right-left == 0 || r > s.rows[right-1] {
+		return right
+	}
+
+	for left < right {
+		p := (left + right) / 2
+		if s.rows[p] > r {
+			right = p
+		} else if s.rows[p] < r {
+			left = p + 1
+		} else {
+			return p
+		}
+	}
+
+	return left
+}
+
+func (s *SparseMatrix) ensureIndexesAreInBounds(r, c int) error {
+	if r < 0 || r >= s.r {
+		return fmt.Errorf("Row '%+v' is invalid", r)
+	}
+
+	if c < 0 || c >= s.c {
+		return fmt.Errorf("Column '%+v' is invalid", c)
+	}
+
+	return nil
+}
+
+func (s *SparseMatrix) Output() {
+	fmt.Print("\ncolStart \n")
+
+	for k, v := range s.colStart {
+		fmt.Printf("%+v: %+v\n", k, v)
+	}
+
+	fmt.Print("\nrows \n")
+	for k, v := range s.rows {
+		fmt.Printf("%+v: %+v\n", k, v)
+	}
+	fmt.Print("\nvalues \n")
+	for k, v := range s.values {
+		fmt.Printf("%+v: %+v\n", k, v)
+	}
 }
 
 // rows

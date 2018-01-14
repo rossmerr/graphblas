@@ -7,7 +7,7 @@ import (
 )
 
 func TestScalar(t *testing.T) {
-	m := GraphBLAS.NewMatrix(2, 2)
+	m := GraphBLAS.NewDenseMatrix(2, 2)
 	m[0][0] = 4
 	m[0][1] = 0
 	m[1][0] = 1
@@ -19,7 +19,7 @@ func TestScalar(t *testing.T) {
 }
 
 func TestMultiple(t *testing.T) {
-	m := GraphBLAS.NewMatrix(2, 3)
+	m := GraphBLAS.NewDenseMatrix(2, 3)
 	m[0][0] = 1
 	m[0][1] = 2
 	m[0][2] = 3
@@ -27,7 +27,7 @@ func TestMultiple(t *testing.T) {
 	m[1][1] = 5
 	m[1][2] = 6
 
-	m2 := GraphBLAS.NewMatrix(3, 2)
+	m2 := GraphBLAS.NewDenseMatrix(3, 2)
 	m2[0][0] = 7
 	m2[0][1] = 8
 	m2[1][0] = 9
@@ -59,13 +59,13 @@ func TestMultiple(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	m := GraphBLAS.NewMatrix(2, 2)
+	m := GraphBLAS.NewDenseMatrix(2, 2)
 	m[0][0] = 3
 	m[0][1] = 8
 	m[1][0] = 4
 	m[1][1] = 6
 
-	m2 := GraphBLAS.NewMatrix(2, 2)
+	m2 := GraphBLAS.NewDenseMatrix(2, 2)
 	m2[0][0] = 4
 	m2[0][1] = 0
 	m2[1][0] = 1
@@ -95,13 +95,13 @@ func TestAdd(t *testing.T) {
 }
 
 func TestSubtract(t *testing.T) {
-	m := GraphBLAS.NewMatrix(2, 2)
+	m := GraphBLAS.NewDenseMatrix(2, 2)
 	m[0][0] = 3
 	m[0][1] = 8
 	m[1][0] = 4
 	m[1][1] = 6
 
-	m2 := GraphBLAS.NewMatrix(2, 2)
+	m2 := GraphBLAS.NewDenseMatrix(2, 2)
 	m2[0][0] = 4
 	m2[0][1] = 0
 	m2[1][0] = 1
@@ -131,7 +131,7 @@ func TestSubtract(t *testing.T) {
 }
 
 func TestNegative(t *testing.T) {
-	m := GraphBLAS.NewMatrix(2, 2)
+	m := GraphBLAS.NewDenseMatrix(2, 2)
 	m[0][0] = 2
 	m[0][1] = -4
 	m[1][0] = 7

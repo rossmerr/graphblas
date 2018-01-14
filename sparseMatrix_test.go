@@ -15,4 +15,8 @@ func TestSparseMatrix_Set(t *testing.T) {
 	s.Set(1, 1, 59)
 	s.Set(1, 2, 0)
 	s.Set(2, 0, 41)
+	s.Set(2, 1, 26)
+	s.Set(2, 2, 0)
+
+	s.Output()
 }
