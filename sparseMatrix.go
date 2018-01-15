@@ -74,12 +74,9 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 	}
 
 	if len(s.rows) <= pointer {
-		s.rows = append(s.rows, -1)
-		s.values = append(s.values, -1)
+		s.rows = append(s.rows, r)
+		s.values = append(s.values, value)
 	}
-
-	s.values[pointer] = value
-	s.rows[pointer] = r
 
 	for i := c + 1; i < s.c; i++ {
 		s.colStart[i]++
