@@ -7,8 +7,8 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
-func TestSparseMatrix_Set(t *testing.T) {
-	s := GraphBLAS.NewSparseMatrix(3, 3)
+func TestCSCMatrix_Set(t *testing.T) {
+	s := GraphBLAS.NewCSCMatrix(3, 3)
 
 	s.Set(0, 0, 31)
 	s.Set(1, 0, 0)
