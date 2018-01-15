@@ -75,21 +75,21 @@ func (s *SparseMatrix) remove(pointer, c int) {
 }
 
 func (s *SparseMatrix) rowIndex(r, c int) int {
-	c1 := c + 1
-	if c+1 == s.c {
-		c1 = c
-	}
 
 	start := s.colStart[c]
-	end := s.colStart[c1]
+	end := start
+
+	if c+1 != s.c {
+		end = s.colStart[c+1]
+	}
 
 	if len(s.rows) <= end {
 		s.rows = append(s.rows, -1)
 		s.values = append(s.values, -1)
 	}
 
-	if end-start == 0 {
-		return end
+	if start-end == 0 {
+		return start
 	}
 
 	if len(s.rows) <= end-1 {
