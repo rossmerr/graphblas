@@ -22,47 +22,47 @@ func TestSparseMatrix_Set(t *testing.T) {
 
 	i, _ := s.Get(0, 0)
 	if i != 31 {
-		t.Errorf("Expect 31 got %+v", i)
+		t.Errorf("Expected 31 got %+v", i)
 	}
 
 	i, _ = s.Get(1, 0)
 	if i != 0 {
-		t.Errorf("Expect 0 got %+v", i)
+		t.Errorf("Expected 0 got %+v", i)
 	}
 
 	i, _ = s.Get(2, 0)
 	if i != 41 {
-		t.Errorf("Expect 41 got %+v", i)
+		t.Errorf("Expected 41 got %+v", i)
 	}
 
 	i, _ = s.Get(0, 1)
 	if i != 0 {
-		t.Errorf("Expect 0 got %+v", i)
+		t.Errorf("Expected 0 got %+v", i)
 	}
 
 	i, _ = s.Get(1, 1)
 	if i != 59 {
-		t.Errorf("Expect 59 got %+v", i)
+		t.Errorf("Expected 59 got %+v", i)
 	}
 
 	i, _ = s.Get(2, 1)
 	if i != 26 {
-		t.Errorf("Expect 26 got %+v", i)
+		t.Errorf("Expected 26 got %+v", i)
 	}
 
 	i, _ = s.Get(0, 2)
 	if i != 53 {
-		t.Errorf("Expect 53 got %+v", i)
+		t.Errorf("Expected 53 got %+v", i)
 	}
 
 	i, _ = s.Get(1, 2)
 	if i != 0 {
-		t.Errorf("Expect 0 got %+v", i)
+		t.Errorf("Expected 0 got %+v", i)
 	}
 
 	i, _ = s.Get(2, 2)
 	if i != 0 {
-		t.Errorf("Expect 0 got %+v", i)
+		t.Errorf("Expected 0 got %+v", i)
 	}
 
 	fmt.Printf("%+v", s)
