@@ -125,20 +125,3 @@ func (s *SparseMatrix) rowIndex(r, c int) (int, int) {
 
 	return start, end
 }
-
-func (s *SparseMatrix) Output() {
-	fmt.Print("\ncolStart \n")
-
-	for k, v := range s.colStart {
-		fmt.Printf("%+v: %+v\n", k, v)
-	}
-
-	fmt.Print("\nrows \n")
-	for k, v := range s.rows {
-		fmt.Printf("%+v: %+v\n", k, v)
-	}
-	fmt.Print("\nvalues \n")
-	for k, v := range s.values {
-		fmt.Printf("%+v: %+v\n", k, v)
-	}
-}

@@ -1,6 +1,7 @@
 package GraphBLAS_test
 
 import (
+	"fmt"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -64,13 +65,13 @@ func TestSparseMatrix_Set(t *testing.T) {
 		t.Errorf("Expect 0 got %+v", i)
 	}
 
-	//s.Output()
+	fmt.Printf("%+v", s)
 
 	// s.Set(2, 0, 0) //was 41
 
-	// s.Output()
+	//fmt.Printf("%+v", s)
 
 	// s.Set(2, 0, 41) //was 41
 
-	// s.Output()
+	//fmt.Printf("%+v", s)
 }
