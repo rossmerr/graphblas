@@ -15,18 +15,12 @@ type SparseMatrix struct {
 
 // NewSparseMatrix returns an GraphBLAS.SparseMatrix.
 func NewSparseMatrix(r, c int) *SparseMatrix {
-	size := r * c
-
 	s := &SparseMatrix{
 		r:        r,
 		c:        c,
-		values:   make([]int, size),
-		rows:     make([]int, size),
-		colStart: make([]int, c+1),
-	}
-
-	for i := range s.colStart {
-		s.colStart[i] = i
+		values:   make([]int, 0),
+		rows:     make([]int, 0),
+		colStart: make([]int, c),
 	}
 
 	return s
@@ -41,9 +35,14 @@ func (s *SparseMatrix) Set(r, c, value int) error {
 		return fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	pointer := s.searchForRowIndex(r, s.colStart[c], s.colStart[c+1])
+	c1 := c + 1
+	if c+1 == s.c {
+		c1 = c
+	}
 
-	if pointer < s.colStart[c+1] && s.rows[pointer] == r {
+	pointer := s.rowIndex(r, c)
+
+	if pointer < s.colStart[c1] && s.rows[pointer] == r {
 		if value == 0 {
 			s.remove(pointer, c)
 		} else {
@@ -61,53 +60,59 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 		return
 	}
 
-	// s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer+1:]...)...)
-	// s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer+1:]...)...)
-
 	s.values[pointer] = value
 	s.rows[pointer] = r
 
-	for cc := c + 1; cc < s.c+1; cc++ {
+	for cc := c + 1; cc < s.c; cc++ {
 		s.colStart[cc]++
 	}
-
 }
 
 func (s *SparseMatrix) remove(pointer, c int) {
-	// s.values = append(s.values[:pointer+1], s.values[pointer:]...)
-	// s.rows = append(s.rows[:pointer+1], s.rows[pointer:]...)
-
-	for cc := c + 1; cc < s.c+1; cc++ {
+	for cc := c + 1; cc < s.c; cc++ {
 		s.colStart[cc]--
 	}
 }
 
-func (s *SparseMatrix) searchForRowIndex(r, left, right int) int {
-	if right-left == 0 {
-		return right
+func (s *SparseMatrix) rowIndex(r, c int) int {
+	c1 := c + 1
+	if c+1 == s.c {
+		c1 = c
 	}
 
-	// if len(s.rows) <= pointer {
-	// 	s.rows = append(s.rows, 0)
-	// 	s.values = append(s.values, 0)
-	// }
+	start := s.colStart[c]
+	end := s.colStart[c1]
 
-	if r > s.rows[right-1] {
-		return right
+	if len(s.rows) <= end {
+		s.rows = append(s.rows, -1)
+		s.values = append(s.values, -1)
 	}
 
-	for left < right {
-		p := (left + right) / 2
+	if end-start == 0 {
+		return end
+	}
+
+	if len(s.rows) <= end-1 {
+		s.rows = append(s.rows, -1)
+		s.values = append(s.values, -1)
+	}
+
+	if r > s.rows[end-1] {
+		return end
+	}
+
+	for start < end {
+		p := (start + end) / 2
 		if s.rows[p] > r {
-			right = p
+			end = p
 		} else if s.rows[p] < r {
-			left = p + 1
+			start = p + 1
 		} else {
 			return p
 		}
 	}
 
-	return left
+	return start
 }
 
 func (s *SparseMatrix) Output() {
