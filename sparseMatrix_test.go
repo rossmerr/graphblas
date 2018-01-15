@@ -8,15 +8,6 @@ import (
 
 func TestSparseMatrix_Set(t *testing.T) {
 	s := GraphBLAS.NewSparseMatrix(3, 3)
-	// s.Set(0, 0, 31)
-	// s.Set(0, 1, 0)
-	// s.Set(0, 2, 53)
-	// s.Set(1, 0, 0)
-	// s.Set(1, 1, 59)
-	// s.Set(1, 2, 0)
-	// s.Set(2, 0, 41)
-	// s.Set(2, 1, 26)
-	// s.Set(2, 2, 0)
 
 	s.Set(0, 0, 31)
 	s.Set(1, 0, 0)
@@ -28,5 +19,58 @@ func TestSparseMatrix_Set(t *testing.T) {
 	s.Set(1, 2, 0)
 	s.Set(2, 2, 0)
 
-	s.Output()
+	i, _ := s.Get(0, 0)
+	if i != 31 {
+		t.Errorf("Expect 31 got %+v", i)
+	}
+
+	i, _ = s.Get(1, 0)
+	if i != 0 {
+		t.Errorf("Expect 0 got %+v", i)
+	}
+
+	i, _ = s.Get(2, 0)
+	if i != 41 {
+		t.Errorf("Expect 41 got %+v", i)
+	}
+
+	i, _ = s.Get(0, 1)
+	if i != 0 {
+		t.Errorf("Expect 0 got %+v", i)
+	}
+
+	i, _ = s.Get(1, 1)
+	if i != 59 {
+		t.Errorf("Expect 59 got %+v", i)
+	}
+
+	i, _ = s.Get(2, 1)
+	if i != 26 {
+		t.Errorf("Expect 26 got %+v", i)
+	}
+
+	i, _ = s.Get(0, 2)
+	if i != 53 {
+		t.Errorf("Expect 53 got %+v", i)
+	}
+
+	i, _ = s.Get(1, 2)
+	if i != 0 {
+		t.Errorf("Expect 0 got %+v", i)
+	}
+
+	i, _ = s.Get(2, 2)
+	if i != 0 {
+		t.Errorf("Expect 0 got %+v", i)
+	}
+
+	//s.Output()
+
+	// s.Set(2, 0, 0) //was 41
+
+	// s.Output()
+
+	// s.Set(2, 0, 41) //was 41
+
+	// s.Output()
 }

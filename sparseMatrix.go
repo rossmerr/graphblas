@@ -26,6 +26,24 @@ func NewSparseMatrix(r, c int) *SparseMatrix {
 	return s
 }
 
+func (s *SparseMatrix) Get(r, c int) (int, error) {
+	if r < 0 || r >= s.r {
+		return 0, fmt.Errorf("Row '%+v' is invalid", r)
+	}
+
+	if c < 0 || c >= s.c {
+		return 0, fmt.Errorf("Column '%+v' is invalid", c)
+	}
+
+	pointerStart, pointerEnd := s.rowIndex(r, c)
+
+	if pointerStart <= pointerEnd && s.rows[pointerStart] == r {
+		return s.values[pointerStart], nil
+	}
+
+	return 0, nil
+}
+
 func (s *SparseMatrix) Set(r, c, value int) error {
 	if r < 0 || r >= s.r {
 		return fmt.Errorf("Row '%+v' is invalid", r)
@@ -35,21 +53,16 @@ func (s *SparseMatrix) Set(r, c, value int) error {
 		return fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	c1 := c + 1
-	if c+1 == s.c {
-		c1 = c
-	}
+	pointerStart, pointerEnd := s.rowIndex(r, c)
 
-	pointer := s.rowIndex(r, c)
-
-	if pointer < s.colStart[c1] && s.rows[pointer] == r {
+	if pointerStart < pointerEnd && s.rows[pointerStart] == r {
 		if value == 0 {
-			s.remove(pointer, c)
+			s.remove(pointerStart, c)
 		} else {
-			s.values[pointer] = value
+			s.values[pointerStart] = value
 		}
 	} else {
-		s.insert(pointer, r, c, value)
+		s.insert(pointerStart, r, c, value)
 	}
 
 	return nil
@@ -60,21 +73,29 @@ func (s *SparseMatrix) insert(pointer, r, c, value int) {
 		return
 	}
 
+	if len(s.rows) <= pointer {
+		s.rows = append(s.rows, -1)
+		s.values = append(s.values, -1)
+	}
+
 	s.values[pointer] = value
 	s.rows[pointer] = r
 
-	for cc := c + 1; cc < s.c; cc++ {
-		s.colStart[cc]++
+	for i := c + 1; i < s.c; i++ {
+		s.colStart[i]++
 	}
 }
 
 func (s *SparseMatrix) remove(pointer, c int) {
-	for cc := c + 1; cc < s.c; cc++ {
-		s.colStart[cc]--
+	s.rows = append(s.rows[:pointer], s.rows[pointer+1:]...)
+	s.values = append(s.values[:pointer], s.values[pointer+1:]...)
+
+	for i := c + 1; i < s.c; i++ {
+		s.colStart[i]--
 	}
 }
 
-func (s *SparseMatrix) rowIndex(r, c int) int {
+func (s *SparseMatrix) rowIndex(r, c int) (int, int) {
 
 	start := s.colStart[c]
 	end := start
@@ -83,22 +104,12 @@ func (s *SparseMatrix) rowIndex(r, c int) int {
 		end = s.colStart[c+1]
 	}
 
-	if len(s.rows) <= end {
-		s.rows = append(s.rows, -1)
-		s.values = append(s.values, -1)
-	}
-
 	if start-end == 0 {
-		return start
-	}
-
-	if len(s.rows) <= end-1 {
-		s.rows = append(s.rows, -1)
-		s.values = append(s.values, -1)
+		return start, end
 	}
 
 	if r > s.rows[end-1] {
-		return end
+		return end, end
 	}
 
 	for start < end {
@@ -108,11 +119,11 @@ func (s *SparseMatrix) rowIndex(r, c int) int {
 		} else if s.rows[p] < r {
 			start = p + 1
 		} else {
-			return p
+			return p, end
 		}
 	}
 
-	return start
+	return start, end
 }
 
 func (s *SparseMatrix) Output() {
