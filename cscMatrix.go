@@ -73,10 +73,16 @@ func (s *CSCMatrix) insert(pointer, r, c, value int) {
 		return
 	}
 
-	if len(s.rows) <= pointer {
-		s.rows = append(s.rows, r)
-		s.values = append(s.values, value)
-	}
+	// if len(s.rows) <= pointer {
+	// 	s.rows = append(s.rows, r)
+	// 	s.values = append(s.values, value)
+	// } else {
+	// s.rows = append(s.rows, r)
+	// s.values = append(s.values, value)
+
+	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
+	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer:]...)...)
+	//}
 
 	for i := c + 1; i < s.c; i++ {
 		s.colStart[i]++

@@ -1,7 +1,6 @@
 package GraphBLAS_test
 
 import (
-	"fmt"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -65,13 +64,15 @@ func TestCSCMatrix_Set(t *testing.T) {
 		t.Errorf("Expected 0 got %+v", i)
 	}
 
-	fmt.Printf("%+v", s)
+	s.Set(2, 1, 0)
+	i, _ = s.Get(2, 1)
+	if i != 0 {
+		t.Errorf("Expected 0 got %+v", i)
+	}
 
-	// s.Set(2, 0, 0) //was 41
-
-	//fmt.Printf("%+v", s)
-
-	// s.Set(2, 0, 41) //was 41
-
-	//fmt.Printf("%+v", s)
+	s.Set(2, 1, 62)
+	i, _ = s.Get(2, 1)
+	if i != 62 {
+		t.Errorf("Expected 62 got %+v", i)
+	}
 }
