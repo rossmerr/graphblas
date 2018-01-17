@@ -68,21 +68,48 @@ func (s *CSCMatrix) Set(r, c, value int) error {
 	return nil
 }
 
+func (s *CSCMatrix) Columns(c int) ([]int, error) {
+	if c < 0 || c >= s.c {
+		return nil, fmt.Errorf("Column '%+v' is invalid", c)
+	}
+
+	start := s.colStart[c]
+	end := start
+
+	if c+1 != s.c {
+		end = s.colStart[c+1]
+	}
+
+	columns := make([]int, s.c)
+	for i := start; i < end; i++ {
+		columns[s.rows[i]] = s.values[i]
+	}
+
+	return columns, nil
+}
+
+func (s *CSCMatrix) Rows(r int) ([]int, error) {
+	if r < 0 || r >= s.r {
+		return nil, fmt.Errorf("Row '%+v' is invalid", r)
+	}
+
+	rows := make([]int, s.r)
+
+	for c := range s.colStart {
+		pointerStart, _ := s.rowIndex(r, c)
+		rows[c] = s.values[pointerStart]
+	}
+
+	return rows, nil
+}
+
 func (s *CSCMatrix) insert(pointer, r, c, value int) {
 	if value == 0 {
 		return
 	}
 
-	// if len(s.rows) <= pointer {
-	// 	s.rows = append(s.rows, r)
-	// 	s.values = append(s.values, value)
-	// } else {
-	// s.rows = append(s.rows, r)
-	// s.values = append(s.values, value)
-
 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
 	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer:]...)...)
-	//}
 
 	for i := c + 1; i < s.c; i++ {
 		s.colStart[i]++
