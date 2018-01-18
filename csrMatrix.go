@@ -1,33 +1,31 @@
 package GraphBLAS
 
-import (
-	"fmt"
-)
+import "fmt"
 
-// CSCMatrix compressed storage by columns (CSC)
-type CSCMatrix struct {
+// CSRMatrix compressed storage by rows (CSR)
+type CSRMatrix struct {
 	r        int // number of rows in the sparse matrix
 	c        int // number of columns in the sparse matrix
 	values   []int
-	rows     []int
-	colStart []int
+	cols     []int
+	rowStart []int
 }
 
-// NewCSCMatrix returns an GraphBLAS.CSCMatrix.
-func NewCSCMatrix(r, c int) *CSCMatrix {
-	s := &CSCMatrix{
+// NewCSRMatrix returns an GraphBLAS.CSRMatrix.
+func NewCSRMatrix(r, c int) *CSRMatrix {
+	s := &CSRMatrix{
 		r:        r,
 		c:        c,
 		values:   make([]int, 0),
-		rows:     make([]int, 0),
-		colStart: make([]int, c),
+		cols:     make([]int, 0),
+		rowStart: make([]int, r),
 	}
 
 	return s
 }
 
 // At returns the value of a matrix element at r-th, c-th.
-func (s *CSCMatrix) At(r, c int) (int, error) {
+func (s *CSRMatrix) At(r, c int) (int, error) {
 	if r < 0 || r >= s.r {
 		return 0, fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -36,16 +34,16 @@ func (s *CSCMatrix) At(r, c int) (int, error) {
 		return 0, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	pointerStart, pointerEnd := s.rowIndex(r, c)
+	pointerStart, pointerEnd := s.columnIndex(r, c)
 
-	if pointerStart <= pointerEnd && s.rows[pointerStart] == r {
+	if pointerStart <= pointerEnd && s.cols[pointerStart] == r {
 		return s.values[pointerStart], nil
 	}
 
 	return 0, nil
 }
 
-func (s *CSCMatrix) Set(r, c, value int) error {
+func (s *CSRMatrix) Set(r, c, value int) error {
 	if r < 0 || r >= s.r {
 		return fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -54,9 +52,9 @@ func (s *CSCMatrix) Set(r, c, value int) error {
 		return fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	pointerStart, pointerEnd := s.rowIndex(r, c)
+	pointerStart, pointerEnd := s.columnIndex(r, c)
 
-	if pointerStart < pointerEnd && s.rows[pointerStart] == r {
+	if pointerStart < pointerEnd && s.cols[pointerStart] == r {
 		if value == 0 {
 			s.remove(pointerStart, c)
 		} else {
@@ -69,85 +67,85 @@ func (s *CSCMatrix) Set(r, c, value int) error {
 	return nil
 }
 
-func (s *CSCMatrix) Columns(c int) ([]int, error) {
+func (s *CSRMatrix) Columns(c int) ([]int, error) {
 	if c < 0 || c >= s.c {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	start := s.colStart[c]
+	start := s.rowStart[c]
 	end := start
 
 	if c+1 != s.c {
-		end = s.colStart[c+1]
+		end = s.rowStart[c+1]
 	}
 
 	columns := make([]int, s.c)
 	for i := start; i < end; i++ {
-		columns[s.rows[i]] = s.values[i]
+		columns[s.cols[i]] = s.values[i]
 	}
 
 	return columns, nil
 }
 
-func (s *CSCMatrix) Rows(r int) ([]int, error) {
+func (s *CSRMatrix) Rows(r int) ([]int, error) {
 	if r < 0 || r >= s.r {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
 
 	rows := make([]int, s.r)
 
-	for c := range s.colStart {
-		pointerStart, _ := s.rowIndex(r, c)
+	for c := range s.rowStart {
+		pointerStart, _ := s.columnIndex(r, c)
 		rows[c] = s.values[pointerStart]
 	}
 
 	return rows, nil
 }
 
-func (s *CSCMatrix) insert(pointer, r, c, value int) {
+func (s *CSRMatrix) insert(pointer, r, c, value int) {
 	if value == 0 {
 		return
 	}
 
-	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
+	s.cols = append(s.cols[:pointer], append([]int{c}, s.cols[pointer:]...)...)
 	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer:]...)...)
 
-	for i := c + 1; i < s.c; i++ {
-		s.colStart[i]++
+	for i := r + 1; i < s.r; i++ {
+		s.rowStart[i]++
 	}
 }
 
-func (s *CSCMatrix) remove(pointer, c int) {
-	s.rows = append(s.rows[:pointer], s.rows[pointer+1:]...)
+func (s *CSRMatrix) remove(pointer, r int) {
+	s.cols = append(s.cols[:pointer], s.cols[pointer+1:]...)
 	s.values = append(s.values[:pointer], s.values[pointer+1:]...)
 
-	for i := c + 1; i < s.c; i++ {
-		s.colStart[i]--
+	for i := r + 1; i < s.c; i++ {
+		s.rowStart[i]--
 	}
 }
 
-func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
+func (s *CSRMatrix) columnIndex(r, c int) (int, int) {
 
-	start := s.colStart[c]
+	start := s.rowStart[r]
 	end := start
 
-	if c+1 != s.c {
-		end = s.colStart[c+1]
+	if r+1 != s.r {
+		end = s.rowStart[r+1]
 	}
 
 	if start-end == 0 {
 		return start, end
 	}
 
-	if r > s.rows[end-1] {
+	if r > s.cols[end-1] {
 		return end, end
 	}
 
 	for start < end {
 		p := (start + end) / 2
-		if s.rows[p] > r {
+		if s.cols[p] > c {
 			end = p
-		} else if s.rows[p] < r {
+		} else if s.cols[p] < c {
 			start = p + 1
 		} else {
 			return p, end
@@ -157,5 +155,5 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 	return start, end
 }
 
-func (s *CSCMatrix) sparse() {
+func (s *CSRMatrix) sparse() {
 }

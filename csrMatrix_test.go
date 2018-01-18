@@ -1,13 +1,14 @@
 package GraphBLAS_test
 
 import (
+	"fmt"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
-func TestCSCMatrix_Set(t *testing.T) {
-	s := GraphBLAS.NewCSCMatrix(3, 3)
+func TestCSRMatrix_Set(t *testing.T) {
+	s := GraphBLAS.NewCSRMatrix(3, 3)
 
 	s.Set(0, 0, 31)
 	s.Set(1, 0, 0)
@@ -77,8 +78,8 @@ func TestCSCMatrix_Set(t *testing.T) {
 	}
 }
 
-func TestCSCMatrix_Columns(t *testing.T) {
-	s := GraphBLAS.NewCSCMatrix(3, 3)
+func TestCSRMatrix_Columns(t *testing.T) {
+	s := GraphBLAS.NewCSRMatrix(3, 3)
 
 	s.Set(0, 0, 31)
 	s.Set(1, 0, 0)
@@ -101,8 +102,8 @@ func TestCSCMatrix_Columns(t *testing.T) {
 	}
 }
 
-func TestCSCMatrix_Row(t *testing.T) {
-	s := GraphBLAS.NewCSCMatrix(3, 3)
+func TestCSRMatrix_Row(t *testing.T) {
+	s := GraphBLAS.NewCSRMatrix(3, 3)
 
 	s.Set(0, 0, 31)
 	s.Set(1, 0, 0)
@@ -114,6 +115,7 @@ func TestCSCMatrix_Row(t *testing.T) {
 	s.Set(1, 2, 0)
 	s.Set(2, 2, 0)
 
+	fmt.Printf("%+v", s)
 	row, _ := s.Rows(0)
 
 	if row[0] != 31 {
