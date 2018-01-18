@@ -54,9 +54,9 @@ func (s *CSRMatrix) Set(r, c, value int) error {
 
 	pointerStart, pointerEnd := s.columnIndex(r, c)
 
-	if pointerStart < pointerEnd && s.cols[pointerStart] == r {
+	if pointerStart < pointerEnd && s.cols[pointerStart] == c {
 		if value == 0 {
-			s.remove(pointerStart, c)
+			s.remove(pointerStart, r)
 		} else {
 			s.values[pointerStart] = value
 		}
@@ -119,7 +119,7 @@ func (s *CSRMatrix) remove(pointer, r int) {
 	s.cols = append(s.cols[:pointer], s.cols[pointer+1:]...)
 	s.values = append(s.values[:pointer], s.values[pointer+1:]...)
 
-	for i := r + 1; i < s.c; i++ {
+	for i := r + 1; i < s.r; i++ {
 		s.rowStart[i]--
 	}
 }

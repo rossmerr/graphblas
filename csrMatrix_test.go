@@ -20,6 +20,8 @@ func TestCSRMatrix_Set(t *testing.T) {
 	s.Set(1, 2, 0)
 	s.Set(2, 2, 0)
 
+	fmt.Printf("%+v", s)
+
 	i, _ := s.At(0, 0)
 	if i != 31 {
 		t.Errorf("Expected 31 got %+v", i)
