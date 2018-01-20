@@ -30,6 +30,14 @@ func newCSCMatrix(r, c, l int) *CSCMatrix {
 	return s
 }
 
+func (s *CSCMatrix) Columns() int {
+	return s.c
+}
+
+func (s *CSCMatrix) Rows() int {
+	return s.r
+}
+
 // At returns the value of a matrix element at r-th, c-th.
 func (s *CSCMatrix) At(r, c int) (float64, error) {
 	if r < 0 || r >= s.r {
@@ -73,7 +81,7 @@ func (s *CSCMatrix) Set(r, c int, value float64) error {
 	return nil
 }
 
-func (s *CSCMatrix) Columns(c int) ([]float64, error) {
+func (s *CSCMatrix) ColumnsAt(c int) ([]float64, error) {
 	if c < 0 || c >= s.c {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
@@ -93,7 +101,7 @@ func (s *CSCMatrix) Columns(c int) ([]float64, error) {
 	return columns, nil
 }
 
-func (s *CSCMatrix) Rows(r int) ([]float64, error) {
+func (s *CSCMatrix) RowsAt(r int) ([]float64, error) {
 	if r < 0 || r >= s.r {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -157,6 +165,12 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 	return start, end
 }
 
+func (s *CSCMatrix) Copy() SparseMatrix {
+	return s.copy(func(value float64) float64 {
+		return value
+	})
+}
+
 func (s *CSCMatrix) copy(action func(float64) float64) *CSCMatrix {
 	matrix := newCSCMatrix(s.r, s.c, len(s.values))
 
@@ -173,28 +187,28 @@ func (s *CSCMatrix) copy(action func(float64) float64) *CSCMatrix {
 }
 
 // Scalar multiplication
-func (s *CSCMatrix) Scalar(alpha float64) *CSCMatrix {
+func (s *CSCMatrix) Scalar(alpha float64) SparseMatrix {
 	return s.copy(func(value float64) float64 {
 		return alpha * value
 	})
 }
 
 // Multiply multiplies a Matrix structure by another Matrix structure.
-func (s *CSCMatrix) Multiply(m *CSCMatrix) (*CSCMatrix, error) {
-	if s.r != m.c {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.r, m.c)
+func (s *CSCMatrix) Multiply(m SparseMatrix) (SparseMatrix, error) {
+	if s.Rows() != m.Columns() {
+		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
-	matrix := newCSCMatrix(s.r, m.c, 0)
+	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
-	for r := 0; r < s.r; r++ {
-		rows, err := s.Rows(r)
+	for r := 0; r < s.Rows(); r++ {
+		rows, err := s.RowsAt(r)
 		if err != nil {
 			return nil, err
 		}
 
-		for c := 0; c < m.c; c++ {
-			column, err := m.Columns(c)
+		for c := 0; c < m.Columns(); c++ {
+			column, err := m.ColumnsAt(c)
 			if err != nil {
 				return nil, err
 			}
@@ -213,29 +227,29 @@ func (s *CSCMatrix) Multiply(m *CSCMatrix) (*CSCMatrix, error) {
 }
 
 // Add addition of a Matrix structure by another Matrix structure.
-func (s *CSCMatrix) Add(m *CSCMatrix) (*CSCMatrix, error) {
-	if s.c != m.c {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.c, m.c)
+func (s *CSCMatrix) Add(m SparseMatrix) (SparseMatrix, error) {
+	if s.Columns() != m.Columns() {
+		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
 
-	if s.r != m.r {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.r, m.r)
+	if s.Rows() != m.Rows() {
+		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	matrix := newCSCMatrix(s.r, m.c, 0)
+	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
-	for c := 0; c < s.c; c++ {
-		sColumn, err := s.Columns(c)
+	for c := 0; c < s.Columns(); c++ {
+		sColumn, err := s.ColumnsAt(c)
 		if err != nil {
 			return nil, err
 		}
 
-		mColumn, err := m.Columns(c)
+		mColumn, err := m.ColumnsAt(c)
 		if err != nil {
 			return nil, err
 		}
 
-		for r := 0; r < s.r; r++ {
+		for r := 0; r < s.Rows(); r++ {
 			matrix.Set(r, c, sColumn[c]+mColumn[c])
 		}
 	}
@@ -244,29 +258,29 @@ func (s *CSCMatrix) Add(m *CSCMatrix) (*CSCMatrix, error) {
 }
 
 // Subtract subtracts one matrix from another.
-func (s *CSCMatrix) Subtract(m *CSCMatrix) (*CSCMatrix, error) {
-	if s.c != m.c {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.c, m.c)
+func (s *CSCMatrix) Subtract(m SparseMatrix) (SparseMatrix, error) {
+	if s.Columns() != m.Columns() {
+		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
 
-	if s.r != m.r {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.r, m.r)
+	if s.Rows() != m.Rows() {
+		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	matrix := newCSCMatrix(s.r, m.c, 0)
+	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
-	for c := 0; c < s.c; c++ {
-		sColumn, err := s.Columns(c)
+	for c := 0; c < s.Columns(); c++ {
+		sColumn, err := s.ColumnsAt(c)
 		if err != nil {
 			return nil, err
 		}
 
-		mColumn, err := m.Columns(c)
+		mColumn, err := m.ColumnsAt(c)
 		if err != nil {
 			return nil, err
 		}
 
-		for r := 0; r < s.r; r++ {
+		for r := 0; r < s.Rows(); r++ {
 			matrix.Set(r, c, sColumn[c]-mColumn[c])
 		}
 	}
@@ -275,7 +289,7 @@ func (s *CSCMatrix) Subtract(m *CSCMatrix) (*CSCMatrix, error) {
 }
 
 // Negative the negative of a matrix.
-func (s *CSCMatrix) Negative() *CSCMatrix {
+func (s *CSCMatrix) Negative() SparseMatrix {
 	return s.copy(func(value float64) float64 {
 		return -value
 	})

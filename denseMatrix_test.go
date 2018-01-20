@@ -35,9 +35,9 @@ func TestMultiple(t *testing.T) {
 	m2[2][0] = 11
 	m2[2][1] = 12
 
-	m3, ok := m.Multiply(m2)
+	m3, err := m.Multiply(m2)
 
-	if ok == false {
+	if err != nil {
 		t.Error("Multiply failed")
 	}
 
