@@ -27,17 +27,17 @@ func TestCSRMatrix_Set(t *testing.T) {
 		t.Errorf("Expected 31 got %+v", i)
 	}
 
-	i, _ = s.At(1, 0)
+	i, _ = s.At(0, 1)
 	if i != 0 {
 		t.Errorf("Expected 0 got %+v", i)
 	}
 
-	i, _ = s.At(2, 0)
-	if i != 41 {
-		t.Errorf("Expected 41 got %+v", i)
+	i, _ = s.At(0, 2)
+	if i != 53 {
+		t.Errorf("Expected 53 got %+v", i)
 	}
 
-	i, _ = s.At(0, 1)
+	i, _ = s.At(1, 0)
 	if i != 0 {
 		t.Errorf("Expected 0 got %+v", i)
 	}
@@ -47,19 +47,19 @@ func TestCSRMatrix_Set(t *testing.T) {
 		t.Errorf("Expected 59 got %+v", i)
 	}
 
-	i, _ = s.At(2, 1)
-	if i != 26 {
-		t.Errorf("Expected 26 got %+v", i)
-	}
-
-	i, _ = s.At(0, 2)
-	if i != 53 {
-		t.Errorf("Expected 53 got %+v", i)
-	}
-
 	i, _ = s.At(1, 2)
 	if i != 0 {
 		t.Errorf("Expected 0 got %+v", i)
+	}
+
+	i, _ = s.At(2, 0)
+	if i != 41 {
+		t.Errorf("Expected 41 got %+v", i)
+	}
+
+	i, _ = s.At(2, 1)
+	if i != 26 {
+		t.Errorf("Expected 26 got %+v", i)
 	}
 
 	i, _ = s.At(2, 2)
