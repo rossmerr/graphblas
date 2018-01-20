@@ -4,5 +4,6 @@ package GraphBLAS
 type SparseMatrix interface {
 	At(r, c int) (int, error)
 	Set(r, c, value int) error
-	sparse()
+	Columns(c int) ([]float64, error)
+	Rows(r int) ([]float64, error)
 }

@@ -1,5 +1,7 @@
 package GraphBLAS
 
+import "fmt"
+
 // Matrix a dense matrix
 type Matrix [][]int
 
@@ -32,9 +34,9 @@ func (s Matrix) Scalar(alpha int) Matrix {
 }
 
 // Multiply multiplies a Matrix structure by another Matrix structure.
-func (m Matrix) Multiply(m2 Matrix) (Matrix, bool) {
+func (m Matrix) Multiply(m2 Matrix) (Matrix, error) {
 	if len(m[0]) != len(m2) {
-		return nil, false
+		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", len(m[0]), len(m2))
 	}
 
 	matrix := newMatrix(len(m), len(m2[0]), func(row []int, x int) {
@@ -47,7 +49,7 @@ func (m Matrix) Multiply(m2 Matrix) (Matrix, bool) {
 		}
 	})
 
-	return matrix, true
+	return matrix, nil
 }
 
 // Add addition of a Matrix structure by another Matrix structure.

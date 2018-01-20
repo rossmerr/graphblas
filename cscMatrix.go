@@ -15,11 +15,15 @@ type CSCMatrix struct {
 
 // NewCSCMatrix returns an GraphBLAS.CSCMatrix.
 func NewCSCMatrix(r, c int) *CSCMatrix {
+	return newCSCMatrix(r, c, 0)
+}
+
+func newCSCMatrix(r, c, l int) *CSCMatrix {
 	s := &CSCMatrix{
 		r:        r,
 		c:        c,
-		values:   make([]float64, 0),
-		rows:     make([]int, 0),
+		values:   make([]float64, l),
+		rows:     make([]int, l),
 		colStart: make([]int, c+1),
 	}
 
@@ -153,5 +157,126 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 	return start, end
 }
 
-func (s *CSCMatrix) sparse() {
+func (s *CSCMatrix) copy(action func(float64) float64) *CSCMatrix {
+	matrix := newCSCMatrix(s.r, s.c, len(s.values))
+
+	for i := range s.values {
+		matrix.values[i] = action(s.values[i])
+		matrix.rows[i] = s.rows[i]
+	}
+
+	for i := range s.colStart {
+		matrix.colStart[i] = s.colStart[i]
+	}
+
+	return matrix
+}
+
+// Scalar multiplication
+func (s *CSCMatrix) Scalar(alpha float64) *CSCMatrix {
+	return s.copy(func(value float64) float64 {
+		return alpha * value
+	})
+}
+
+// Multiply multiplies a Matrix structure by another Matrix structure.
+func (s *CSCMatrix) Multiply(m *CSCMatrix) (*CSCMatrix, error) {
+	if s.r != m.c {
+		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.r, m.c)
+	}
+
+	matrix := newCSCMatrix(s.r, m.c, 0)
+
+	for r := 0; r < s.r; r++ {
+		rows, err := s.Rows(r)
+		if err != nil {
+			return nil, err
+		}
+
+		for c := 0; c < m.c; c++ {
+			column, err := m.Columns(c)
+			if err != nil {
+				return nil, err
+			}
+
+			sum := 0.0
+			for l := 0; l < len(rows); l++ {
+				sum += rows[l] * column[l]
+			}
+
+			matrix.Set(r, c, sum)
+		}
+
+	}
+
+	return matrix, nil
+}
+
+// Add addition of a Matrix structure by another Matrix structure.
+func (s *CSCMatrix) Add(m *CSCMatrix) (*CSCMatrix, error) {
+	if s.c != m.c {
+		return nil, fmt.Errorf("Column miss match %+v, %+v", s.c, m.c)
+	}
+
+	if s.r != m.r {
+		return nil, fmt.Errorf("Row miss match %+v, %+v", s.r, m.r)
+	}
+
+	matrix := newCSCMatrix(s.r, m.c, 0)
+
+	for c := 0; c < s.c; c++ {
+		sColumn, err := s.Columns(c)
+		if err != nil {
+			return nil, err
+		}
+
+		mColumn, err := m.Columns(c)
+		if err != nil {
+			return nil, err
+		}
+
+		for r := 0; r < s.r; r++ {
+			matrix.Set(r, c, sColumn[c]+mColumn[c])
+		}
+	}
+
+	return matrix, nil
+}
+
+// Subtract subtracts one matrix from another.
+func (s *CSCMatrix) Subtract(m *CSCMatrix) (*CSCMatrix, error) {
+	if s.c != m.c {
+		return nil, fmt.Errorf("Column miss match %+v, %+v", s.c, m.c)
+	}
+
+	if s.r != m.r {
+		return nil, fmt.Errorf("Row miss match %+v, %+v", s.r, m.r)
+	}
+
+	matrix := newCSCMatrix(s.r, m.c, 0)
+
+	for c := 0; c < s.c; c++ {
+		sColumn, err := s.Columns(c)
+		if err != nil {
+			return nil, err
+		}
+
+		mColumn, err := m.Columns(c)
+		if err != nil {
+			return nil, err
+		}
+
+		for r := 0; r < s.r; r++ {
+			matrix.Set(r, c, sColumn[c]-mColumn[c])
+		}
+	}
+
+	return matrix, nil
+}
+
+// Negative the negative of a matrix.
+func (s *CSCMatrix) Negative() *CSCMatrix {
+	return s.copy(func(value float64) float64 {
+		return -value
+	})
 }
