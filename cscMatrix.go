@@ -8,7 +8,7 @@ import (
 type CSCMatrix struct {
 	r        int // number of rows in the sparse matrix
 	c        int // number of columns in the sparse matrix
-	values   []int
+	values   []float64
 	rows     []int
 	colStart []int
 }
@@ -18,7 +18,7 @@ func NewCSCMatrix(r, c int) *CSCMatrix {
 	s := &CSCMatrix{
 		r:        r,
 		c:        c,
-		values:   make([]int, 0),
+		values:   make([]float64, 0),
 		rows:     make([]int, 0),
 		colStart: make([]int, c+1),
 	}
@@ -27,7 +27,7 @@ func NewCSCMatrix(r, c int) *CSCMatrix {
 }
 
 // At returns the value of a matrix element at r-th, c-th.
-func (s *CSCMatrix) At(r, c int) (int, error) {
+func (s *CSCMatrix) At(r, c int) (float64, error) {
 	if r < 0 || r >= s.r {
 		return 0, fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -45,7 +45,7 @@ func (s *CSCMatrix) At(r, c int) (int, error) {
 	return 0, nil
 }
 
-func (s *CSCMatrix) Set(r, c, value int) error {
+func (s *CSCMatrix) Set(r, c int, value float64) error {
 	if r < 0 || r >= s.r {
 		return fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -69,7 +69,7 @@ func (s *CSCMatrix) Set(r, c, value int) error {
 	return nil
 }
 
-func (s *CSCMatrix) Columns(c int) ([]int, error) {
+func (s *CSCMatrix) Columns(c int) ([]float64, error) {
 	if c < 0 || c >= s.c {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
@@ -81,7 +81,7 @@ func (s *CSCMatrix) Columns(c int) ([]int, error) {
 		end = s.colStart[c+1]
 	}
 
-	columns := make([]int, s.c)
+	columns := make([]float64, s.c)
 	for i := start; i < end; i++ {
 		columns[s.rows[i]] = s.values[i]
 	}
@@ -89,12 +89,12 @@ func (s *CSCMatrix) Columns(c int) ([]int, error) {
 	return columns, nil
 }
 
-func (s *CSCMatrix) Rows(r int) ([]int, error) {
+func (s *CSCMatrix) Rows(r int) ([]float64, error) {
 	if r < 0 || r >= s.r {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]int, s.r)
+	rows := make([]float64, s.r)
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, _ := s.rowIndex(r, c)
@@ -104,13 +104,13 @@ func (s *CSCMatrix) Rows(r int) ([]int, error) {
 	return rows, nil
 }
 
-func (s *CSCMatrix) insert(pointer, r, c, value int) {
+func (s *CSCMatrix) insert(pointer, r, c int, value float64) {
 	if value == 0 {
 		return
 	}
 
 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
-	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer:]...)...)
+	s.values = append(s.values[:pointer], append([]float64{value}, s.values[pointer:]...)...)
 
 	for i := c + 1; i <= s.c; i++ {
 		s.colStart[i]++

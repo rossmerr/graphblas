@@ -1,7 +1,6 @@
 package GraphBLAS_test
 
 import (
-	"fmt"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -19,8 +18,6 @@ func TestCSRMatrix_Set(t *testing.T) {
 	s.Set(2, 0, 41)
 	s.Set(2, 1, 26)
 	s.Set(2, 2, 0)
-
-	fmt.Printf("%+v", s)
 
 	i, _ := s.At(0, 0)
 	if i != 31 {
@@ -117,7 +114,6 @@ func TestCSRMatrix_Row(t *testing.T) {
 	s.Set(1, 2, 0)
 	s.Set(2, 2, 0)
 
-	fmt.Printf("%+v", s)
 	row, _ := s.Rows(0)
 
 	if row[0] != 31 {
