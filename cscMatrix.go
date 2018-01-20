@@ -20,7 +20,7 @@ func NewCSCMatrix(r, c int) *CSCMatrix {
 		c:        c,
 		values:   make([]int, 0),
 		rows:     make([]int, 0),
-		colStart: make([]int, c),
+		colStart: make([]int, c+1),
 	}
 
 	return s
@@ -38,7 +38,7 @@ func (s *CSCMatrix) At(r, c int) (int, error) {
 
 	pointerStart, pointerEnd := s.rowIndex(r, c)
 
-	if pointerStart <= pointerEnd && s.rows[pointerStart] == r {
+	if pointerStart < pointerEnd && s.rows[pointerStart] == r {
 		return s.values[pointerStart], nil
 	}
 
@@ -96,7 +96,7 @@ func (s *CSCMatrix) Rows(r int) ([]int, error) {
 
 	rows := make([]int, s.r)
 
-	for c := range s.colStart {
+	for c := range s.colStart[:s.c] {
 		pointerStart, _ := s.rowIndex(r, c)
 		rows[c] = s.values[pointerStart]
 	}
@@ -112,7 +112,7 @@ func (s *CSCMatrix) insert(pointer, r, c, value int) {
 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
 	s.values = append(s.values[:pointer], append([]int{value}, s.values[pointer:]...)...)
 
-	for i := c + 1; i < s.c; i++ {
+	for i := c + 1; i <= s.c; i++ {
 		s.colStart[i]++
 	}
 }
@@ -121,7 +121,7 @@ func (s *CSCMatrix) remove(pointer, c int) {
 	s.rows = append(s.rows[:pointer], s.rows[pointer+1:]...)
 	s.values = append(s.values[:pointer], s.values[pointer+1:]...)
 
-	for i := c + 1; i < s.c; i++ {
+	for i := c + 1; i <= s.c; i++ {
 		s.colStart[i]--
 	}
 }
@@ -129,11 +129,7 @@ func (s *CSCMatrix) remove(pointer, c int) {
 func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 
 	start := s.colStart[c]
-	end := start
-
-	if c+1 != s.c {
-		end = s.colStart[c+1]
-	}
+	end := s.colStart[c+1]
 
 	if start-end == 0 {
 		return start, end
