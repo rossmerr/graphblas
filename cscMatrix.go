@@ -165,7 +165,7 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 	return start, end
 }
 
-func (s *CSCMatrix) Copy() SparseMatrix {
+func (s *CSCMatrix) Copy() Matrix {
 	return s.copy(func(value float64) float64 {
 		return value
 	})
@@ -187,14 +187,14 @@ func (s *CSCMatrix) copy(action func(float64) float64) *CSCMatrix {
 }
 
 // Scalar multiplication
-func (s *CSCMatrix) Scalar(alpha float64) SparseMatrix {
+func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 	return s.copy(func(value float64) float64 {
 		return alpha * value
 	})
 }
 
 // Multiply multiplies a Matrix structure by another Matrix structure.
-func (s *CSCMatrix) Multiply(m SparseMatrix) (SparseMatrix, error) {
+func (s *CSCMatrix) Multiply(m Matrix) (Matrix, error) {
 	if s.Rows() != m.Columns() {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
@@ -227,7 +227,7 @@ func (s *CSCMatrix) Multiply(m SparseMatrix) (SparseMatrix, error) {
 }
 
 // Add addition of a Matrix structure by another Matrix structure.
-func (s *CSCMatrix) Add(m SparseMatrix) (SparseMatrix, error) {
+func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 	if s.Columns() != m.Columns() {
 		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -258,7 +258,7 @@ func (s *CSCMatrix) Add(m SparseMatrix) (SparseMatrix, error) {
 }
 
 // Subtract subtracts one matrix from another.
-func (s *CSCMatrix) Subtract(m SparseMatrix) (SparseMatrix, error) {
+func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 	if s.Columns() != m.Columns() {
 		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -289,7 +289,7 @@ func (s *CSCMatrix) Subtract(m SparseMatrix) (SparseMatrix, error) {
 }
 
 // Negative the negative of a matrix.
-func (s *CSCMatrix) Negative() SparseMatrix {
+func (s *CSCMatrix) Negative() Matrix {
 	return s.copy(func(value float64) float64 {
 		return -value
 	})
