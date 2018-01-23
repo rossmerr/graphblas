@@ -13,7 +13,7 @@ type CSCMatrix struct {
 	colStart []int
 }
 
-// NewCSCMatrix returns an GraphBLAS.CSCMatrix.
+// NewCSCMatrix returns a GraphBLAS.CSCMatrix.
 func NewCSCMatrix(r, c int) *CSCMatrix {
 	return newCSCMatrix(r, c, 0)
 }

@@ -11,7 +11,7 @@ type CSRMatrix struct {
 	rowStart []int
 }
 
-// NewCSRMatrix returns an GraphBLAS.CSRMatrix.
+// NewCSRMatrix returns a GraphBLAS.CSRMatrix.
 func NewCSRMatrix(r, c int) *CSRMatrix {
 	return newCSRMatrix(r, c, 0)
 }
