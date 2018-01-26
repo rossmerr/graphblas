@@ -4,13 +4,13 @@ import "fmt"
 
 // DenseVector a vector
 type DenseVector struct {
-	l    int
-	data []float64
+	l      int // length of the sparse vector
+	values []float64
 }
 
-// NewVector returns a GraphBLAS.DenseVector.
+// NewDenseVector returns a GraphBLAS.DenseVector.
 func NewDenseVector(l int) *DenseVector {
-	return &DenseVector{l: l, data: make([]float64, l)}
+	return &DenseVector{l: l, values: make([]float64, l)}
 }
 
 // Length of the vector
@@ -23,7 +23,7 @@ func (s *DenseVector) At(i int) (float64, error) {
 		return 0, fmt.Errorf("Length '%+v' is invalid", i)
 	}
 
-	return s.data[i], nil
+	return s.values[i], nil
 }
 
 func (s *DenseVector) Set(i int, value float64) error {
@@ -31,16 +31,16 @@ func (s *DenseVector) Set(i int, value float64) error {
 		return fmt.Errorf("Length '%+v' is invalid", i)
 	}
 
-	s.data[i] = value
+	s.values[i] = value
 
 	return nil
 }
 
 // Scalar multiplication
-func (s *DenseVector) Scalar(alpha float64) *DenseVector {
+func (s *DenseVector) Scalar(alpha float64) Vector {
 	vector := NewDenseVector(s.l)
 
-	for i, v := range s.data {
+	for i, v := range s.values {
 		vector.Set(i, alpha*v)
 	}
 
@@ -48,7 +48,7 @@ func (s *DenseVector) Scalar(alpha float64) *DenseVector {
 }
 
 // Multiply multiplies a Vector structure by another Vector structure.
-func (s *DenseVector) Multiply(m *DenseVector) (*DenseVector, error) {
+func (s *DenseVector) Multiply(m Vector) (Vector, error) {
 	if s.Length() != m.Length() {
 		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
 	}
@@ -65,7 +65,7 @@ func (s *DenseVector) Multiply(m *DenseVector) (*DenseVector, error) {
 }
 
 // Add addition of a Vector structure by another Vector structure.
-func (s *DenseVector) Add(m *DenseVector) (*DenseVector, error) {
+func (s *DenseVector) Add(m Vector) (Vector, error) {
 	if s.Length() != m.Length() {
 		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
 	}
@@ -82,7 +82,7 @@ func (s *DenseVector) Add(m *DenseVector) (*DenseVector, error) {
 }
 
 // Subtract subtracts one Vector from another.
-func (s *DenseVector) Subtract(m *DenseVector) (*DenseVector, error) {
+func (s *DenseVector) Subtract(m Vector) (Vector, error) {
 	if s.Length() != m.Length() {
 		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
 	}
@@ -99,7 +99,7 @@ func (s *DenseVector) Subtract(m *DenseVector) (*DenseVector, error) {
 }
 
 // Negative the negative of a Vector.
-func (s *DenseVector) Negative() *DenseVector {
+func (s *DenseVector) Negative() Vector {
 	vector := NewDenseVector(s.l)
 
 	for i := 0; i < s.l; i++ {
@@ -110,10 +110,10 @@ func (s *DenseVector) Negative() *DenseVector {
 	return vector
 }
 
-func (s *DenseVector) Copy() *DenseVector {
+func (s *DenseVector) Copy() Vector {
 	vector := NewDenseVector(s.l)
 
-	for i, v := range s.data {
+	for i, v := range s.values {
 		vector.Set(i, v)
 	}
 
