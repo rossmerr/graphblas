@@ -11,7 +11,11 @@ type SparseVector struct {
 
 // NewSparseVector returns a GraphBLAS.SparseVector.
 func NewSparseVector(l int) *SparseVector {
-	return &SparseVector{l: l, values: make([]float64, 0)}
+	return newSparseVector(l, 0)
+}
+
+func newSparseVector(l, s int) *SparseVector {
+	return &SparseVector{l: l, values: make([]float64, s), indices: make([]int, s)}
 }
 
 // Length of the vector
@@ -25,9 +29,9 @@ func (s *SparseVector) At(i int) (float64, error) {
 		return 0, fmt.Errorf("Length '%+v' is invalid", i)
 	}
 
-	pointer, _ := s.index(i)
+	pointer, length, _ := s.index(i)
 
-	if s.indices[pointer] == i {
+	if pointer < length && s.indices[pointer] == i {
 		return s.values[pointer], nil
 	}
 
@@ -39,9 +43,9 @@ func (s *SparseVector) Set(i int, value float64) error {
 		return fmt.Errorf("Length '%+v' is invalid", i)
 	}
 
-	pointer, _ := s.index(i)
+	pointer, length, _ := s.index(i)
 
-	if s.indices[pointer] == i {
+	if pointer < length && s.indices[pointer] == i {
 		if value == 0 {
 			s.remove(pointer)
 		} else {
@@ -68,9 +72,14 @@ func (s *SparseVector) remove(pointer int) {
 	s.values = append(s.values[:pointer], s.values[pointer+1:]...)
 }
 
-func (s *SparseVector) index(i int) (int, error) {
+func (s *SparseVector) index(i int) (int, int, error) {
+	length := len(s.indices)
+	if i > length {
+		return length, length, nil
+	}
+
 	start := 0
-	end := 0
+	end := length
 
 	for start < end {
 		p := (start + end) / 2
@@ -79,15 +88,15 @@ func (s *SparseVector) index(i int) (int, error) {
 		} else if s.indices[p] < i {
 			start = p + 1
 		} else {
-			return p, nil
+			return p, length, nil
 		}
 	}
 
-	return start, nil
+	return start, length, nil
 }
 
 func (s *SparseVector) copy(action func(float64, int) float64) *SparseVector {
-	vector := NewSparseVector(s.l)
+	vector := newSparseVector(s.l, len(s.indices))
 
 	for i := range s.values {
 		vector.values[i] = action(s.values[i], i)
@@ -118,7 +127,7 @@ func (s *SparseVector) Add(m Vector) (Vector, error) {
 
 	return s.copy(func(value float64, i int) float64 {
 		f, _ := m.At(i)
-		return f + value
+		return value + f
 	}), nil
 }
 
@@ -130,7 +139,7 @@ func (s *SparseVector) Multiply(m Vector) (Vector, error) {
 
 	return s.copy(func(value float64, i int) float64 {
 		f, _ := m.At(i)
-		return f * value
+		return value * f
 	}), nil
 }
 
@@ -142,7 +151,7 @@ func (s *SparseVector) Subtract(m Vector) (Vector, error) {
 
 	return s.copy(func(value float64, i int) float64 {
 		f, _ := m.At(i)
-		return f - value
+		return value - f
 	}), nil
 }
 
