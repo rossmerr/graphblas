@@ -6,6 +6,54 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
+func TestMatrix_Columns(t *testing.T) {
+	s := GraphBLAS.NewDenseMatrix(3, 3)
+
+	s.Set(0, 0, 31)
+	s.Set(1, 0, 0)
+	s.Set(2, 0, 41)
+	s.Set(0, 1, 0)
+	s.Set(1, 1, 59)
+	s.Set(2, 1, 26)
+	s.Set(0, 2, 53)
+	s.Set(1, 2, 0)
+	s.Set(2, 2, 0)
+
+	col, _ := s.ColumnsAt(0)
+
+	if col[0] != 31 {
+		t.Errorf("Expected 31 got %+v", col[0])
+	}
+
+	if col[2] != 41 {
+		t.Errorf("Expected 41 got %+v", col[2])
+	}
+}
+
+func TestMatrix_Row(t *testing.T) {
+	s := GraphBLAS.NewDenseMatrix(3, 3)
+
+	s.Set(0, 0, 31)
+	s.Set(1, 0, 0)
+	s.Set(2, 0, 41)
+	s.Set(0, 1, 0)
+	s.Set(1, 1, 59)
+	s.Set(2, 1, 26)
+	s.Set(0, 2, 53)
+	s.Set(1, 2, 0)
+	s.Set(2, 2, 0)
+
+	row, _ := s.RowsAt(0)
+
+	if row[0] != 31 {
+		t.Errorf("Expected 31 got %+v", row[0])
+	}
+
+	if row[2] != 53 {
+		t.Errorf("Expected 53 got %+v", row[1])
+	}
+}
+
 func TestScalar(t *testing.T) {
 	m := GraphBLAS.NewDenseMatrix(2, 2)
 	m.Set(0, 0, 4)
