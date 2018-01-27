@@ -198,16 +198,10 @@ func (s *CSCMatrix) Multiply(m Matrix) (Matrix, error) {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
 	for r := 0; r < s.Rows(); r++ {
-		rows, err := s.RowsAt(r)
-		if err != nil {
-			return nil, err
-		}
+		rows, _ := s.RowsAt(r)
 
 		for c := 0; c < m.Columns(); c++ {
-			column, err := m.ColumnsAt(c)
-			if err != nil {
-				return nil, err
-			}
+			column, _ := m.ColumnsAt(c)
 
 			sum := 0.0
 			for l := 0; l < len(rows); l++ {
@@ -235,15 +229,9 @@ func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
 	for c := 0; c < s.Columns(); c++ {
-		sColumn, err := s.ColumnsAt(c)
-		if err != nil {
-			return nil, err
-		}
+		sColumn, _ := s.ColumnsAt(c)
 
-		mColumn, err := m.ColumnsAt(c)
-		if err != nil {
-			return nil, err
-		}
+		mColumn, _ := m.ColumnsAt(c)
 
 		for r := 0; r < s.Rows(); r++ {
 			matrix.Set(r, c, sColumn[r]+mColumn[r])
@@ -266,15 +254,9 @@ func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
 	for c := 0; c < s.Columns(); c++ {
-		sColumn, err := s.ColumnsAt(c)
-		if err != nil {
-			return nil, err
-		}
+		sColumn, _ := s.ColumnsAt(c)
 
-		mColumn, err := m.ColumnsAt(c)
-		if err != nil {
-			return nil, err
-		}
+		mColumn, _ := m.ColumnsAt(c)
 
 		for r := 0; r < s.Rows(); r++ {
 			matrix.Set(r, c, sColumn[r]-mColumn[r])
