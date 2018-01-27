@@ -11,7 +11,7 @@ type SparseVector struct {
 
 // NewSparseVector returns a GraphBLAS.SparseVector.
 func NewSparseVector(l int) *SparseVector {
-	return &SparseVector{l: l, values: make([]float64, l)}
+	return &SparseVector{l: l, values: make([]float64, 0)}
 }
 
 // Length of the vector

@@ -10,7 +10,7 @@ type DenseVector struct {
 
 // NewDenseVector returns a GraphBLAS.DenseVector.
 func NewDenseVector(l int) *DenseVector {
-	return &DenseVector{l: l, values: make([]float64, l)}
+	return &DenseVector{l: l, values: make([]float64, 0)}
 }
 
 // Length of the vector
