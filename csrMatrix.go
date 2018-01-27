@@ -84,7 +84,7 @@ func (s *CSRMatrix) ColumnsAt(c int) ([]float64, error) {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	columns := make([]float64, s.c)
+	columns := make([]float64, s.r)
 
 	for r := range s.rowStart[:s.r] {
 		pointerStart, _ := s.columnIndex(r, c)
@@ -101,13 +101,9 @@ func (s *CSRMatrix) RowsAt(r int) ([]float64, error) {
 	}
 
 	start := s.rowStart[r]
-	end := start
+	end := s.rowStart[r+1]
 
-	if r+1 != s.r {
-		end = s.rowStart[r+1]
-	}
-
-	rows := make([]float64, s.r)
+	rows := make([]float64, s.c)
 	for i := start; i < end; i++ {
 		rows[s.cols[i]] = s.values[i]
 	}

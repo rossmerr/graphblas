@@ -82,7 +82,7 @@ func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
 			total := 0.0
 			for k := 0; k < s.Columns(); k++ {
 				v, _ := m.At(k, c)
-				total += s.data[r][c] * v
+				total += v * s.data[r][k]
 			}
 			row[c] = total
 		}

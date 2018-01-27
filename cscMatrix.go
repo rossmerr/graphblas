@@ -87,13 +87,9 @@ func (s *CSCMatrix) ColumnsAt(c int) ([]float64, error) {
 	}
 
 	start := s.colStart[c]
-	end := start
+	end := s.colStart[c+1]
 
-	if c+1 != s.c {
-		end = s.colStart[c+1]
-	}
-
-	columns := make([]float64, s.c)
+	columns := make([]float64, s.r)
 	for i := start; i < end; i++ {
 		columns[s.rows[i]] = s.values[i]
 	}
@@ -106,7 +102,7 @@ func (s *CSCMatrix) RowsAt(r int) ([]float64, error) {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]float64, s.r)
+	rows := make([]float64, s.c)
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, _ := s.rowIndex(r, c)
@@ -250,7 +246,7 @@ func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 		}
 
 		for r := 0; r < s.Rows(); r++ {
-			matrix.Set(r, c, sColumn[c]+mColumn[c])
+			matrix.Set(r, c, sColumn[r]+mColumn[r])
 		}
 	}
 
@@ -281,7 +277,7 @@ func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 		}
 
 		for r := 0; r < s.Rows(); r++ {
-			matrix.Set(r, c, sColumn[c]-mColumn[c])
+			matrix.Set(r, c, sColumn[r]-mColumn[r])
 		}
 	}
 
