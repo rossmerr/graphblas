@@ -2,7 +2,7 @@ package GraphBLAS
 
 import "fmt"
 
-// SparseVector compressed storage by cols
+// SparseVector compressed storage by indices
 type SparseVector struct {
 	l       int // length of the sparse vector
 	values  []float64
