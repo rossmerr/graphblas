@@ -109,7 +109,7 @@ func TestCSCScalar(t *testing.T) {
 	m.Set(1, 1, -9)
 	scale := m.Scalar(2)
 	if v, _ := scale.At(0, 0); v != 8 {
-		t.Errorf("Expected 4 got %+v", v)
+		t.Errorf("Expected 8 got %+v", v)
 	}
 }
 
@@ -272,5 +272,14 @@ func TestCSCNegative(t *testing.T) {
 
 	if v, _ := m3.At(1, 1); v != -10 {
 		t.Errorf("Expected -10 got %+v", v)
+	}
+}
+
+func TestCSCCopy(t *testing.T) {
+	m := GraphBLAS.NewCSCMatrix(1, 1)
+	m.Set(0, 0, 4)
+	copy := m.Copy()
+	if v, _ := copy.At(0, 0); v != 4 {
+		t.Errorf("Expected 4 got %+v", v)
 	}
 }
