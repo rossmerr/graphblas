@@ -125,6 +125,18 @@ func TestCSRMatrix_Row(t *testing.T) {
 	}
 }
 
+func TestCSRScalar(t *testing.T) {
+	m := GraphBLAS.NewCSRMatrix(2, 2)
+	m.Set(0, 0, 4)
+	m.Set(0, 1, 0)
+	m.Set(1, 0, 1)
+	m.Set(1, 1, -9)
+	scale := m.Scalar(2)
+	if v, _ := scale.At(0, 0); v != 8 {
+		t.Errorf("Expected 4 got %+v", v)
+	}
+}
+
 func TestCSRMultiple(t *testing.T) {
 	m := GraphBLAS.NewCSRMatrix(2, 3)
 	m.Set(0, 0, 1)
