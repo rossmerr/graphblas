@@ -88,16 +88,17 @@ func (s *CSRMatrix) Set(r, c int, value float64) error {
 }
 
 // ColumnsAt return the columns at c-th
-func (s *CSRMatrix) ColumnsAt(c int) ([]float64, error) {
+func (s *CSRMatrix) ColumnsAt(c int) (Vector, error) {
 	if c < 0 || c >= s.c {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	columns := make([]float64, s.r)
+	columns := NewSparseVector(s.r)
 
 	for r := range s.rowStart[:s.r] {
 		pointerStart, _ := s.columnIndex(r, c)
-		columns[r] = s.values[pointerStart]
+		columns.Set(r, s.values[pointerStart])
+
 	}
 
 	return columns, nil
@@ -105,7 +106,7 @@ func (s *CSRMatrix) ColumnsAt(c int) ([]float64, error) {
 }
 
 // RowsAt return the rows at r-th
-func (s *CSRMatrix) RowsAt(r int) ([]float64, error) {
+func (s *CSRMatrix) RowsAt(r int) (Vector, error) {
 	if r < 0 || r >= s.r {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -113,9 +114,9 @@ func (s *CSRMatrix) RowsAt(r int) ([]float64, error) {
 	start := s.rowStart[r]
 	end := s.rowStart[r+1]
 
-	rows := make([]float64, s.c)
+	rows := NewSparseVector(s.c)
 	for i := start; i < end; i++ {
-		rows[s.cols[i]] = s.values[i]
+		rows.Set(s.cols[i], s.values[i])
 	}
 
 	return rows, nil
@@ -214,8 +215,10 @@ func (s *CSRMatrix) Multiply(m Matrix) (Matrix, error) {
 			column, _ := m.ColumnsAt(c)
 
 			sum := 0.0
-			for l := 0; l < len(rows); l++ {
-				sum += rows[l] * column[l]
+			for l := 0; l < rows.Length(); l++ {
+				vC, _ := column.At(l)
+				vR, _ := rows.At(l)
+				sum += vR * vC
 			}
 
 			matrix.Set(r, c, sum)
@@ -244,7 +247,9 @@ func (s *CSRMatrix) Add(m Matrix) (Matrix, error) {
 		mRows, _ := m.RowsAt(r)
 
 		for c := 0; c < s.Columns(); c++ {
-			matrix.Set(r, c, sRows[c]+mRows[c])
+			s, _ := sRows.At(c)
+			m, _ := mRows.At(c)
+			matrix.Set(r, c, s+m)
 		}
 	}
 
@@ -269,7 +274,9 @@ func (s *CSRMatrix) Subtract(m Matrix) (Matrix, error) {
 		mRows, _ := m.RowsAt(r)
 
 		for c := 0; c < s.Columns(); c++ {
-			matrix.Set(r, c, sRows[c]-mRows[c])
+			s, _ := sRows.At(c)
+			m, _ := mRows.At(c)
+			matrix.Set(r, c, s-m)
 		}
 	}
 

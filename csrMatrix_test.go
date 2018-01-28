@@ -97,12 +97,12 @@ func TestCSRMatrix_Columns(t *testing.T) {
 
 	col, _ := s.ColumnsAt(0)
 
-	if col[0] != 31 {
-		t.Errorf("Expected 31 got %+v", col[0])
+	if v, _ := col.At(0); v != 31 {
+		t.Errorf("Expected 31 got %+v", v)
 	}
 
-	if col[2] != 41 {
-		t.Errorf("Expected 41 got %+v", col[2])
+	if v, _ := col.At(2); v != 41 {
+		t.Errorf("Expected 41 got %+v", v)
 	}
 }
 
@@ -121,12 +121,12 @@ func TestCSRMatrix_Row(t *testing.T) {
 
 	row, _ := s.RowsAt(0)
 
-	if row[0] != 31 {
-		t.Errorf("Expected 31 got %+v", row[0])
+	if v, _ := row.At(0); v != 31 {
+		t.Errorf("Expected 31 got %+v", v)
 	}
 
-	if row[2] != 53 {
-		t.Errorf("Expected 53 got %+v", row[1])
+	if v, _ := row.At(2); v != 53 {
+		t.Errorf("Expected 53 got %+v", v)
 	}
 }
 

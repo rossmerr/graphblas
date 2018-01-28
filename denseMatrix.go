@@ -71,27 +71,32 @@ func (s *DenseMatrix) Set(r, c int, value float64) error {
 }
 
 // ColumnsAt return the columns at c-th
-func (s *DenseMatrix) ColumnsAt(c int) ([]float64, error) {
+func (s *DenseMatrix) ColumnsAt(c int) (Vector, error) {
 	if c < 0 || c >= s.Columns() {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	columns := make([]float64, s.c)
+	columns := NewSparseVector(s.r)
 
 	for r := 0; r < s.r; r++ {
-		columns[r] = s.data[r][c]
+		columns.Set(r, s.data[r][c])
 	}
 
 	return columns, nil
 }
 
 // RowsAt return the rows at r-th
-func (s *DenseMatrix) RowsAt(r int) ([]float64, error) {
+func (s *DenseMatrix) RowsAt(r int) (Vector, error) {
 	if r < 0 || r >= s.Rows() {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
 
-	return s.data[r], nil
+	rows := NewSparseVector(s.c)
+	for i := 0; i < s.c; i++ {
+		rows.Set(i, s.data[r][i])
+	}
+
+	return rows, nil
 }
 
 // Copy copies the matrix

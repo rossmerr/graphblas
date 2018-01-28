@@ -90,33 +90,33 @@ func (s *CSCMatrix) Set(r, c int, value float64) error {
 }
 
 // ColumnsAt return the columns at c-th
-func (s *CSCMatrix) ColumnsAt(c int) ([]float64, error) {
+func (s *CSCMatrix) ColumnsAt(c int) (Vector, error) {
 	if c < 0 || c >= s.c {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
 	start := s.colStart[c]
 	end := s.colStart[c+1]
+	columns := NewSparseVector(s.r)
 
-	columns := make([]float64, s.r)
 	for i := start; i < end; i++ {
-		columns[s.rows[i]] = s.values[i]
+		columns.Set(s.rows[i], s.values[i])
 	}
 
 	return columns, nil
 }
 
 // RowsAt return the rows at r-th
-func (s *CSCMatrix) RowsAt(r int) ([]float64, error) {
+func (s *CSCMatrix) RowsAt(r int) (Vector, error) {
 	if r < 0 || r >= s.r {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]float64, s.c)
+	rows := NewSparseVector(s.c)
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, _ := s.rowIndex(r, c)
-		rows[c] = s.values[pointerStart]
+		rows.Set(c, s.values[pointerStart])
 	}
 
 	return rows, nil
@@ -215,8 +215,10 @@ func (s *CSCMatrix) Multiply(m Matrix) (Matrix, error) {
 			column, _ := m.ColumnsAt(c)
 
 			sum := 0.0
-			for l := 0; l < len(rows); l++ {
-				sum += rows[l] * column[l]
+			for l := 0; l < rows.Length(); l++ {
+				vC, _ := column.At(l)
+				vR, _ := rows.At(l)
+				sum += vR * vC
 			}
 
 			matrix.Set(r, c, sum)
@@ -245,7 +247,9 @@ func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 		mColumn, _ := m.ColumnsAt(c)
 
 		for r := 0; r < s.Rows(); r++ {
-			matrix.Set(r, c, sColumn[r]+mColumn[r])
+			s, _ := sColumn.At(r)
+			m, _ := mColumn.At(r)
+			matrix.Set(r, c, s+m)
 		}
 	}
 
@@ -270,7 +274,9 @@ func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 		mColumn, _ := m.ColumnsAt(c)
 
 		for r := 0; r < s.Rows(); r++ {
-			matrix.Set(r, c, sColumn[r]-mColumn[r])
+			s, _ := sColumn.At(r)
+			m, _ := mColumn.At(r)
+			matrix.Set(r, c, s-m)
 		}
 	}
 

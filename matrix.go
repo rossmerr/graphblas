@@ -9,8 +9,8 @@ package GraphBLAS
 type Matrix interface {
 	At(r, c int) (float64, error)
 	Set(r, c int, value float64) error
-	ColumnsAt(c int) ([]float64, error)
-	RowsAt(r int) ([]float64, error)
+	ColumnsAt(c int) (Vector, error)
+	RowsAt(r int) (Vector, error)
 	Columns() int
 	Rows() int
 
