@@ -1,5 +1,6 @@
 package GraphBLAS
 
+// Matrix interface
 type Matrix interface {
 	At(r, c int) (float64, error)
 	Set(r, c int, value float64) error

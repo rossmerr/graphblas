@@ -11,7 +11,7 @@ type CSRMatrix struct {
 	rowStart []int
 }
 
-// NewCSRMatrix returns a GraphBLAS.CSRMatrix.
+// NewCSRMatrix returns a GraphBLAS.CSRMatrix
 func NewCSRMatrix(r, c int) *CSRMatrix {
 	return newCSRMatrix(r, c, 0)
 }
@@ -28,15 +28,17 @@ func newCSRMatrix(r, c, l int) *CSRMatrix {
 	return s
 }
 
+// Columns the number of columns of the matrix
 func (s *CSRMatrix) Columns() int {
 	return s.c
 }
 
+// Rows the number of rows of the matrix
 func (s *CSRMatrix) Rows() int {
 	return s.r
 }
 
-// At returns the value of a matrix element at r-th, c-th.
+// At returns the value of a matrix element at r-th, c-th
 func (s *CSRMatrix) At(r, c int) (float64, error) {
 	if r < 0 || r >= s.r {
 		return 0, fmt.Errorf("Row '%+v' is invalid", r)
@@ -55,6 +57,7 @@ func (s *CSRMatrix) At(r, c int) (float64, error) {
 	return 0, nil
 }
 
+// Set sets the value at r-th, c-th of the matrix
 func (s *CSRMatrix) Set(r, c int, value float64) error {
 	if r < 0 || r >= s.r {
 		return fmt.Errorf("Row '%+v' is invalid", r)
@@ -79,6 +82,7 @@ func (s *CSRMatrix) Set(r, c int, value float64) error {
 	return nil
 }
 
+// ColumnsAt return the columns at c-th
 func (s *CSRMatrix) ColumnsAt(c int) ([]float64, error) {
 	if c < 0 || c >= s.c {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
@@ -95,6 +99,7 @@ func (s *CSRMatrix) ColumnsAt(c int) ([]float64, error) {
 
 }
 
+// RowsAt return the rows at r-th
 func (s *CSRMatrix) RowsAt(r int) ([]float64, error) {
 	if r < 0 || r >= s.r {
 		return nil, fmt.Errorf("Row '%+v' is invalid", r)
@@ -160,6 +165,7 @@ func (s *CSRMatrix) columnIndex(r, c int) (int, int) {
 	return start, end
 }
 
+// Copy copies the matrix
 func (s *CSRMatrix) Copy() Matrix {
 	return s.copy(func(value float64) float64 {
 		return value
@@ -181,14 +187,14 @@ func (s *CSRMatrix) copy(action func(float64) float64) *CSRMatrix {
 	return matrix
 }
 
-// Scalar multiplication
+// Scalar multiplication of a matrix by alpha
 func (s *CSRMatrix) Scalar(alpha float64) Matrix {
 	return s.copy(func(value float64) float64 {
 		return alpha * value
 	})
 }
 
-// Multiply multiplies a Matrix structure by another Matrix structure.
+// Multiply multiplies a matrix by another matrix
 func (s *CSRMatrix) Multiply(m Matrix) (Matrix, error) {
 	if s.Rows() != m.Columns() {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
@@ -215,7 +221,7 @@ func (s *CSRMatrix) Multiply(m Matrix) (Matrix, error) {
 	return matrix, nil
 }
 
-// Add addition of a Matrix structure by another Matrix structure.
+// Add addition of a matrix by another matrix
 func (s *CSRMatrix) Add(m Matrix) (Matrix, error) {
 	if s.Columns() != m.Columns() {
 		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
@@ -240,7 +246,7 @@ func (s *CSRMatrix) Add(m Matrix) (Matrix, error) {
 	return matrix, nil
 }
 
-// Subtract subtracts one matrix from another.
+// Subtract subtracts one matrix from another matrix
 func (s *CSRMatrix) Subtract(m Matrix) (Matrix, error) {
 	if s.Columns() != m.Columns() {
 		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
@@ -265,7 +271,7 @@ func (s *CSRMatrix) Subtract(m Matrix) (Matrix, error) {
 	return matrix, nil
 }
 
-// Negative the negative of a matrix.
+// Negative the negative of a matrix
 func (s *CSRMatrix) Negative() Matrix {
 	return s.copy(func(value float64) float64 {
 		return -value

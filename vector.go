@@ -1,5 +1,6 @@
 package GraphBLAS
 
+// Vector interface
 type Vector interface {
 	At(i int) (float64, error)
 	Set(i int, value float64) error

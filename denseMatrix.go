@@ -4,11 +4,12 @@ import "fmt"
 
 // DenseMatrix a dense matrix
 type DenseMatrix struct {
-	c    int
-	r    int
+	c    int // number of rows in the sparse matrix
+	r    int // number of columns in the sparse matrix
 	data [][]float64
 }
 
+// NewDenseMatrix returns a GraphBLAS.DenseMatrix
 func NewDenseMatrix(r, c int) *DenseMatrix {
 	return newMatrix(r, c, nil)
 }
@@ -26,14 +27,17 @@ func newMatrix(r, c int, initialise func([]float64, int)) *DenseMatrix {
 	return s
 }
 
+// Columns the number of columns of the matrix
 func (s *DenseMatrix) Columns() int {
 	return s.c
 }
 
+// Rows the number of rows of the matrix
 func (s *DenseMatrix) Rows() int {
 	return s.r
 }
 
+// At returns the value of a matrix element at r-th, c-th
 func (s *DenseMatrix) At(r, c int) (float64, error) {
 	if r < 0 || r >= s.Rows() {
 		return 0, fmt.Errorf("Row '%+v' is invalid", r)
@@ -46,6 +50,7 @@ func (s *DenseMatrix) At(r, c int) (float64, error) {
 	return s.data[r][c], nil
 }
 
+// Set sets the value at r-th, c-th of the matrix
 func (s *DenseMatrix) Set(r, c int, value float64) error {
 	if r < 0 || r >= s.Rows() {
 		return fmt.Errorf("Row '%+v' is invalid", r)
@@ -60,7 +65,42 @@ func (s *DenseMatrix) Set(r, c int, value float64) error {
 	return nil
 }
 
-// Scalar multiplication
+// ColumnsAt return the columns at c-th
+func (s *DenseMatrix) ColumnsAt(c int) ([]float64, error) {
+	if c < 0 || c >= s.Columns() {
+		return nil, fmt.Errorf("Column '%+v' is invalid", c)
+	}
+
+	columns := make([]float64, s.c)
+
+	for r := 0; r < s.r; r++ {
+		columns[r] = s.data[r][c]
+	}
+
+	return columns, nil
+}
+
+// RowsAt return the rows at r-th
+func (s *DenseMatrix) RowsAt(r int) ([]float64, error) {
+	if r < 0 || r >= s.Rows() {
+		return nil, fmt.Errorf("Row '%+v' is invalid", r)
+	}
+
+	return s.data[r], nil
+}
+
+// Copy copies the matrix
+func (s *DenseMatrix) Copy() Matrix {
+	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
+		for c := 0; c < s.Columns(); c++ {
+			row[c] = s.data[r][c]
+		}
+	})
+
+	return matrix
+}
+
+// Scalar multiplication of a matrix by alpha
 func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 	matrix := newMatrix(s.Rows(), s.Columns(), func(rows []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
@@ -71,7 +111,7 @@ func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 	return matrix
 }
 
-// Multiply multiplies a Matrix structure by another Matrix structure.
+// Multiply multiplies a matrix by another matrix
 func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
 	if s.Rows() != m.Columns() {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
@@ -91,7 +131,7 @@ func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
 	return matrix, nil
 }
 
-// Add addition of a Matrix structure by another Matrix structure.
+// Add addition of a matrix by another matrix
 func (s *DenseMatrix) Add(m Matrix) (Matrix, error) {
 	if s.Columns() != m.Columns() {
 		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
@@ -111,7 +151,7 @@ func (s *DenseMatrix) Add(m Matrix) (Matrix, error) {
 	return matrix, nil
 }
 
-// Subtract subtracts one matrix from another.
+// Subtract subtracts one matrix from another matrix
 func (s *DenseMatrix) Subtract(m Matrix) (Matrix, error) {
 	if s.Columns() != m.Columns() {
 		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
@@ -131,43 +171,11 @@ func (s *DenseMatrix) Subtract(m Matrix) (Matrix, error) {
 	return matrix, nil
 }
 
-// Negative the negative of a matrix.
+// Negative the negative of a matrix
 func (s *DenseMatrix) Negative() Matrix {
 	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
 			row[c] = -s.data[r][c]
-		}
-	})
-
-	return matrix
-}
-
-func (s *DenseMatrix) ColumnsAt(c int) ([]float64, error) {
-	if c < 0 || c >= s.Columns() {
-		return nil, fmt.Errorf("Column '%+v' is invalid", c)
-	}
-
-	columns := make([]float64, s.c)
-
-	for r := 0; r < s.r; r++ {
-		columns[r] = s.data[r][c]
-	}
-
-	return columns, nil
-}
-
-func (s *DenseMatrix) RowsAt(r int) ([]float64, error) {
-	if r < 0 || r >= s.Rows() {
-		return nil, fmt.Errorf("Row '%+v' is invalid", r)
-	}
-
-	return s.data[r], nil
-}
-
-func (s *DenseMatrix) Copy() Matrix {
-	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
-		for c := 0; c < s.Columns(); c++ {
-			row[c] = s.data[r][c]
 		}
 	})
 

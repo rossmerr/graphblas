@@ -9,7 +9,7 @@ type SparseVector struct {
 	indices []int
 }
 
-// NewSparseVector returns a GraphBLAS.SparseVector.
+// NewSparseVector returns a GraphBLAS.SparseVector
 func NewSparseVector(l int) *SparseVector {
 	return newSparseVector(l, 0)
 }
@@ -23,7 +23,7 @@ func (s *SparseVector) Length() int {
 	return s.l
 }
 
-// At returns the value of a Vector element at i-th.
+// At returns the value of a vector element at i-th
 func (s *SparseVector) At(i int) (float64, error) {
 	if i < 0 || i >= s.Length() {
 		return 0, fmt.Errorf("Length '%+v' is invalid", i)
@@ -38,6 +38,7 @@ func (s *SparseVector) At(i int) (float64, error) {
 	return 0, nil
 }
 
+// Set sets the value at i-th of the vector
 func (s *SparseVector) Set(i int, value float64) error {
 	if i < 0 || i >= s.Length() {
 		return fmt.Errorf("Length '%+v' is invalid", i)
@@ -106,32 +107,21 @@ func (s *SparseVector) copy(action func(float64, int) float64) *SparseVector {
 	return vector
 }
 
+// Copy copies the vector
 func (s *SparseVector) Copy() Vector {
 	return s.copy(func(value float64, i int) float64 {
 		return value
 	})
 }
 
-// Scalar multiplication
+// Scalar multiplication of a vector by alpha
 func (s *SparseVector) Scalar(alpha float64) Vector {
 	return s.copy(func(value float64, i int) float64 {
 		return alpha * value
 	})
 }
 
-// Add addition of a Vector structure by another Vector structure.
-func (s *SparseVector) Add(m Vector) (Vector, error) {
-	if s.Length() != m.Length() {
-		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
-	}
-
-	return s.copy(func(value float64, i int) float64 {
-		f, _ := m.At(i)
-		return value + f
-	}), nil
-}
-
-// Multiply multiplies a Vector structure by another Vector structure.
+// Multiply multiplies a vector by another vector
 func (s *SparseVector) Multiply(m Vector) (Vector, error) {
 	if s.Length() != m.Length() {
 		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
@@ -143,7 +133,19 @@ func (s *SparseVector) Multiply(m Vector) (Vector, error) {
 	}), nil
 }
 
-// Subtract subtracts one Vector from another.
+// Add addition of a vector by another vector
+func (s *SparseVector) Add(m Vector) (Vector, error) {
+	if s.Length() != m.Length() {
+		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
+	}
+
+	return s.copy(func(value float64, i int) float64 {
+		f, _ := m.At(i)
+		return value + f
+	}), nil
+}
+
+// Subtract subtracts one vector from another vector
 func (s *SparseVector) Subtract(m Vector) (Vector, error) {
 	if s.Length() != m.Length() {
 		return nil, fmt.Errorf("Length miss match %+v %+v", s.Length(), m.Length())
@@ -155,7 +157,7 @@ func (s *SparseVector) Subtract(m Vector) (Vector, error) {
 	}), nil
 }
 
-// Negative the negative of a Vector.
+// Negative the negative of a vector
 func (s *SparseVector) Negative() Vector {
 	return s.copy(func(value float64, i int) float64 {
 		return -value
