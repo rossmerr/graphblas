@@ -186,3 +186,14 @@ func (s *DenseMatrix) Negative() Matrix {
 
 	return matrix
 }
+
+// Transpose swaps the rows and columns
+func (s *DenseMatrix) Transpose() Matrix {
+	matrix := newMatrix(s.Columns(), s.Rows(), func(row []float64, c int) {
+		for r := 0; r < s.Rows(); r++ {
+			row[r] = s.data[r][c]
+		}
+	})
+
+	return matrix
+}

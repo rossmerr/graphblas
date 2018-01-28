@@ -283,3 +283,29 @@ func (s *CSCMatrix) Negative() Matrix {
 		return -value
 	})
 }
+
+// Transpose swaps the rows and columns
+func (s *CSCMatrix) Transpose() Matrix {
+
+	matrix := newCSCMatrix(s.c, s.r, len(s.values))
+
+	s.iterator(func(r, c int, v float64) {
+		matrix.Set(c, r, v)
+	})
+
+	return matrix
+}
+
+func (s *CSCMatrix) iterator(i func(r, c int, v float64)) bool {
+
+	for c := 0; c < s.Columns(); c++ {
+		pointerStart := s.colStart[c]
+		pointerEnd := s.colStart[c+1]
+
+		for r := pointerStart; r < pointerEnd; r++ {
+			i(s.rows[r], c, s.values[r])
+		}
+	}
+
+	return false
+}

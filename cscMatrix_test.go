@@ -288,3 +288,39 @@ func TestCSCCopy(t *testing.T) {
 		t.Errorf("Expected 4 got %+v", v)
 	}
 }
+
+func TestCSCTranspose(t *testing.T) {
+	m := GraphBLAS.NewCSCMatrix(2, 3)
+	m.Set(0, 0, 6)
+	m.Set(0, 1, 4)
+	m.Set(0, 2, 24)
+	m.Set(1, 0, 1)
+	m.Set(1, 1, -9)
+	m.Set(1, 2, 8)
+
+	m3 := m.Transpose()
+
+	if v, _ := m3.At(0, 0); v != 6 {
+		t.Errorf("Expected 6 got %+v", v)
+	}
+
+	if v, _ := m3.At(0, 1); v != 1 {
+		t.Errorf("Expected 1 got %+v", v)
+	}
+
+	if v, _ := m3.At(1, 0); v != 4 {
+		t.Errorf("Expected 4 got %+v", v)
+	}
+
+	if v, _ := m3.At(1, 1); v != -9 {
+		t.Errorf("Expected -9 got %+v", v)
+	}
+
+	if v, _ := m3.At(2, 0); v != 24 {
+		t.Errorf("Expected 24 got %+v", v)
+	}
+
+	if v, _ := m3.At(2, 1); v != 8 {
+		t.Errorf("Expected 8 got %+v", v)
+	}
+}

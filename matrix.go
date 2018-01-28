@@ -20,4 +20,5 @@ type Matrix interface {
 	Add(m Matrix) (Matrix, error)
 	Subtract(m Matrix) (Matrix, error)
 	Negative() Matrix
+	Transpose() Matrix
 }

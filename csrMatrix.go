@@ -282,3 +282,29 @@ func (s *CSRMatrix) Negative() Matrix {
 		return -value
 	})
 }
+
+// Transpose swaps the rows and columns
+func (s *CSRMatrix) Transpose() Matrix {
+
+	matrix := newCSRMatrix(s.c, s.r, len(s.values))
+
+	s.iterator(func(r, c int, v float64) {
+		matrix.Set(c, r, v)
+	})
+
+	return matrix
+}
+
+func (s *CSRMatrix) iterator(i func(r, c int, v float64)) bool {
+
+	for r := 0; r < s.Rows(); r++ {
+		pointerStart := s.rowStart[r]
+		pointerEnd := s.rowStart[r+1]
+
+		for c := pointerStart; c < pointerEnd; c++ {
+			i(r, s.cols[c], s.values[c])
+		}
+	}
+
+	return false
+}
