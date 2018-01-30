@@ -45,27 +45,8 @@ func (s *CSCMatrix) Rows() int {
 	return s.r
 }
 
-// At returns the value of a matrix element at r-th, c-th
-func (s *CSCMatrix) At(r, c int) (float64, error) {
-	if r < 0 || r >= s.r {
-		return 0, fmt.Errorf("Row '%+v' is invalid", r)
-	}
-
-	if c < 0 || c >= s.c {
-		return 0, fmt.Errorf("Column '%+v' is invalid", c)
-	}
-
-	pointerStart, pointerEnd := s.rowIndex(r, c)
-
-	if pointerStart < pointerEnd && s.rows[pointerStart] == r {
-		return s.values[pointerStart], nil
-	}
-
-	return 0, nil
-}
-
-// Set sets the value at r-th, c-th of the matrix
-func (s *CSCMatrix) Set(r, c int, value float64) error {
+// Update does a At and Set on the matrix element at r-th, c-th
+func (s *CSCMatrix) Update(r, c int, f func(float64) float64) error {
 	if r < 0 || r >= s.r {
 		return fmt.Errorf("Row '%+v' is invalid", r)
 	}
@@ -77,16 +58,35 @@ func (s *CSCMatrix) Set(r, c int, value float64) error {
 	pointerStart, pointerEnd := s.rowIndex(r, c)
 
 	if pointerStart < pointerEnd && s.rows[pointerStart] == r {
+		value := f(s.values[pointerStart])
 		if value == 0 {
 			s.remove(pointerStart, c)
 		} else {
 			s.values[pointerStart] = value
 		}
 	} else {
-		s.insert(pointerStart, r, c, value)
+		s.insert(pointerStart, r, c, f(0))
 	}
 
 	return nil
+}
+
+// At returns the value of a matrix element at r-th, c-th
+func (s *CSCMatrix) At(r, c int) (float64, error) {
+	value := 0.0
+	err := s.Update(r, c, func(v float64) float64 {
+		value = v
+		return v
+	})
+
+	return value, err
+}
+
+// Set sets the value at r-th, c-th of the matrix
+func (s *CSCMatrix) Set(r, c int, value float64) error {
+	return s.Update(r, c, func(v float64) float64 {
+		return value
+	})
 }
 
 // ColumnsAt return the columns at c-th
@@ -239,18 +239,13 @@ func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
+	matrix := m.Copy()
 
-	for c := 0; c < s.Columns(); c++ {
-		sColumn, _ := s.ColumnsAt(c)
-
-		mColumn, _ := m.ColumnsAt(c)
-
-		for r := 0; r < s.Rows(); r++ {
-			s, _ := sColumn.At(r)
-			m, _ := mColumn.At(r)
-			matrix.Set(r, c, s+m)
-		}
+	iterator := s.forEach()
+	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+		matrix.Update(r, c, func(v float64) float64 {
+			return value + v
+		})
 	}
 
 	return matrix, nil
@@ -266,18 +261,13 @@ func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
+	matrix := m.Copy()
 
-	for c := 0; c < s.Columns(); c++ {
-		sColumn, _ := s.ColumnsAt(c)
-
-		mColumn, _ := m.ColumnsAt(c)
-
-		for r := 0; r < s.Rows(); r++ {
-			s, _ := sColumn.At(r)
-			m, _ := mColumn.At(r)
-			matrix.Set(r, c, s-m)
-		}
+	iterator := s.forEach()
+	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+		matrix.Update(r, c, func(v float64) float64 {
+			return value - v
+		})
 	}
 
 	return matrix, nil
@@ -294,22 +284,32 @@ func (s *CSCMatrix) Negative() Matrix {
 func (s *CSCMatrix) Transpose() Matrix {
 	matrix := newCSCMatrix(s.c, s.r, len(s.values))
 
-	s.iterator(func(r, c int, v float64) {
-		matrix.Set(c, r, v)
-	})
+	iterator := s.forEach()
+	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+		matrix.Set(c, r, value)
+	}
 
 	return matrix
 }
 
-func (s *CSCMatrix) iterator(i func(r, c int, v float64)) bool {
-	for c := 0; c < s.Columns(); c++ {
-		pointerStart := s.colStart[c]
-		pointerEnd := s.colStart[c+1]
-
-		for r := pointerStart; r < pointerEnd; r++ {
-			i(s.rows[r], c, s.values[r])
+func (s *CSCMatrix) forEach() Iterator {
+	c := 0
+	r := s.colStart[c]
+	rOld := r
+	pointerEnd := s.colStart[c+1]
+	return func() (int, int, float64, bool) {
+		if r == pointerEnd {
+			c++
+			if c == s.Columns() {
+				return 0, 0, 0.0, false
+			}
+			r = s.colStart[c]
+			pointerEnd = s.colStart[c+1]
 		}
-	}
 
-	return false
+		rOld = r
+		r++
+
+		return s.rows[rOld], c, s.values[rOld], true
+	}
 }
