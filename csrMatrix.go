@@ -294,9 +294,10 @@ func (s *CSRMatrix) Negative() Matrix {
 func (s *CSRMatrix) Transpose() Matrix {
 	matrix := newCSRMatrix(s.c, s.r, len(s.values))
 
-	s.iterator(func(r, c int, v float64) {
-		matrix.Set(c, r, v)
-	})
+	iterator := s.ForEach()
+	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+		matrix.Set(c, r, value)
+	}
 
 	return matrix
 }
@@ -312,4 +313,28 @@ func (s *CSRMatrix) iterator(i func(r, c int, v float64)) bool {
 	}
 
 	return false
+}
+
+type Iterator func() (int, int, float64, bool)
+
+func (s *CSRMatrix) ForEach() Iterator {
+	r := 0
+	c := s.rowStart[r]
+	cOld := c
+	pointerEnd := s.rowStart[r+1]
+	return func() (int, int, float64, bool) {
+		if c == pointerEnd {
+			r++
+			if r == s.Rows() {
+				return 0, 0, 0.0, false
+			}
+			c = s.rowStart[r]
+			pointerEnd = s.rowStart[r+1]
+		}
+
+		cOld = c
+		c++
+
+		return r, s.cols[cOld], s.values[cOld], true
+	}
 }
