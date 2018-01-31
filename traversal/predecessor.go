@@ -16,9 +16,9 @@ package algorithms
 // v are nodes from which v is reachable and are found by breadth-first search in g
 // func Predecessors(g GraphBLAS.Matrix, v GraphBLAS.Vector) {
 // 	x := v
-// 	xold := GraphBLAS.DenseVector{}
+// 	xold := &GraphBLAS.DenseVector{}
 // 	for x.NotEqual(xold) {
-// 		xold = x
+// 		xold := x
 // 		x = g.Multiply(x)
 // 	}
 // }
