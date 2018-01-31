@@ -241,12 +241,11 @@ func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 
 	matrix := m.Copy()
 
-	iterator := s.forEach()
-	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+	s.iterator(func(r, c int, value float64) {
 		matrix.Update(r, c, func(v float64) float64 {
 			return value + v
 		})
-	}
+	})
 
 	return matrix, nil
 }
@@ -263,12 +262,11 @@ func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 
 	matrix := m.Copy()
 
-	iterator := s.forEach()
-	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+	s.iterator(func(r, c int, value float64) {
 		matrix.Update(r, c, func(v float64) float64 {
 			return value - v
 		})
-	}
+	})
 
 	return matrix, nil
 }
@@ -284,32 +282,22 @@ func (s *CSCMatrix) Negative() Matrix {
 func (s *CSCMatrix) Transpose() Matrix {
 	matrix := newCSCMatrix(s.c, s.r, len(s.values))
 
-	iterator := s.forEach()
-	for r, c, value, ok := iterator(); ok; r, c, value, ok = iterator() {
+	s.iterator(func(r, c int, value float64) {
 		matrix.Set(c, r, value)
-	}
+	})
 
 	return matrix
 }
 
-func (s *CSCMatrix) forEach() Iterator {
-	c := 0
-	r := s.colStart[c]
-	rOld := r
-	pointerEnd := s.colStart[c+1]
-	return func() (int, int, float64, bool) {
-		if r == pointerEnd {
-			c++
-			if c == s.Columns() {
-				return 0, 0, 0.0, false
-			}
-			r = s.colStart[c]
-			pointerEnd = s.colStart[c+1]
+func (s *CSCMatrix) iterator(i func(r, c int, v float64)) bool {
+	for c := 0; c < s.Columns(); c++ {
+		pointerStart := s.colStart[c]
+		pointerEnd := s.colStart[c+1]
+
+		for r := pointerStart; r < pointerEnd; r++ {
+			i(s.rows[r], c, s.values[r])
 		}
-
-		rOld = r
-		r++
-
-		return s.rows[rOld], c, s.values[rOld], true
 	}
+
+	return false
 }
