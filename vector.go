@@ -17,6 +17,6 @@ type Vector interface {
 	Add(m Vector) (Vector, error)
 	Subtract(m Vector) (Vector, error)
 	Negative() Vector
-	//	Equal(m Vector) bool
-	//	NotEqual(m Vector) bool
+	Equal(m Vector) bool
+	NotEqual(m Vector) bool
 }

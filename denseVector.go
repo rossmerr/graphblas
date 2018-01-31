@@ -127,3 +127,25 @@ func (s *DenseVector) Negative() Vector {
 
 	return vector
 }
+
+// Equal the two vectors are equal
+func (s *DenseVector) Equal(m Vector) bool {
+	if m.Length() != s.Length() {
+		return false
+	}
+
+	for i := 0; i < s.Length(); i++ {
+		v1, _ := s.At(i)
+		v2, _ := m.At(i)
+		if v1 != v2 {
+			return false
+		}
+	}
+
+	return true
+}
+
+// NotEqual the two vectors are not equal
+func (s *DenseVector) NotEqual(m Vector) bool {
+	return !s.Equal(m)
+}
