@@ -216,3 +216,44 @@ func (s *DenseMatrix) Transpose() Matrix {
 
 	return matrix
 }
+
+// Iterator iterates through all non-zero elements, order is not guaranteed
+func (s *DenseMatrix) Iterator(i func(r, c int, v float64) bool) bool {
+	for c := 0; c < s.Columns(); c++ {
+		for r := 0; r < s.Rows(); r++ {
+			v, _ := s.At(r, c)
+			if v != 0.0 {
+				if i(r, c, v) == false {
+					return false
+				}
+			}
+		}
+	}
+
+	return true
+}
+
+// Equal the two matrices are equal
+func (s *DenseMatrix) Equal(m Matrix) bool {
+	if s.Columns() != m.Columns() {
+		return false
+	}
+
+	if s.Rows() != m.Rows() {
+		return false
+	}
+
+	return s.Iterator(func(r, c int, v float64) bool {
+		value, _ := m.At(r, c)
+		if v != value {
+
+			return false
+		}
+		return true
+	})
+}
+
+// NotEqual the two matrices are not equal
+func (s *DenseMatrix) NotEqual(m Matrix) bool {
+	return !s.Equal(m)
+}

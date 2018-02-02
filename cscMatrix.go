@@ -241,10 +241,11 @@ func (s *CSCMatrix) Add(m Matrix) (Matrix, error) {
 
 	matrix := m.Copy()
 
-	s.iterator(func(r, c int, value float64) {
+	s.Iterator(func(r, c int, value float64) bool {
 		matrix.Update(r, c, func(v float64) float64 {
 			return value + v
 		})
+		return true
 	})
 
 	return matrix, nil
@@ -262,10 +263,11 @@ func (s *CSCMatrix) Subtract(m Matrix) (Matrix, error) {
 
 	matrix := m.Copy()
 
-	s.iterator(func(r, c int, value float64) {
+	s.Iterator(func(r, c int, value float64) bool {
 		matrix.Update(r, c, func(v float64) float64 {
 			return value - v
 		})
+		return true
 	})
 
 	return matrix, nil
@@ -282,22 +284,51 @@ func (s *CSCMatrix) Negative() Matrix {
 func (s *CSCMatrix) Transpose() Matrix {
 	matrix := newCSCMatrix(s.c, s.r, len(s.values))
 
-	s.iterator(func(r, c int, value float64) {
+	s.Iterator(func(r, c int, value float64) bool {
 		matrix.Set(c, r, value)
+		return true
 	})
 
 	return matrix
 }
 
-func (s *CSCMatrix) iterator(i func(r, c int, v float64)) bool {
+// Iterator iterates through all non-zero elements, order is not guaranteed
+func (s *CSCMatrix) Iterator(i func(r, c int, v float64) bool) bool {
 	for c := 0; c < s.Columns(); c++ {
 		pointerStart := s.colStart[c]
 		pointerEnd := s.colStart[c+1]
 
 		for r := pointerStart; r < pointerEnd; r++ {
-			i(s.rows[r], c, s.values[r])
+			if i(s.rows[r], c, s.values[r]) == false {
+				return false
+			}
 		}
 	}
 
-	return false
+	return true
+}
+
+// Equal the two matrices are equal
+func (s *CSCMatrix) Equal(m Matrix) bool {
+	if s.Columns() != m.Columns() {
+		return false
+	}
+
+	if s.Rows() != m.Rows() {
+		return false
+	}
+
+	return s.Iterator(func(r, c int, v float64) bool {
+		value, _ := m.At(r, c)
+		if v != value {
+
+			return false
+		}
+		return true
+	})
+}
+
+// NotEqual the two matrices are not equal
+func (s *CSCMatrix) NotEqual(m Matrix) bool {
+	return !s.Equal(m)
 }

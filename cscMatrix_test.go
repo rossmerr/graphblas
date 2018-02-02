@@ -324,3 +324,47 @@ func TestCSCTranspose(t *testing.T) {
 		t.Errorf("Expected 8 got %+v", v)
 	}
 }
+
+func TestCSCEqual(t *testing.T) {
+	m := GraphBLAS.NewCSCMatrix(2, 3)
+	m.Set(0, 0, 1)
+	m.Set(0, 1, 2)
+	m.Set(0, 2, 3)
+	m.Set(1, 0, 4)
+	m.Set(1, 1, 5)
+	m.Set(1, 2, 6)
+
+	m2 := GraphBLAS.NewCSCMatrix(2, 3)
+	m2.Set(0, 0, 1)
+	m2.Set(0, 1, 2)
+	m2.Set(0, 2, 3)
+	m2.Set(1, 0, 4)
+	m2.Set(1, 1, 5)
+	m2.Set(1, 2, 6)
+
+	if m.Equal(m2) == false {
+		t.Error("Eqaul failed")
+	}
+}
+
+func TestCSCNotEqual(t *testing.T) {
+	m := GraphBLAS.NewCSCMatrix(2, 3)
+	m.Set(0, 0, 1)
+	m.Set(0, 1, 2)
+	m.Set(0, 2, 3)
+	m.Set(1, 0, 4)
+	m.Set(1, 1, 5)
+	m.Set(1, 2, 6)
+
+	m2 := GraphBLAS.NewCSCMatrix(2, 3)
+	m2.Set(0, 0, 6)
+	m2.Set(0, 1, 5)
+	m2.Set(0, 2, 4)
+	m2.Set(1, 0, 3)
+	m2.Set(1, 1, 2)
+	m2.Set(1, 2, 1)
+
+	if m.NotEqual(m2) == false {
+		t.Error("NotEqaul failed")
+	}
+}

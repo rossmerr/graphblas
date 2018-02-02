@@ -118,3 +118,31 @@ func TestSparseVectorCopy(t *testing.T) {
 		t.Errorf("Expected 4 got %+v", v)
 	}
 }
+
+func TestSparseVectorEqual(t *testing.T) {
+	m := GraphBLAS.NewSparseVector(2)
+	m.Set(0, 3)
+	m.Set(1, 8)
+
+	m2 := GraphBLAS.NewSparseVector(2)
+	m2.Set(0, 3)
+	m2.Set(1, 8)
+
+	if m.Equal(m2) == false {
+		t.Error("Equal failed")
+	}
+}
+
+func TestSparseVectorNotEqual(t *testing.T) {
+	m := GraphBLAS.NewSparseVector(2)
+	m.Set(0, 3)
+	m.Set(1, 8)
+
+	m2 := GraphBLAS.NewSparseVector(2)
+	m2.Set(0, 8)
+	m2.Set(1, 3)
+
+	if m.NotEqual(m2) == false {
+		t.Error("NotEqual failed")
+	}
+}

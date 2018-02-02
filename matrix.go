@@ -14,6 +14,7 @@ type Matrix interface {
 	RowsAt(r int) (Vector, error)
 	Columns() int
 	Rows() int
+	Iterator(i func(r, c int, v float64) bool) bool
 
 	Copy() Matrix
 	Scalar(alpha float64) Matrix
@@ -22,4 +23,6 @@ type Matrix interface {
 	Subtract(m Matrix) (Matrix, error)
 	Negative() Matrix
 	Transpose() Matrix
+	Equal(m Matrix) bool
+	NotEqual(m Matrix) bool
 }
