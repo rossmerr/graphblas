@@ -97,7 +97,7 @@ func (s *CSRMatrix) ColumnsAt(c int) (Vector, error) {
 
 	for r := range s.rowStart[:s.r] {
 		pointerStart, _ := s.columnIndex(r, c)
-		columns.Set(r, s.values[pointerStart])
+		columns.SetVec(r, s.values[pointerStart])
 
 	}
 
@@ -116,7 +116,7 @@ func (s *CSRMatrix) RowsAt(r int) (Vector, error) {
 
 	rows := NewSparseVector(s.c)
 	for i := start; i < end; i++ {
-		rows.Set(s.cols[i], s.values[i])
+		rows.SetVec(s.cols[i], s.values[i])
 	}
 
 	return rows, nil
@@ -216,8 +216,8 @@ func (s *CSRMatrix) Multiply(m Matrix) (Matrix, error) {
 
 			sum := 0.0
 			for l := 0; l < rows.Length(); l++ {
-				vC, _ := column.At(l)
-				vR, _ := rows.At(l)
+				vC, _ := column.AtVec(l)
+				vR, _ := rows.AtVec(l)
 				sum += vR * vC
 			}
 

@@ -28,8 +28,8 @@ func (s *SparseVector) Length() int {
 	return s.l
 }
 
-// At returns the value of a vector element at i-th
-func (s *SparseVector) At(i int) (float64, error) {
+// AtVec returns the value of a vector element at i-th
+func (s *SparseVector) AtVec(i int) (float64, error) {
 	if i < 0 || i >= s.Length() {
 		return 0, fmt.Errorf("Length '%+v' is invalid", i)
 	}
@@ -43,8 +43,8 @@ func (s *SparseVector) At(i int) (float64, error) {
 	return 0, nil
 }
 
-// Set sets the value at i-th of the vector
-func (s *SparseVector) Set(i int, value float64) error {
+// SetVec sets the value at i-th of the vector
+func (s *SparseVector) SetVec(i int, value float64) error {
 	if i < 0 || i >= s.Length() {
 		return fmt.Errorf("Length '%+v' is invalid", i)
 	}
@@ -133,7 +133,7 @@ func (s *SparseVector) Multiply(m Vector) (Vector, error) {
 	}
 
 	return s.copy(func(value float64, i int) float64 {
-		f, _ := m.At(i)
+		f, _ := m.AtVec(i)
 		return value * f
 	}), nil
 }
@@ -145,7 +145,7 @@ func (s *SparseVector) Add(m Vector) (Vector, error) {
 	}
 
 	return s.copy(func(value float64, i int) float64 {
-		f, _ := m.At(i)
+		f, _ := m.AtVec(i)
 		return value + f
 	}), nil
 }
@@ -157,7 +157,7 @@ func (s *SparseVector) Subtract(m Vector) (Vector, error) {
 	}
 
 	return s.copy(func(value float64, i int) float64 {
-		f, _ := m.At(i)
+		f, _ := m.AtVec(i)
 		return value - f
 	}), nil
 }
@@ -176,8 +176,8 @@ func (s *SparseVector) Equal(m Vector) bool {
 	}
 
 	for i := 0; i < s.Length(); i++ {
-		v1, _ := s.At(i)
-		v2, _ := m.At(i)
+		v1, _ := s.AtVec(i)
+		v2, _ := m.AtVec(i)
 		if v1 != v2 {
 			return false
 		}

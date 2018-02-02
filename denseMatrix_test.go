@@ -26,11 +26,11 @@ func TestMatrix_Columns(t *testing.T) {
 
 	col, _ := s.ColumnsAt(0)
 
-	if v, _ := col.At(0); v != 31 {
+	if v, _ := col.AtVec(0); v != 31 {
 		t.Errorf("Expected 31 got %+v", v)
 	}
 
-	if v, _ := col.At(2); v != 41 {
+	if v, _ := col.AtVec(2); v != 41 {
 		t.Errorf("Expected 41 got %+v", v)
 	}
 }
@@ -50,11 +50,11 @@ func TestMatrix_Row(t *testing.T) {
 
 	row, _ := s.RowsAt(0)
 
-	if v, _ := row.At(0); v != 31 {
+	if v, _ := row.AtVec(0); v != 31 {
 		t.Errorf("Expected 31 got %+v", v)
 	}
 
-	if v, _ := row.At(2); v != 53 {
+	if v, _ := row.AtVec(2); v != 53 {
 		t.Errorf("Expected 53 got %+v", v)
 	}
 }

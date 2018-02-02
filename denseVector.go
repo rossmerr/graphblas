@@ -23,8 +23,8 @@ func (s *DenseVector) Length() int {
 	return s.l
 }
 
-// At returns the value of a vector element at i-th
-func (s *DenseVector) At(i int) (float64, error) {
+// AtVec returns the value of a vector element at i-th
+func (s *DenseVector) AtVec(i int) (float64, error) {
 	if i < 0 || i >= s.Length() {
 		return 0, fmt.Errorf("Length '%+v' is invalid", i)
 	}
@@ -32,8 +32,8 @@ func (s *DenseVector) At(i int) (float64, error) {
 	return s.values[i], nil
 }
 
-// Set sets the value at i-th of the vector
-func (s *DenseVector) Set(i int, value float64) error {
+// SetVec sets the value at i-th of the vector
+func (s *DenseVector) SetVec(i int, value float64) error {
 	if i < 0 || i >= s.Length() {
 		return fmt.Errorf("Length '%+v' is invalid", i)
 	}
@@ -48,7 +48,7 @@ func (s *DenseVector) Copy() Vector {
 	vector := NewDenseVector(s.l)
 
 	for i, v := range s.values {
-		vector.Set(i, v)
+		vector.SetVec(i, v)
 	}
 
 	return vector
@@ -59,7 +59,7 @@ func (s *DenseVector) Scalar(alpha float64) Vector {
 	vector := NewDenseVector(s.l)
 
 	for i, v := range s.values {
-		vector.Set(i, alpha*v)
+		vector.SetVec(i, alpha*v)
 	}
 
 	return vector
@@ -74,9 +74,9 @@ func (s *DenseVector) Multiply(m Vector) (Vector, error) {
 	vector := NewDenseVector(s.l)
 
 	for i := 0; i < s.l; i++ {
-		v1, _ := s.At(i)
-		v2, _ := m.At(i)
-		vector.Set(i, v1*v2)
+		v1, _ := s.AtVec(i)
+		v2, _ := m.AtVec(i)
+		vector.SetVec(i, v1*v2)
 	}
 
 	return vector, nil
@@ -91,9 +91,9 @@ func (s *DenseVector) Add(m Vector) (Vector, error) {
 	vector := NewDenseVector(s.l)
 
 	for i := 0; i < s.l; i++ {
-		v1, _ := s.At(i)
-		v2, _ := m.At(i)
-		vector.Set(i, v1+v2)
+		v1, _ := s.AtVec(i)
+		v2, _ := m.AtVec(i)
+		vector.SetVec(i, v1+v2)
 	}
 
 	return vector, nil
@@ -108,9 +108,9 @@ func (s *DenseVector) Subtract(m Vector) (Vector, error) {
 	vector := NewDenseVector(s.l)
 
 	for i := 0; i < s.l; i++ {
-		v1, _ := s.At(i)
-		v2, _ := m.At(i)
-		vector.Set(i, v1-v2)
+		v1, _ := s.AtVec(i)
+		v2, _ := m.AtVec(i)
+		vector.SetVec(i, v1-v2)
 	}
 
 	return vector, nil
@@ -121,8 +121,8 @@ func (s *DenseVector) Negative() Vector {
 	vector := NewDenseVector(s.l)
 
 	for i := 0; i < s.l; i++ {
-		v1, _ := s.At(i)
-		vector.Set(i, -v1)
+		v1, _ := s.AtVec(i)
+		vector.SetVec(i, -v1)
 	}
 
 	return vector
@@ -135,8 +135,8 @@ func (s *DenseVector) Equal(m Vector) bool {
 	}
 
 	for i := 0; i < s.Length(); i++ {
-		v1, _ := s.At(i)
-		v2, _ := m.At(i)
+		v1, _ := s.AtVec(i)
+		v2, _ := m.AtVec(i)
 		if v1 != v2 {
 			return false
 		}

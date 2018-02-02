@@ -7,8 +7,8 @@ package GraphBLAS
 
 // Vector interface
 type Vector interface {
-	At(i int) (float64, error)
-	Set(i int, value float64) error
+	AtVec(i int) (float64, error)
+	SetVec(i int, value float64) error
 	Length() int
 
 	Copy() Vector

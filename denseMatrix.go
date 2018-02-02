@@ -93,7 +93,7 @@ func (s *DenseMatrix) ColumnsAt(c int) (Vector, error) {
 	columns := NewSparseVector(s.r)
 
 	for r := 0; r < s.r; r++ {
-		columns.Set(r, s.data[r][c])
+		columns.SetVec(r, s.data[r][c])
 	}
 
 	return columns, nil
@@ -107,7 +107,7 @@ func (s *DenseMatrix) RowsAt(r int) (Vector, error) {
 
 	rows := NewSparseVector(s.c)
 	for i := 0; i < s.c; i++ {
-		rows.Set(i, s.data[r][i])
+		rows.SetVec(i, s.data[r][i])
 	}
 
 	return rows, nil

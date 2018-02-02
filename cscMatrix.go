@@ -100,7 +100,7 @@ func (s *CSCMatrix) ColumnsAt(c int) (Vector, error) {
 	columns := NewSparseVector(s.r)
 
 	for i := start; i < end; i++ {
-		columns.Set(s.rows[i], s.values[i])
+		columns.SetVec(s.rows[i], s.values[i])
 	}
 
 	return columns, nil
@@ -116,7 +116,7 @@ func (s *CSCMatrix) RowsAt(r int) (Vector, error) {
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, _ := s.rowIndex(r, c)
-		rows.Set(c, s.values[pointerStart])
+		rows.SetVec(c, s.values[pointerStart])
 	}
 
 	return rows, nil
@@ -216,8 +216,8 @@ func (s *CSCMatrix) Multiply(m Matrix) (Matrix, error) {
 
 			sum := 0.0
 			for l := 0; l < rows.Length(); l++ {
-				vC, _ := column.At(l)
-				vR, _ := rows.At(l)
+				vC, _ := column.AtVec(l)
+				vR, _ := rows.AtVec(l)
 				sum += vR * vC
 			}
 
