@@ -1,3 +1,8 @@
+// Copyright (c) 2018 Ross Merrigan
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 package traversal
 
 import GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -17,8 +22,7 @@ import GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 // Predecessors of a node in a graph
 // v are nodes from which v is reachable and are found by breadth-first search in g
 func Predecessors(g GraphBLAS.Matrix, v GraphBLAS.Vector) {
-	var x GraphBLAS.Matrix
-	x = v
+	var x GraphBLAS.Matrix = v
 	var xold GraphBLAS.Matrix
 	for x.NotEqual(xold) {
 		xold = x

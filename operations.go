@@ -144,7 +144,6 @@ func equal(s, m Matrix) bool {
 	return s.Iterator(func(r, c int, v float64) bool {
 		value, _ := m.At(r, c)
 		if v != value {
-
 			return false
 		}
 		return true
