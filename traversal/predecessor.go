@@ -1,4 +1,6 @@
-package algorithms
+package traversal
+
+import GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 
 // function x = predecessor(G, v)
 // % Predecessors of a node in a graph
@@ -14,11 +16,12 @@ package algorithms
 
 // Predecessors of a node in a graph
 // v are nodes from which v is reachable and are found by breadth-first search in g
-// func Predecessors(g GraphBLAS.Matrix, v GraphBLAS.Vector) {
-// 	x := v
-// 	xold := &GraphBLAS.DenseVector{}
-// 	for x.NotEqual(xold) {
-// 		xold := x
-// 		x = g.Multiply(x)
-// 	}
-// }
+func Predecessors(g GraphBLAS.Matrix, v GraphBLAS.Vector) {
+	var x GraphBLAS.Matrix
+	x = v
+	var xold GraphBLAS.Matrix
+	for x.NotEqual(xold) {
+		xold = x
+		x, _ = g.Multiply(x)
+	}
+}
