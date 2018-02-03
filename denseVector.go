@@ -141,10 +141,21 @@ func (s *DenseVector) copy() *DenseVector {
 
 // Copy copies the vector
 func (s *DenseVector) Copy() Matrix {
+	return s.CopyArithmetic(func(value float64) float64 {
+		return value
+	})
+}
+
+// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
+func (s *DenseVector) CopyArithmetic(action func(float64) float64) Matrix {
 	vector := NewDenseVector(s.l)
 
 	for i, v := range s.values {
-		vector.SetVec(i, v)
+		if v != 0.0 {
+			vector.SetVec(i, action(v))
+		} else {
+			vector.SetVec(i, v)
+		}
 	}
 
 	return vector
@@ -152,127 +163,42 @@ func (s *DenseVector) Copy() Matrix {
 
 // Scalar multiplication of a vector by alpha
 func (s *DenseVector) Scalar(alpha float64) Matrix {
-	vector := NewDenseVector(s.l)
-
-	for i, v := range s.values {
-		vector.SetVec(i, alpha*v)
-	}
-
-	return vector
+	return scalar(s, alpha)
 }
 
 // Multiply multiplies a vector by another vector
 func (s *DenseVector) Multiply(m Matrix) (Matrix, error) {
-	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
-	}
-
-	matrix := newCSRMatrix(m.Rows(), s.Columns(), 0)
-
-	for r := 0; r < m.Rows(); r++ {
-		rows, _ := m.RowsAt(r)
-		for c := 0; c < s.Columns(); c++ {
-			column, _ := s.ColumnsAt(c)
-			sum := 0.0
-			for l := 0; l < rows.Length(); l++ {
-				vC, _ := column.AtVec(l)
-				vR, _ := rows.AtVec(l)
-				sum += vR * vC
-			}
-
-			matrix.Set(r, c, sum)
-		}
-	}
-	return matrix, nil
+	return multiplyVector(s, m)
 }
 
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) (Matrix, error) {
-	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
-	}
-
-	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			v, _ := m.At(r, c)
-			v2, _ := s.At(r, c)
-			row[c] = v2 + v
-		}
-	})
-
-	return matrix, nil
+	return add(s, m)
 }
 
 // Subtract subtracts one vector from another vector
 func (s *DenseVector) Subtract(m Matrix) (Matrix, error) {
-	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
-	}
-
-	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			v, _ := m.At(r, c)
-			v2, _ := s.At(r, c)
-			row[c] = v2 - v
-		}
-	})
-
-	return matrix, nil
+	return subtract(s, m)
 }
 
 // Negative the negative of a metrix
 func (s *DenseVector) Negative() Matrix {
-	vector := NewDenseVector(s.l)
-
-	for i := 0; i < s.l; i++ {
-		v1, _ := s.AtVec(i)
-		vector.SetVec(i, -v1)
-	}
-
-	return vector
+	return negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseVector) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), func(row []float64, c int) {
-		for r := 0; r < s.Rows(); r++ {
-			v, _ := s.At(r, c)
-			row[r] = v
-		}
-	})
+	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 
-	return matrix
+	return transpose(s, matrix)
 }
 
 // Equal the two vectors are equal
 func (s *DenseVector) Equal(m Matrix) bool {
-	if s.Columns() != m.Columns() {
-		return false
-	}
-
-	if s.Rows() != m.Rows() {
-		return false
-	}
-
-	return s.Iterator(func(r, c int, v float64) bool {
-		value, _ := m.At(r, c)
-		if v != value {
-
-			return false
-		}
-		return true
-	})
+	return equal(s, m)
 }
 
 // NotEqual the two vectors are not equal
 func (s *DenseVector) NotEqual(m Matrix) bool {
-	return !s.Equal(m)
+	return notEqual(s, m)
 }

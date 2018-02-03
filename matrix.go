@@ -17,6 +17,8 @@ type Matrix interface {
 	Iterator(i func(r, c int, v float64) bool) bool
 
 	Copy() Matrix
+	CopyArithmetic(i func(v float64) float64) Matrix
+
 	Scalar(alpha float64) Matrix
 	Multiply(m Matrix) (Matrix, error)
 	Add(m Matrix) (Matrix, error)

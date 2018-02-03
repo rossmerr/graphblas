@@ -115,102 +115,22 @@ func (s *DenseMatrix) RowsAt(r int) (Vector, error) {
 
 // Copy copies the matrix
 func (s *DenseMatrix) Copy() Matrix {
+	return s.CopyArithmetic(func(value float64) float64 {
+		return value
+	})
+}
+
+// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
+func (s *DenseMatrix) CopyArithmetic(action func(float64) float64) Matrix {
+	v := 0.0
 	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
-			row[c] = s.data[r][c]
-		}
-	})
-
-	return matrix
-}
-
-// Scalar multiplication of a matrix by alpha
-func (s *DenseMatrix) Scalar(alpha float64) Matrix {
-	matrix := newMatrix(s.Rows(), s.Columns(), func(rows []float64, r int) {
-		for c := 0; c < s.Columns(); c++ {
-			rows[c] = alpha * s.data[r][c]
-		}
-	})
-
-	return matrix
-}
-
-// Multiply multiplies a matrix by another matrix
-func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
-	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			total := 0.0
-			for k := 0; k < s.Columns(); k++ {
-				v, _ := m.At(k, c)
-				total += v * s.data[r][k]
+			v = s.data[r][c]
+			if v != 0.0 {
+				row[c] = action(v)
+			} else {
+				row[c] = v
 			}
-			row[c] = total
-		}
-	})
-
-	return matrix, nil
-}
-
-// Add addition of a matrix by another matrix
-func (s *DenseMatrix) Add(m Matrix) (Matrix, error) {
-	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
-	}
-
-	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			v, _ := m.At(r, c)
-			row[c] = s.data[r][c] + v
-		}
-	})
-
-	return matrix, nil
-}
-
-// Subtract subtracts one matrix from another matrix
-func (s *DenseMatrix) Subtract(m Matrix) (Matrix, error) {
-	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
-	}
-
-	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			v, _ := m.At(r, c)
-			row[c] = s.data[r][c] - v
-		}
-	})
-
-	return matrix, nil
-}
-
-// Negative the negative of a matrix
-func (s *DenseMatrix) Negative() Matrix {
-	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
-		for c := 0; c < s.Columns(); c++ {
-			row[c] = -s.data[r][c]
-		}
-	})
-
-	return matrix
-}
-
-// Transpose swaps the rows and columns
-func (s *DenseMatrix) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), func(row []float64, c int) {
-		for r := 0; r < s.Rows(); r++ {
-			row[r] = s.data[r][c]
 		}
 	})
 
@@ -233,27 +153,44 @@ func (s *DenseMatrix) Iterator(i func(r, c int, v float64) bool) bool {
 	return true
 }
 
+// Scalar multiplication of a matrix by alpha
+func (s *DenseMatrix) Scalar(alpha float64) Matrix {
+	return scalar(s, alpha)
+}
+
+// Multiply multiplies a matrix by another matrix
+func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
+	return multiply(s, m)
+}
+
+// Add addition of a matrix by another matrix
+func (s *DenseMatrix) Add(m Matrix) (Matrix, error) {
+	return add(s, m)
+}
+
+// Subtract subtracts one matrix from another matrix
+func (s *DenseMatrix) Subtract(m Matrix) (Matrix, error) {
+	return subtract(s, m)
+}
+
+// Negative the negative of a matrix
+func (s *DenseMatrix) Negative() Matrix {
+	return negative(s)
+}
+
+// Transpose swaps the rows and columns
+func (s *DenseMatrix) Transpose() Matrix {
+	matrix := newMatrix(s.Columns(), s.Rows(), nil)
+
+	return transpose(s, matrix)
+}
+
 // Equal the two matrices are equal
 func (s *DenseMatrix) Equal(m Matrix) bool {
-	if s.Columns() != m.Columns() {
-		return false
-	}
-
-	if s.Rows() != m.Rows() {
-		return false
-	}
-
-	return s.Iterator(func(r, c int, v float64) bool {
-		value, _ := m.At(r, c)
-		if v != value {
-
-			return false
-		}
-		return true
-	})
+	return equal(s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *DenseMatrix) NotEqual(m Matrix) bool {
-	return !s.Equal(m)
+	return notEqual(s, m)
 }

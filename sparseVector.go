@@ -118,7 +118,7 @@ func (s *SparseVector) ColumnsAt(c int) (Vector, error) {
 		return nil, fmt.Errorf("Column '%+v' is invalid", c)
 	}
 
-	return s.copy(func(value float64, i int) float64 {
+	return s.copy(func(value float64) float64 {
 		return value
 	}), nil
 }
@@ -189,11 +189,11 @@ func (s *SparseVector) index(i int) (int, int, error) {
 	return start, length, nil
 }
 
-func (s *SparseVector) copy(action func(float64, int) float64) *SparseVector {
+func (s *SparseVector) copy(action func(float64) float64) *SparseVector {
 	vector := newSparseVector(s.l, len(s.indices))
 
 	for i := range s.values {
-		vector.values[i] = action(s.values[i], i)
+		vector.values[i] = action(s.values[i])
 		vector.indices[i] = s.indices[i]
 	}
 
@@ -202,131 +202,55 @@ func (s *SparseVector) copy(action func(float64, int) float64) *SparseVector {
 
 // Copy copies the vector
 func (s *SparseVector) Copy() Matrix {
-	return s.copy(func(value float64, i int) float64 {
+	return s.copy(func(value float64) float64 {
 		return value
 	})
 }
 
+// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
+func (s *SparseVector) CopyArithmetic(action func(float64) float64) Matrix {
+	return s.copy(action)
+}
+
 // Scalar multiplication of a vector by alpha
 func (s *SparseVector) Scalar(alpha float64) Matrix {
-	return s.copy(func(value float64, i int) float64 {
+	return s.CopyArithmetic(func(value float64) float64 {
 		return alpha * value
 	})
 }
 
 // Multiply multiplies a vector by another vector
 func (s *SparseVector) Multiply(m Matrix) (Matrix, error) {
-	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
-	}
-
-	matrix := newCSRMatrix(m.Rows(), s.Columns(), 0)
-
-	for r := 0; r < m.Rows(); r++ {
-		rows, _ := m.RowsAt(r)
-		for c := 0; c < s.Columns(); c++ {
-			column, _ := s.ColumnsAt(c)
-			sum := 0.0
-			for l := 0; l < rows.Length(); l++ {
-				vC, _ := column.AtVec(l)
-				vR, _ := rows.AtVec(l)
-				sum += vR * vC
-			}
-
-			matrix.Set(r, c, sum)
-		}
-
-	}
-	return matrix, nil
+	return multiplyVector(s, m)
 }
 
 // Add addition of a metrix by another metrix
 func (s *SparseVector) Add(m Matrix) (Matrix, error) {
-	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
-	}
-
-	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			v, _ := m.At(r, c)
-			v2, _ := s.At(r, c)
-			row[c] = v2 + v
-		}
-	})
-
-	return matrix, nil
+	return add(s, m)
 }
 
 // Subtract subtracts one metrix from another metrix
 func (s *SparseVector) Subtract(m Matrix) (Matrix, error) {
-	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
-	}
-
-	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
-	}
-
-	matrix := newMatrix(s.Rows(), m.Columns(), func(row []float64, r int) {
-		for c := 0; c < m.Columns(); c++ {
-			v, _ := m.At(r, c)
-			v2, _ := s.At(r, c)
-			row[c] = v2 - v
-		}
-	})
-
-	return matrix, nil
+	return subtract(s, m)
 }
 
 // Negative the negative of a metrix
 func (s *SparseVector) Negative() Matrix {
-	vector := NewSparseVector(s.l)
-
-	for i := 0; i < s.l; i++ {
-		v1, _ := s.AtVec(i)
-		vector.SetVec(i, -v1)
-	}
-
-	return vector
+	return negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *SparseVector) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), func(row []float64, c int) {
-		for r := 0; r < s.Rows(); r++ {
-			v, _ := s.At(r, c)
-			row[r] = v
-		}
-	})
-
-	return matrix
+	matrix := newMatrix(s.Columns(), s.Rows(), nil)
+	return transpose(s, matrix)
 }
 
 // Equal the two metrics are equal
 func (s *SparseVector) Equal(m Matrix) bool {
-	if s.Columns() != m.Columns() {
-		return false
-	}
-
-	if s.Rows() != m.Rows() {
-		return false
-	}
-
-	return s.Iterator(func(r, c int, v float64) bool {
-		value, _ := m.At(r, c)
-		if v != value {
-
-			return false
-		}
-		return true
-	})
+	return equal(s, m)
 }
 
 // NotEqual the two metrix are not equal
 func (s *SparseVector) NotEqual(m Matrix) bool {
-	return !s.Equal(m)
+	return notEqual(s, m)
 }
