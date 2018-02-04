@@ -42,6 +42,7 @@ func (s *DenseMatrix) Rows() int {
 	return s.r
 }
 
+// Update does a At and Set on the matrix element at r-th, c-th
 func (s *DenseMatrix) Update(r, c int, f func(float64) float64) error {
 	if r < 0 || r >= s.Rows() {
 		return fmt.Errorf("Row '%+v' is invalid", r)
