@@ -72,10 +72,10 @@ func TestMatrix_RowAt(t *testing.T) {
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(2, 2),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(2, 2),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(2, 2),
+		},
 		{
 			name: "CSRMatrix",
 			s:    GraphBLAS.NewCSRMatrix(2, 2),

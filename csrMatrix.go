@@ -96,9 +96,10 @@ func (s *CSRMatrix) ColumnsAt(c int) (Vector, error) {
 	columns := NewSparseVector(s.r)
 
 	for r := range s.rowStart[:s.r] {
-		pointerStart, _ := s.columnIndex(r, c)
-		columns.SetVec(r, s.values[pointerStart])
-
+		pointerStart, pointerEnd := s.columnIndex(r, c)
+		if pointerStart < pointerEnd && s.cols[pointerStart] == c {
+			columns.SetVec(r, s.values[pointerStart])
+		}
 	}
 
 	return columns, nil

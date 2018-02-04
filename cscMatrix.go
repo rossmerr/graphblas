@@ -115,8 +115,10 @@ func (s *CSCMatrix) RowsAt(r int) (Vector, error) {
 	rows := NewSparseVector(s.c)
 
 	for c := range s.colStart[:s.c] {
-		pointerStart, _ := s.rowIndex(r, c)
-		rows.SetVec(c, s.values[pointerStart])
+		pointerStart, pointerEnd := s.rowIndex(r, c)
+		if pointerStart < pointerEnd && s.rows[pointerStart] == r {
+			rows.SetVec(c, s.values[pointerStart])
+		}
 	}
 
 	return rows, nil
