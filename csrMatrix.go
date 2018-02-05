@@ -18,16 +18,30 @@ type CSRMatrix struct {
 
 // NewCSRMatrix returns a GraphBLAS.CSRMatrix
 func NewCSRMatrix(r, c int) *CSRMatrix {
-	return newCSRMatrix(r, c, 0)
+	return newCSRMatrix(r, c, nil, 0)
 }
 
-func newCSRMatrix(r, c, l int) *CSRMatrix {
+// NewCSRMatrixFromArray returns a GraphBLAS.CSRMatrix
+func NewCSRMatrixFromArray(r, c int, data [][]float64) *CSRMatrix {
+	return newCSRMatrix(r, c, data, 0)
+}
+
+func newCSRMatrix(r, c int, data [][]float64, l int) *CSRMatrix {
+
 	s := &CSRMatrix{
 		r:        r,
 		c:        c,
 		values:   make([]float64, l),
 		cols:     make([]int, l),
 		rowStart: make([]int, r+1),
+	}
+
+	if data != nil {
+		for i := 0; i < r; i++ {
+			for k := 0; k < c; k++ {
+				s.Set(i, k, data[i][k])
+			}
+		}
 	}
 
 	return s
@@ -181,7 +195,7 @@ func (s *CSRMatrix) Copy() Matrix {
 
 // CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
 func (s *CSRMatrix) CopyArithmetic(action func(float64) float64) Matrix {
-	matrix := newCSRMatrix(s.r, s.c, len(s.values))
+	matrix := newCSRMatrix(s.r, s.c, nil, len(s.values))
 
 	for i := range s.values {
 		matrix.values[i] = action(s.values[i])
@@ -238,7 +252,7 @@ func (s *CSRMatrix) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *CSRMatrix) Transpose() Matrix {
-	matrix := newCSRMatrix(s.c, s.r, len(s.values))
+	matrix := newCSRMatrix(s.c, s.r, nil, len(s.values))
 
 	return transpose(s, matrix)
 }

@@ -13,7 +13,7 @@ func multiply(s, m Matrix) (Matrix, error) {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
-	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
+	matrix := newCSCMatrix(s.Rows(), m.Columns(), nil, 0)
 
 	for r := 0; r < s.Rows(); r++ {
 		rows, _ := s.RowsAt(r)
@@ -42,7 +42,7 @@ func multiplyVector(s, m Matrix) (Matrix, error) {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
-	matrix := newCSRMatrix(m.Rows(), s.Columns(), 0)
+	matrix := newCSRMatrix(m.Rows(), s.Columns(), nil, 0)
 
 	for r := 0; r < m.Rows(); r++ {
 		rows, _ := m.RowsAt(r)

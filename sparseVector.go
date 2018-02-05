@@ -241,7 +241,7 @@ func (s *SparseVector) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *SparseVector) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), nil)
+	matrix := newMatrix(s.Columns(), s.Rows(), nil, nil)
 	return transpose(s, matrix)
 }
 

@@ -188,7 +188,7 @@ func (s *DenseVector) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *DenseVector) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), nil)
+	matrix := newMatrix(s.Columns(), s.Rows(), nil, nil)
 
 	return transpose(s, matrix)
 }
