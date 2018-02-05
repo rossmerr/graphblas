@@ -22,7 +22,9 @@ func NewCSRMatrix(r, c int) *CSRMatrix {
 }
 
 // NewCSRMatrixFromArray returns a GraphBLAS.CSRMatrix
-func NewCSRMatrixFromArray(r, c int, data [][]float64) *CSRMatrix {
+func NewCSRMatrixFromArray(data [][]float64) *CSRMatrix {
+	r := len(data)
+	c := len(data[0])
 	return newCSRMatrix(r, c, data, 0)
 }
 

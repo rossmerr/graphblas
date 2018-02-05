@@ -569,7 +569,7 @@ func randmatmul(n int) GraphBLAS.Matrix {
 
 		}
 	}
-	a := GraphBLAS.NewDenseMatrixFromArray(n, n, aData)
+	a := GraphBLAS.NewDenseMatrixFromArray(aData)
 
 	bData := make([][]float64, n)
 	for r := range bData {
@@ -579,7 +579,7 @@ func randmatmul(n int) GraphBLAS.Matrix {
 
 		}
 	}
-	b := GraphBLAS.NewDenseMatrixFromArray(n, n, bData)
+	b := GraphBLAS.NewDenseMatrixFromArray(bData)
 
 	c, _ := a.Multiply(b)
 	return c

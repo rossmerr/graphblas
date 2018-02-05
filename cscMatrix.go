@@ -24,7 +24,9 @@ func NewCSCMatrix(r, c int) *CSCMatrix {
 }
 
 // NewCSCMatrixFromArray returns a GraphBLAS.CSCMatrix
-func NewCSCMatrixFromArray(r, c int, data [][]float64) *CSCMatrix {
+func NewCSCMatrixFromArray(data [][]float64) *CSCMatrix {
+	r := len(data)
+	c := len(data[0])
 	return newCSCMatrix(r, c, data, 0)
 }
 

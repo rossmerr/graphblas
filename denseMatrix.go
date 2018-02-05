@@ -20,7 +20,9 @@ func NewDenseMatrix(r, c int) *DenseMatrix {
 }
 
 // NewDenseMatrixFromArray returns a GraphBLAS.DenseMatrix
-func NewDenseMatrixFromArray(r, c int, data [][]float64) *DenseMatrix {
+func NewDenseMatrixFromArray(data [][]float64) *DenseMatrix {
+	r := len(data)
+	c := len(data[0])
 	return newMatrix(r, c, data, nil)
 }
 
