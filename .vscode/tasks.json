@@ -4,9 +4,17 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Go Benchmark",
+            "label": "Go Profile",
             "type": "shell",
-            "command": "go test -bench=. -count 5",
+            "command": "go test -o profiling\\profile -bench=. -count 5 -cpuprofile profiling\\cpu.prof -memprofile profiling\\mem.prof",
+            "problemMatcher": [
+                "$go"
+            ]
+        },
+        {
+            "label": "Go CPU Profiling",
+            "type": "shell",
+            "command": "go tool pprof profiling\\profile profiling\\cpu.prof",
             "problemMatcher": [
                 "$go"
             ]

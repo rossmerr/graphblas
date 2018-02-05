@@ -535,19 +535,6 @@ var benchmarks = []struct {
 			}
 		},
 	},
-	// {
-	// 	name: "matrix_statistics",
-	// 	fn: func(b *testing.B) {
-	// 		for i := 0; i < b.N; i++ {
-	// 			c1, c2 := randmatstat(1000)
-	// 			assert(b, 0.5 < c1)
-	// 			assert(b, c1 < 1.0)
-	// 			assert(b, 0.5 < c2)
-	// 			assert(b, c2 < 1.0)
-	// 		}
-	// 	},
-	// },
-
 	{
 		name: "matrix_multiply",
 		fn: func(b *testing.B) {
@@ -572,60 +559,6 @@ func pisum() float64 {
 	}
 	return sum
 }
-
-// func randmatstat(t int) (float64, float64) {
-// 	n := 5
-// 	v := make([]float64, t)
-// 	w := make([]float64, t)
-// 	ad := make([][]float64, n)
-// 	bd := make([][]float64, n)
-// 	cd := make([][]float64, n)
-// 	dd := make([][]float64, n)
-// 	P := GraphBLAS.NewDenseMatrix(n, 4*n)
-// 	Q := GraphBLAS.NewDenseMatrix(2*n, 2*n)
-// 	pTmp := GraphBLAS.NewDenseMatrix(4*n, 4*n)
-// 	qTmp := GraphBLAS.NewDenseMatrix(2*n, 2*n)
-// 	for i := 0; i < t; i++ {
-// 		for r := range ad {
-// 			ad[r] = make([]float64, n)
-// 			bd[r] = make([]float64, n)
-// 			cd[r] = make([]float64, n)
-// 			dd[r] = make([]float64, n)
-// 			for c := range ad[0] {
-// 				ad[r][c] = rand.NormFloat64()
-// 				bd[r][c] = rand.NormFloat64()
-// 				cd[r][c] = rand.NormFloat64()
-// 				dd[r][c] = rand.NormFloat64()
-// 			}
-
-// 		}
-// 		a := GraphBLAS.NewCSCMatrixFromArray(n, n, ad)
-// 		b := GraphBLAS.NewCSCMatrixFromArray(n, n, bd)
-// 		c := GraphBLAS.NewCSCMatrixFromArray(n, n, cd)
-// 		d := GraphBLAS.NewCSCMatrixFromArray(n, n, dd)
-// 		// P.Copy(a)
-// 		// P.View(0, n, n, n).(*mat64.Dense).Copy(b)
-// 		// P.View(0, 2*n, n, n).(*mat64.Dense).Copy(c)
-// 		// P.View(0, 3*n, n, n).(*mat64.Dense).Copy(d)
-
-// 		// Q.Copy(a)
-// 		// Q.View(0, n, n, n).(*mat64.Dense).Copy(b)
-// 		// Q.View(n, 0, n, n).(*mat64.Dense).Copy(c)
-// 		// Q.View(n, n, n, n).(*mat64.Dense).Copy(d)
-
-// 		// pTmp.Mul(P.T(), P)
-// 		// pTmp.Pow(pTmp, 4)
-
-// 		// qTmp.Mul(Q.T(), Q)
-// 		// qTmp.Pow(qTmp, 4)
-
-// 		// v[i] = mat64.Trace(pTmp)
-// 		// w[i] = mat64.Trace(qTmp)
-// 	}
-// 	mv, stdv := stat.MeanStdDev(v, nil)
-// 	mw, stdw := stat.MeanStdDev(v, nil)
-// 	return stdv / mv, stdw / mw
-// }
 
 func randmatmul(n int) GraphBLAS.Matrix {
 	aData := make([][]float64, n)
