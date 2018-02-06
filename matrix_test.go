@@ -6,8 +6,6 @@
 package GraphBLAS_test
 
 import (
-	"math"
-	"math/rand"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -514,73 +512,73 @@ func TestMatrix_Subtract(t *testing.T) {
 
 // ################################################################################################
 
-func BenchmarkMatrix(b *testing.B) {
-	for _, fn := range benchmarks {
-		fn.fn(b)
-	}
-}
+// func BenchmarkMatrix(b *testing.B) {
+// 	for _, fn := range benchmarks {
+// 		fn.fn(b)
+// 	}
+// }
 
-var benchmarks = []struct {
-	name string
-	fn   func(*testing.B)
-}{
+// var benchmarks = []struct {
+// 	name string
+// 	fn   func(*testing.B)
+// }{
 
-	{
-		name: "iteration_pi_sum",
-		fn: func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				if math.Abs(pisum()-1.644834071848065) >= 1e-6 {
-					b.Fatal("pi_sum out of range")
-				}
-			}
-		},
-	},
-	// {
-	// 	name: "matrix_multiply",
-	// 	fn: func(b *testing.B) {
-	// 		for i := 0; i < b.N; i++ {
-	// 			c := randmatmul(1000)
-	// 			v, _ := c.At(0, 0)
-	// 			if !(v >= 0) {
-	// 				b.Fatal("assert failed")
-	// 			}
-	// 		}
-	// 	},
-	// },
-}
+// 	{
+// 		name: "iteration_pi_sum",
+// 		fn: func(b *testing.B) {
+// 			for i := 0; i < b.N; i++ {
+// 				if math.Abs(pisum()-1.644834071848065) >= 1e-6 {
+// 					b.Fatal("pi_sum out of range")
+// 				}
+// 			}
+// 		},
+// 	},
+// 	{
+// 		name: "matrix_multiply",
+// 		fn: func(b *testing.B) {
+// 			for i := 0; i < b.N; i++ {
+// 				c := randmatmul(1)
+// 				v, _ := c.At(0, 0)
+// 				if !(v >= 0) {
+// 					b.Fatal("assert failed")
+// 				}
+// 			}
+// 		},
+// 	},
+// }
 
-func pisum() float64 {
-	var sum float64
-	for i := 0; i < 500; i++ {
-		sum = 0.0
-		for k := 1.0; k <= 10000; k += 1 {
-			sum += 1.0 / (k * k)
-		}
-	}
-	return sum
-}
+// func pisum() float64 {
+// 	var sum float64
+// 	for i := 0; i < 500; i++ {
+// 		sum = 0.0
+// 		for k := 1.0; k <= 10000; k += 1 {
+// 			sum += 1.0 / (k * k)
+// 		}
+// 	}
+// 	return sum
+// }
 
-func randmatmul(n int) GraphBLAS.Matrix {
-	aData := make([][]float64, n)
-	for r := range aData {
-		aData[r] = make([]float64, n)
-		for c := range aData {
-			aData[r][c] = rand.Float64()
+// func randmatmul(n int) GraphBLAS.Matrix {
+// 	aData := make([][]float64, n)
+// 	for r := range aData {
+// 		aData[r] = make([]float64, n)
+// 		for c := range aData {
+// 			aData[r][c] = rand.Float64()
 
-		}
-	}
-	a := GraphBLAS.NewDenseMatrixFromArray(aData)
+// 		}
+// 	}
+// 	a := GraphBLAS.NewDenseMatrixFromArray(aData)
 
-	bData := make([][]float64, n)
-	for r := range bData {
-		bData[r] = make([]float64, n)
-		for c := range bData {
-			bData[r][c] = rand.Float64()
+// 	bData := make([][]float64, n)
+// 	for r := range bData {
+// 		bData[r] = make([]float64, n)
+// 		for c := range bData {
+// 			bData[r][c] = rand.Float64()
 
-		}
-	}
-	b := GraphBLAS.NewDenseMatrixFromArray(bData)
+// 		}
+// 	}
+// 	b := GraphBLAS.NewDenseMatrixFromArray(bData)
 
-	c, _ := a.Multiply(b)
-	return c
-}
+// 	c, _ := a.Multiply(b)
+// 	return c
+// }

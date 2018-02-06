@@ -14,7 +14,7 @@
         {
             "label": "Go CPU Profiling",
             "type": "shell",
-            "command": "go tool pprof --svg profiling\\profile.test profiling\\cpu.prof > profiling\\cpu.svg",
+            "command": "go tool pprof benchmark.go --svg profiling\\profile.test profiling\\cpu.prof > profiling\\cpu.svg",
             "problemMatcher": [
                 "$go"
             ]
