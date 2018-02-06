@@ -234,7 +234,13 @@ func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 
 // Multiply multiplies a matrix by another matrix
 func (s *CSCMatrix) Multiply(m Matrix) (Matrix, error) {
-	return multiply(s, m)
+	if s.Rows() != m.Columns() {
+		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
+	}
+
+	matrix := newCSCMatrix(s.Rows(), m.Columns(), nil, 0)
+
+	return multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix

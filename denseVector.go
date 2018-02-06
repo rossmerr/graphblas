@@ -168,7 +168,13 @@ func (s *DenseVector) Scalar(alpha float64) Matrix {
 
 // Multiply multiplies a vector by another vector
 func (s *DenseVector) Multiply(m Matrix) (Matrix, error) {
-	return multiplyVector(s, m)
+	if s.Rows() != m.Columns() {
+		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
+	}
+
+	matrix := newMatrix(m.Rows(), s.Columns(), nil, nil)
+
+	return multiplyVector(s, m, matrix)
 }
 
 // Add addition of a vector by another vector

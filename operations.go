@@ -8,12 +8,10 @@ package GraphBLAS
 import "fmt"
 
 // Multiply multiplies a matrix by another matrix
-func multiply(s, m Matrix) (Matrix, error) {
+func multiply(s, m, matrix Matrix) (Matrix, error) {
 	if s.Rows() != m.Columns() {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
-
-	matrix := newCSCMatrix(s.Rows(), m.Columns(), nil, 0)
 
 	for r := 0; r < s.Rows(); r++ {
 		rows, _ := s.RowsAt(r)
@@ -37,12 +35,10 @@ func multiply(s, m Matrix) (Matrix, error) {
 }
 
 // multiplyVector multiplies a vector by another matrix
-func multiplyVector(s, m Matrix) (Matrix, error) {
+func multiplyVector(s, m, matrix Matrix) (Matrix, error) {
 	if s.Rows() != m.Columns() {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
-
-	matrix := newCSRMatrix(m.Rows(), s.Columns(), nil, 0)
 
 	for r := 0; r < m.Rows(); r++ {
 		rows, _ := m.RowsAt(r)
