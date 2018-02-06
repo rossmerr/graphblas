@@ -18,11 +18,6 @@ func NewDenseVector(l int) *DenseVector {
 	return &DenseVector{l: l, values: make([]float64, l)}
 }
 
-// Length of the vector
-func (s *DenseVector) Length() int {
-	return s.l
-}
-
 // AtVec returns the value of a vector element at i-th
 func (s *DenseVector) AtVec(i int) (float64, error) {
 	if i < 0 || i >= s.Length() {
@@ -41,6 +36,11 @@ func (s *DenseVector) SetVec(i int, value float64) error {
 	s.values[i] = value
 
 	return nil
+}
+
+// Length of the vector
+func (s *DenseVector) Length() int {
+	return s.l
 }
 
 // Columns the number of columns of the vector

@@ -535,18 +535,18 @@ var benchmarks = []struct {
 			}
 		},
 	},
-	{
-		name: "matrix_multiply",
-		fn: func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				c := randmatmul(1000)
-				v, _ := c.At(0, 0)
-				if !(v >= 0) {
-					b.Fatal("assert failed")
-				}
-			}
-		},
-	},
+	// {
+	// 	name: "matrix_multiply",
+	// 	fn: func(b *testing.B) {
+	// 		for i := 0; i < b.N; i++ {
+	// 			c := randmatmul(1000)
+	// 			v, _ := c.At(0, 0)
+	// 			if !(v >= 0) {
+	// 				b.Fatal("assert failed")
+	// 			}
+	// 		}
+	// 	},
+	// },
 }
 
 func pisum() float64 {

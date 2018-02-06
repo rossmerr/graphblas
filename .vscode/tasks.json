@@ -6,7 +6,7 @@
         {
             "label": "Go Profile",
             "type": "shell",
-            "command": "go test -o profiling\\profile -bench=. -count 5 -cpuprofile profiling\\cpu.prof -memprofile profiling\\mem.prof",
+            "command": "go test -o profiling\\profile.test -bench=BenchmarkMatrix -cpuprofile profiling\\cpu.prof -memprofile profiling\\mem.prof",
             "problemMatcher": [
                 "$go"
             ]
@@ -14,7 +14,7 @@
         {
             "label": "Go CPU Profiling",
             "type": "shell",
-            "command": "go tool pprof profiling\\profile profiling\\cpu.prof",
+            "command": "go tool pprof --svg profiling\\profile.test profiling\\cpu.prof > profiling\\cpu.svg",
             "problemMatcher": [
                 "$go"
             ]
