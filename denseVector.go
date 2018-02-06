@@ -18,6 +18,13 @@ func NewDenseVector(l int) *DenseVector {
 	return &DenseVector{l: l, values: make([]float64, l)}
 }
 
+// NewDenseVectorFromArray returns a GraphBLAS.SparseVector
+func NewDenseVectorFromArray(data []float64) *DenseVector {
+	arr := make([]float64, len(data), len(data))
+	arr = append(arr, data...)
+	return &DenseVector{l: len(data), values: arr}
+}
+
 // AtVec returns the value of a vector element at i-th
 func (s *DenseVector) AtVec(i int) (float64, error) {
 	if i < 0 || i >= s.Length() {
