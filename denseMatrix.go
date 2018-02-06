@@ -16,27 +16,23 @@ type DenseMatrix struct {
 
 // NewDenseMatrix returns a GraphBLAS.DenseMatrix
 func NewDenseMatrix(r, c int) *DenseMatrix {
-	return newMatrix(r, c, nil, nil)
+	return newMatrix(r, c, nil)
 }
 
 // NewDenseMatrixFromArray returns a GraphBLAS.DenseMatrix
 func NewDenseMatrixFromArray(data [][]float64) *DenseMatrix {
 	r := len(data)
 	c := len(data[0])
-	return newMatrix(r, c, data, nil)
+	s := &DenseMatrix{data: data, r: r, c: c}
+
+	return s
 }
 
-func newMatrix(r, c int, data [][]float64, initialise func([]float64, int)) *DenseMatrix {
+func newMatrix(r, c int, initialise func([]float64, int)) *DenseMatrix {
 	s := &DenseMatrix{data: make([][]float64, r), r: r, c: c}
 
 	for i := 0; i < r; i++ {
 		s.data[i] = make([]float64, c)
-
-		if data != nil {
-			for k := 0; k < c; k++ {
-				s.data[i][k] = data[i][k]
-			}
-		}
 
 		if initialise != nil {
 			initialise(s.data[i], i)
@@ -138,7 +134,7 @@ func (s *DenseMatrix) Copy() Matrix {
 // CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
 func (s *DenseMatrix) CopyArithmetic(action func(float64) float64) Matrix {
 	v := 0.0
-	matrix := newMatrix(s.Rows(), s.Columns(), nil, func(row []float64, r int) {
+	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
 			v = s.data[r][c]
 			if v != 0.0 {
@@ -179,7 +175,7 @@ func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
-	matrix := newMatrix(s.Rows(), m.Columns(), nil, nil)
+	matrix := newMatrix(s.Rows(), m.Columns(), nil)
 
 	return multiply(s, m, matrix)
 }
@@ -201,7 +197,7 @@ func (s *DenseMatrix) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *DenseMatrix) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), nil, nil)
+	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 
 	return transpose(s, matrix)
 }

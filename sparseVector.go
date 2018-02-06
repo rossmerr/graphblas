@@ -225,7 +225,7 @@ func (s *SparseVector) Multiply(m Matrix) (Matrix, error) {
 		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
-	matrix := newMatrix(m.Rows(), s.Columns(), nil, nil)
+	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
 	return multiplyVector(s, m, matrix)
 }
@@ -247,7 +247,7 @@ func (s *SparseVector) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *SparseVector) Transpose() Matrix {
-	matrix := newMatrix(s.Columns(), s.Rows(), nil, nil)
+	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 	return transpose(s, matrix)
 }
 
