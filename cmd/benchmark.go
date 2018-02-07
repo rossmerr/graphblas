@@ -79,7 +79,7 @@ var benchmarks = []struct {
 		fn: func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				c := randmatmul(1)
-				v, _ := c.At(0, 0)
+				v := c.At(0, 0)
 				if !(v >= 0) {
 					b.Fatal("assert failed")
 				}
@@ -120,6 +120,6 @@ func randmatmul(n int) GraphBLAS.Matrix {
 	}
 	b := GraphBLAS.NewDenseMatrixFromArray(bData)
 
-	c, _ := a.Multiply(b)
+	c := a.Multiply(b)
 	return c
 }

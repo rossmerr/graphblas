@@ -5,24 +5,26 @@
 
 package GraphBLAS
 
-import "fmt"
+import (
+	"log"
+)
 
 // Multiply multiplies a matrix by another matrix
-func multiply(s, m, matrix Matrix) (Matrix, error) {
+func multiply(s, m, matrix Matrix) Matrix {
 	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
 	for r := 0; r < s.Rows(); r++ {
-		rows, _ := s.RowsAt(r)
+		rows := s.RowsAt(r)
 
 		for c := 0; c < m.Columns(); c++ {
-			column, _ := m.ColumnsAt(c)
+			column := m.ColumnsAt(c)
 
 			sum := 0.0
 			for l := 0; l < rows.Length(); l++ {
-				vC, _ := column.AtVec(l)
-				vR, _ := rows.AtVec(l)
+				vC := column.AtVec(l)
+				vR := rows.AtVec(l)
 				sum += vR * vC
 			}
 
@@ -31,23 +33,23 @@ func multiply(s, m, matrix Matrix) (Matrix, error) {
 
 	}
 
-	return matrix, nil
+	return matrix
 }
 
 // multiplyVector multiplies a vector by another matrix
-func multiplyVector(s, m, matrix Matrix) (Matrix, error) {
+func multiplyVector(s, m, matrix Matrix) Matrix {
 	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
 
 	for r := 0; r < m.Rows(); r++ {
-		rows, _ := m.RowsAt(r)
+		rows := m.RowsAt(r)
 		for c := 0; c < s.Columns(); c++ {
-			column, _ := s.ColumnsAt(c)
+			column := s.ColumnsAt(c)
 			sum := 0.0
 			for l := 0; l < rows.Length(); l++ {
-				vC, _ := column.AtVec(l)
-				vR, _ := rows.AtVec(l)
+				vC := column.AtVec(l)
+				vR := rows.AtVec(l)
 				sum += vR * vC
 			}
 
@@ -55,17 +57,17 @@ func multiplyVector(s, m, matrix Matrix) (Matrix, error) {
 		}
 
 	}
-	return matrix, nil
+	return matrix
 }
 
 // Add addition of a matrix by another matrix
-func add(s, m Matrix) (Matrix, error) {
+func add(s, m Matrix) Matrix {
 	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
+		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
 
 	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
+		log.Panicf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
 	matrix := m.Copy()
@@ -77,17 +79,17 @@ func add(s, m Matrix) (Matrix, error) {
 		return true
 	})
 
-	return matrix, nil
+	return matrix
 }
 
 // Subtract subtracts one matrix from another matrix
-func subtract(s, m Matrix) (Matrix, error) {
+func subtract(s, m Matrix) Matrix {
 	if s.Columns() != m.Columns() {
-		return nil, fmt.Errorf("Column miss match %+v, %+v", s.Columns(), m.Columns())
+		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
 
 	if s.Rows() != m.Rows() {
-		return nil, fmt.Errorf("Row miss match %+v, %+v", s.Rows(), m.Rows())
+		log.Panicf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
 	matrix := m.Copy()
@@ -99,7 +101,7 @@ func subtract(s, m Matrix) (Matrix, error) {
 		return true
 	})
 
-	return matrix, nil
+	return matrix
 }
 
 // Negative the negative of a matrix
@@ -138,7 +140,7 @@ func equal(s, m Matrix) bool {
 	}
 
 	return s.Iterator(func(r, c int, v float64) bool {
-		value, _ := m.At(r, c)
+		value := m.At(r, c)
 		if v != value {
 			return false
 		}

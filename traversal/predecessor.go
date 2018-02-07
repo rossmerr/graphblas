@@ -26,6 +26,6 @@ func Predecessors(g GraphBLAS.Matrix, v GraphBLAS.Vector) {
 	var xold GraphBLAS.Matrix
 	for x.NotEqual(xold) {
 		xold = x
-		x, _ = g.Multiply(x)
+		x = g.Multiply(x)
 	}
 }

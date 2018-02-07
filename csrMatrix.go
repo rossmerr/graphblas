@@ -5,7 +5,9 @@
 
 package GraphBLAS
 
-import "fmt"
+import (
+	"log"
+)
 
 // CSRMatrix compressed storage by rows (CSR)
 type CSRMatrix struct {
@@ -60,13 +62,13 @@ func (s *CSRMatrix) Rows() int {
 }
 
 // Update does a At and Set on the matrix element at r-th, c-th
-func (s *CSRMatrix) Update(r, c int, f func(float64) float64) error {
+func (s *CSRMatrix) Update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.r {
-		return fmt.Errorf("Row '%+v' is invalid", r)
+		log.Panicf("Row '%+v' is invalid", r)
 	}
 
 	if c < 0 || c >= s.c {
-		return fmt.Errorf("Column '%+v' is invalid", c)
+		log.Panicf("Column '%+v' is invalid", c)
 	}
 
 	pointerStart, pointerEnd := s.columnIndex(r, c)
@@ -81,32 +83,29 @@ func (s *CSRMatrix) Update(r, c int, f func(float64) float64) error {
 	} else {
 		s.insert(pointerStart, r, c, f(0))
 	}
-
-	return nil
 }
 
 // At returns the value of a matrix element at r-th, c-th
-func (s *CSRMatrix) At(r, c int) (float64, error) {
-	value := 0.0
-	err := s.Update(r, c, func(v float64) float64 {
+func (s *CSRMatrix) At(r, c int) (value float64) {
+	s.Update(r, c, func(v float64) float64 {
 		value = v
 		return v
 	})
 
-	return value, err
+	return
 }
 
 // Set sets the value at r-th, c-th of the matrix
-func (s *CSRMatrix) Set(r, c int, value float64) error {
-	return s.Update(r, c, func(v float64) float64 {
+func (s *CSRMatrix) Set(r, c int, value float64) {
+	s.Update(r, c, func(v float64) float64 {
 		return value
 	})
 }
 
 // ColumnsAt return the columns at c-th
-func (s *CSRMatrix) ColumnsAt(c int) (Vector, error) {
+func (s *CSRMatrix) ColumnsAt(c int) Vector {
 	if c < 0 || c >= s.c {
-		return nil, fmt.Errorf("Column '%+v' is invalid", c)
+		log.Panicf("Column '%+v' is invalid", c)
 	}
 
 	columns := NewSparseVector(s.r)
@@ -118,14 +117,14 @@ func (s *CSRMatrix) ColumnsAt(c int) (Vector, error) {
 		}
 	}
 
-	return columns, nil
+	return columns
 
 }
 
 // RowsAt return the rows at r-th
-func (s *CSRMatrix) RowsAt(r int) (Vector, error) {
+func (s *CSRMatrix) RowsAt(r int) Vector {
 	if r < 0 || r >= s.r {
-		return nil, fmt.Errorf("Row '%+v' is invalid", r)
+		log.Panicf("Row '%+v' is invalid", r)
 	}
 
 	start := s.rowStart[r]
@@ -136,7 +135,7 @@ func (s *CSRMatrix) RowsAt(r int) (Vector, error) {
 		rows.SetVec(s.cols[i], s.values[i])
 	}
 
-	return rows, nil
+	return rows
 }
 
 func (s *CSRMatrix) insert(pointer, r, c int, value float64) {
@@ -233,10 +232,7 @@ func (s *CSRMatrix) Scalar(alpha float64) Matrix {
 }
 
 // Multiply multiplies a matrix by another matrix
-func (s *CSRMatrix) Multiply(m Matrix) (Matrix, error) {
-	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
-	}
+func (s *CSRMatrix) Multiply(m Matrix) Matrix {
 
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), nil, 0)
 
@@ -244,12 +240,12 @@ func (s *CSRMatrix) Multiply(m Matrix) (Matrix, error) {
 }
 
 // Add addition of a matrix by another matrix
-func (s *CSRMatrix) Add(m Matrix) (Matrix, error) {
+func (s *CSRMatrix) Add(m Matrix) Matrix {
 	return add(s, m)
 }
 
 // Subtract subtracts one matrix from another matrix
-func (s *CSRMatrix) Subtract(m Matrix) (Matrix, error) {
+func (s *CSRMatrix) Subtract(m Matrix) Matrix {
 	return subtract(s, m)
 }
 

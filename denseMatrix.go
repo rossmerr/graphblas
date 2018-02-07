@@ -5,7 +5,9 @@
 
 package GraphBLAS
 
-import "fmt"
+import (
+	"log"
+)
 
 // DenseMatrix a dense matrix
 type DenseMatrix struct {
@@ -53,52 +55,50 @@ func (s *DenseMatrix) Rows() int {
 }
 
 // Update does a At and Set on the matrix element at r-th, c-th
-func (s *DenseMatrix) Update(r, c int, f func(float64) float64) error {
+func (s *DenseMatrix) Update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.Rows() {
-		return fmt.Errorf("Row '%+v' is invalid", r)
+		log.Panicf("Row '%+v' is invalid", r)
 	}
 
 	if c < 0 || c >= s.Columns() {
-		return fmt.Errorf("Column '%+v' is invalid", c)
+		log.Panicf("Column '%+v' is invalid", c)
 	}
 
 	s.data[r][c] = f(s.data[r][c])
 
-	return nil
+	return
 }
 
 // At returns the value of a matrix element at r-th, c-th
-func (s *DenseMatrix) At(r, c int) (float64, error) {
+func (s *DenseMatrix) At(r, c int) float64 {
 	if r < 0 || r >= s.Rows() {
-		return 0, fmt.Errorf("Row '%+v' is invalid", r)
+		log.Panicf("Row '%+v' is invalid", r)
 	}
 
 	if c < 0 || c >= s.Columns() {
-		return 0, fmt.Errorf("Column '%+v' is invalid", c)
+		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	return s.data[r][c], nil
+	return s.data[r][c]
 }
 
 // Set sets the value at r-th, c-th of the matrix
-func (s *DenseMatrix) Set(r, c int, value float64) error {
+func (s *DenseMatrix) Set(r, c int, value float64) {
 	if r < 0 || r >= s.Rows() {
-		return fmt.Errorf("Row '%+v' is invalid", r)
+		log.Panicf("Row '%+v' is invalid", r)
 	}
 
 	if c < 0 || c >= s.Columns() {
-		return fmt.Errorf("Column '%+v' is invalid", c)
+		log.Panicf("Column '%+v' is invalid", c)
 	}
 
 	s.data[r][c] = value
-
-	return nil
 }
 
 // ColumnsAt return the columns at c-th
-func (s *DenseMatrix) ColumnsAt(c int) (Vector, error) {
+func (s *DenseMatrix) ColumnsAt(c int) Vector {
 	if c < 0 || c >= s.Columns() {
-		return nil, fmt.Errorf("Column '%+v' is invalid", c)
+		log.Panicf("Column '%+v' is invalid", c)
 	}
 
 	columns := NewSparseVector(s.r)
@@ -107,13 +107,13 @@ func (s *DenseMatrix) ColumnsAt(c int) (Vector, error) {
 		columns.SetVec(r, s.data[r][c])
 	}
 
-	return columns, nil
+	return columns
 }
 
 // RowsAt return the rows at r-th
-func (s *DenseMatrix) RowsAt(r int) (Vector, error) {
+func (s *DenseMatrix) RowsAt(r int) Vector {
 	if r < 0 || r >= s.Rows() {
-		return nil, fmt.Errorf("Row '%+v' is invalid", r)
+		log.Panicf("Row '%+v' is invalid", r)
 	}
 
 	rows := NewSparseVector(s.c)
@@ -121,7 +121,7 @@ func (s *DenseMatrix) RowsAt(r int) (Vector, error) {
 		rows.SetVec(i, s.data[r][i])
 	}
 
-	return rows, nil
+	return rows
 }
 
 // Copy copies the matrix
@@ -152,7 +152,7 @@ func (s *DenseMatrix) CopyArithmetic(action func(float64) float64) Matrix {
 func (s *DenseMatrix) Iterator(i func(r, c int, v float64) bool) bool {
 	for c := 0; c < s.Columns(); c++ {
 		for r := 0; r < s.Rows(); r++ {
-			v, _ := s.At(r, c)
+			v := s.At(r, c)
 			if v != 0.0 {
 				if i(r, c, v) == false {
 					return false
@@ -170,23 +170,19 @@ func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 }
 
 // Multiply multiplies a matrix by another matrix
-func (s *DenseMatrix) Multiply(m Matrix) (Matrix, error) {
-	if s.Rows() != m.Columns() {
-		return nil, fmt.Errorf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
-	}
-
+func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(s.Rows(), m.Columns(), nil)
 
 	return multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix
-func (s *DenseMatrix) Add(m Matrix) (Matrix, error) {
+func (s *DenseMatrix) Add(m Matrix) Matrix {
 	return add(s, m)
 }
 
 // Subtract subtracts one matrix from another matrix
-func (s *DenseMatrix) Subtract(m Matrix) (Matrix, error) {
+func (s *DenseMatrix) Subtract(m Matrix) Matrix {
 	return subtract(s, m)
 }
 

@@ -8,19 +8,19 @@ package GraphBLAS
 // Matrix interface
 type Matrix interface {
 	// At returns the value of a matrix element at r-th, c-th
-	At(r, c int) (float64, error)
+	At(r, c int) float64
 
 	// Set sets the value at r-th, c-th of the matrix
-	Set(r, c int, value float64) error
+	Set(r, c int, value float64)
 
 	// Update does a At and Set on the matrix element at r-th, c-th
-	Update(r, c int, f func(float64) float64) error
+	Update(r, c int, f func(float64) float64)
 
 	// ColumnsAt return the columns at c-th
-	ColumnsAt(c int) (Vector, error)
+	ColumnsAt(c int) Vector
 
 	// RowsAt return the rows at r-th
-	RowsAt(r int) (Vector, error)
+	RowsAt(r int) Vector
 
 	// Columns the number of columns of the matrix
 	Columns() int
@@ -41,13 +41,13 @@ type Matrix interface {
 	Scalar(alpha float64) Matrix
 
 	// Multiply multiplies a matrix by another matrix
-	Multiply(m Matrix) (Matrix, error)
+	Multiply(m Matrix) Matrix
 
 	// Add addition of a matrix by another matrix
-	Add(m Matrix) (Matrix, error)
+	Add(m Matrix) Matrix
 
 	// Subtract subtracts one matrix from another matrix
-	Subtract(m Matrix) (Matrix, error)
+	Subtract(m Matrix) Matrix
 
 	// Negative the negative of a matrix
 	Negative() Matrix

@@ -38,7 +38,7 @@ func TestVector_ColumnsAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got, _ := tt.s.ColumnsAt(0); !got.Equal(want) {
+			if got := tt.s.ColumnsAt(0); !got.Equal(want) {
 				t.Errorf("%+v ColumnsAt = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -71,7 +71,7 @@ func TestVector_RowAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got, _ := tt.s.RowsAt(0); !got.Equal(want) {
+			if got := tt.s.RowsAt(0); !got.Equal(want) {
 				t.Errorf("%+v RowsAt = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -329,7 +329,7 @@ func TestVector_Multiply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got, _ := tt.s.Multiply(matrix); !got.Equal(want) {
+			if got := tt.s.Multiply(matrix); !got.Equal(want) {
 				t.Errorf("%+v Multiply = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -367,7 +367,7 @@ func TestVector_Add(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got, _ := tt.s.Add(matrix); !got.Equal(want) {
+			if got := tt.s.Add(matrix); !got.Equal(want) {
 				t.Errorf("%+v Add = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -405,7 +405,7 @@ func TestVector_Subtract(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got, _ := tt.s.Subtract(matrix); !got.Equal(want) {
+			if got := tt.s.Subtract(matrix); !got.Equal(want) {
 				t.Errorf("%+v Subtract = %+v, want %+v", tt.name, got, want)
 			}
 		})
