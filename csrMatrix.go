@@ -270,3 +270,8 @@ func (s *CSRMatrix) Equal(m Matrix) bool {
 func (s *CSRMatrix) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
+
+// Size the number of non-zero elements in the matrix
+func (s *CSRMatrix) Size() int {
+	return len(s.values)
+}

@@ -60,4 +60,7 @@ type Matrix interface {
 
 	// NotEqual the two matrices are not equal
 	NotEqual(m Matrix) bool
+
+	// The number of elements in the matrix (non-zero only for sparse matrices)
+	Size() int
 }

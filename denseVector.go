@@ -210,3 +210,8 @@ func (s *DenseVector) Equal(m Matrix) bool {
 func (s *DenseVector) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
+
+// Size the number of elements in the vector
+func (s *DenseVector) Size() int {
+	return s.l
+}

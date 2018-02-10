@@ -255,3 +255,8 @@ func (s *SparseVector) Equal(m Matrix) bool {
 func (s *SparseVector) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
+
+// Size the number of non-zero elements in the vector
+func (s *SparseVector) Size() int {
+	return len(s.values)
+}

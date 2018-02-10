@@ -207,3 +207,8 @@ func (s *DenseMatrix) Equal(m Matrix) bool {
 func (s *DenseMatrix) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
+
+// Size the number of elements in the matrix
+func (s *DenseMatrix) Size() int {
+	return s.r * s.c
+}
