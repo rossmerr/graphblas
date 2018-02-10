@@ -227,31 +227,31 @@ func (s *SparseVector) Multiply(m Matrix) Matrix {
 
 // Add addition of a metrix by another metrix
 func (s *SparseVector) Add(m Matrix) Matrix {
-	return add(s, m)
+	return Add(s, m)
 }
 
 // Subtract subtracts one metrix from another metrix
 func (s *SparseVector) Subtract(m Matrix) Matrix {
-	return subtract(s, m)
+	return Subtract(s, m)
 }
 
 // Negative the negative of a metrix
 func (s *SparseVector) Negative() Matrix {
-	return negative(s)
+	return Negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *SparseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-	return transpose(s, matrix)
+	return Transpose(s, matrix)
 }
 
 // Equal the two metrics are equal
 func (s *SparseVector) Equal(m Matrix) bool {
-	return equal(s, m)
+	return Equal(s, m)
 }
 
 // NotEqual the two metrix are not equal
 func (s *SparseVector) NotEqual(m Matrix) bool {
-	return notEqual(s, m)
+	return NotEqual(s, m)
 }

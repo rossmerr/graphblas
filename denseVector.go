@@ -169,7 +169,7 @@ func (s *DenseVector) CopyArithmetic(action func(float64) float64) Matrix {
 
 // Scalar multiplication of a vector by alpha
 func (s *DenseVector) Scalar(alpha float64) Matrix {
-	return scalar(s, alpha)
+	return Scalar(s, alpha)
 }
 
 // Multiply multiplies a vector by another vector
@@ -181,32 +181,32 @@ func (s *DenseVector) Multiply(m Matrix) Matrix {
 
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) Matrix {
-	return add(s, m)
+	return Add(s, m)
 }
 
 // Subtract subtracts one vector from another vector
 func (s *DenseVector) Subtract(m Matrix) Matrix {
-	return subtract(s, m)
+	return Subtract(s, m)
 }
 
 // Negative the negative of a metrix
 func (s *DenseVector) Negative() Matrix {
-	return negative(s)
+	return Negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 
-	return transpose(s, matrix)
+	return Transpose(s, matrix)
 }
 
 // Equal the two vectors are equal
 func (s *DenseVector) Equal(m Matrix) bool {
-	return equal(s, m)
+	return Equal(s, m)
 }
 
 // NotEqual the two vectors are not equal
 func (s *DenseVector) NotEqual(m Matrix) bool {
-	return notEqual(s, m)
+	return NotEqual(s, m)
 }

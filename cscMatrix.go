@@ -226,44 +226,44 @@ func (s *CSCMatrix) Iterator(i func(r, c int, v float64) bool) bool {
 
 // Scalar multiplication of a matrix by alpha
 func (s *CSCMatrix) Scalar(alpha float64) Matrix {
-	return scalar(s, alpha)
+	return Scalar(s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), nil, 0)
 
-	return multiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix
 func (s *CSCMatrix) Add(m Matrix) Matrix {
-	return add(s, m)
+	return Add(s, m)
 }
 
 // Subtract subtracts one matrix from another matrix
 func (s *CSCMatrix) Subtract(m Matrix) Matrix {
-	return subtract(s, m)
+	return Subtract(s, m)
 }
 
 // Negative the negative of a matrix
 func (s *CSCMatrix) Negative() Matrix {
-	return negative(s)
+	return Negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *CSCMatrix) Transpose() Matrix {
 	matrix := newCSCMatrix(s.c, s.r, nil, len(s.values))
 
-	return transpose(s, matrix)
+	return Transpose(s, matrix)
 }
 
 // Equal the two matrices are equal
 func (s *CSCMatrix) Equal(m Matrix) bool {
-	return equal(s, m)
+	return Equal(s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *CSCMatrix) NotEqual(m Matrix) bool {
-	return notEqual(s, m)
+	return NotEqual(s, m)
 }

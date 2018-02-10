@@ -228,7 +228,7 @@ func (s *CSRMatrix) Iterator(i func(r, c int, v float64) bool) bool {
 
 // Scalar multiplication of a matrix by alpha
 func (s *CSRMatrix) Scalar(alpha float64) Matrix {
-	return scalar(s, alpha)
+	return Scalar(s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
@@ -236,37 +236,37 @@ func (s *CSRMatrix) Multiply(m Matrix) Matrix {
 
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), nil, 0)
 
-	return multiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix
 func (s *CSRMatrix) Add(m Matrix) Matrix {
-	return add(s, m)
+	return Add(s, m)
 }
 
 // Subtract subtracts one matrix from another matrix
 func (s *CSRMatrix) Subtract(m Matrix) Matrix {
-	return subtract(s, m)
+	return Subtract(s, m)
 }
 
 // Negative the negative of a matrix
 func (s *CSRMatrix) Negative() Matrix {
-	return negative(s)
+	return Negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *CSRMatrix) Transpose() Matrix {
 	matrix := newCSRMatrix(s.c, s.r, nil, len(s.values))
 
-	return transpose(s, matrix)
+	return Transpose(s, matrix)
 }
 
 // Equal the two matrices are equal
 func (s *CSRMatrix) Equal(m Matrix) bool {
-	return equal(s, m)
+	return Equal(s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *CSRMatrix) NotEqual(m Matrix) bool {
-	return notEqual(s, m)
+	return NotEqual(s, m)
 }

@@ -166,44 +166,44 @@ func (s *DenseMatrix) Iterator(i func(r, c int, v float64) bool) bool {
 
 // Scalar multiplication of a matrix by alpha
 func (s *DenseMatrix) Scalar(alpha float64) Matrix {
-	return scalar(s, alpha)
+	return Scalar(s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
 func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(s.Rows(), m.Columns(), nil)
 
-	return multiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix
 func (s *DenseMatrix) Add(m Matrix) Matrix {
-	return add(s, m)
+	return Add(s, m)
 }
 
 // Subtract subtracts one matrix from another matrix
 func (s *DenseMatrix) Subtract(m Matrix) Matrix {
-	return subtract(s, m)
+	return Subtract(s, m)
 }
 
 // Negative the negative of a matrix
 func (s *DenseMatrix) Negative() Matrix {
-	return negative(s)
+	return Negative(s)
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseMatrix) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 
-	return transpose(s, matrix)
+	return Transpose(s, matrix)
 }
 
 // Equal the two matrices are equal
 func (s *DenseMatrix) Equal(m Matrix) bool {
-	return equal(s, m)
+	return Equal(s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *DenseMatrix) NotEqual(m Matrix) bool {
-	return notEqual(s, m)
+	return NotEqual(s, m)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 // Multiply multiplies a matrix by another matrix
-func multiply(s, m, matrix Matrix) Matrix {
+func Multiply(s, m, matrix Matrix) Matrix {
 	if s.Rows() != m.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
 	}
@@ -61,7 +61,7 @@ func multiplyVector(s, m, matrix Matrix) Matrix {
 }
 
 // Add addition of a matrix by another matrix
-func add(s, m Matrix) Matrix {
+func Add(s, m Matrix) Matrix {
 	if s.Columns() != m.Columns() {
 		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -83,7 +83,7 @@ func add(s, m Matrix) Matrix {
 }
 
 // Subtract subtracts one matrix from another matrix
-func subtract(s, m Matrix) Matrix {
+func Subtract(s, m Matrix) Matrix {
 	if s.Columns() != m.Columns() {
 		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -105,7 +105,7 @@ func subtract(s, m Matrix) Matrix {
 }
 
 // Negative the negative of a matrix
-func negative(s Matrix) Matrix {
+func Negative(s Matrix) Matrix {
 	return s.CopyArithmetic(func(v float64) float64 {
 		return -v
 	})
@@ -113,14 +113,14 @@ func negative(s Matrix) Matrix {
 }
 
 // Scalar multiplication of a matrix by alpha
-func scalar(s Matrix, alpha float64) Matrix {
+func Scalar(s Matrix, alpha float64) Matrix {
 	return s.CopyArithmetic(func(v float64) float64 {
 		return alpha * v
 	})
 }
 
 // Transpose swaps the rows and columns
-func transpose(s, m Matrix) Matrix {
+func Transpose(s, m Matrix) Matrix {
 	s.Iterator(func(r, c int, value float64) bool {
 		m.Set(c, r, value)
 		return true
@@ -129,8 +129,22 @@ func transpose(s, m Matrix) Matrix {
 	return m
 }
 
+// TransposeToCSR swaps the rows and columns and returns a compressed storage by rows (CSR) matrix
+func TransposeToCSR(s Matrix) Matrix {
+	matrix := NewCSRMatrix(s.Columns(), s.Rows())
+
+	return Transpose(s, matrix)
+}
+
+// TransposeToCSC swaps the rows and columns and returns a compressed storage by columns (CSC) matrix
+func TransposeToCSC(s Matrix) Matrix {
+	matrix := NewCSCMatrix(s.Columns(), s.Rows())
+
+	return Transpose(s, matrix)
+}
+
 // Equal the two matrices are equal
-func equal(s, m Matrix) bool {
+func Equal(s, m Matrix) bool {
 	if s.Columns() != m.Columns() {
 		return false
 	}
@@ -149,6 +163,6 @@ func equal(s, m Matrix) bool {
 }
 
 // NotEqual the two matrices are not equal
-func notEqual(s, m Matrix) bool {
+func NotEqual(s, m Matrix) bool {
 	return !s.Equal(m)
 }
