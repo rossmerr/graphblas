@@ -275,6 +275,7 @@ type CSRMatrixIterator struct {
 	pointerEnd int
 }
 
+// HasNext checks the iterator has any more values
 func (s *CSRMatrixIterator) HasNext() bool {
 	if s.last >= len(s.Matrix.values) {
 		return false
@@ -282,6 +283,7 @@ func (s *CSRMatrixIterator) HasNext() bool {
 	return true
 }
 
+// Next moves the iterator and returns the row, column and value
 func (s *CSRMatrixIterator) Next() (int, int, float64) {
 	if s.c == s.pointerEnd {
 		s.r++
@@ -295,6 +297,7 @@ func (s *CSRMatrixIterator) Next() (int, int, float64) {
 	return s.r, s.Matrix.cols[s.cOld], s.Matrix.values[s.cOld]
 }
 
+// Update updates the value of from the Iteration does not advanced the iterator like Next
 func (s *CSRMatrixIterator) Update(v float64) {
 	s.Matrix.values[s.cOld] = v
 }

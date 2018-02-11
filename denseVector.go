@@ -212,6 +212,7 @@ type DenseVectorIterator struct {
 	rOld   int
 }
 
+// HasNext checks the iterator has any more values
 func (s *DenseVectorIterator) HasNext() bool {
 	if s.last >= s.Matrix.Size() {
 		return false
@@ -219,6 +220,7 @@ func (s *DenseVectorIterator) HasNext() bool {
 	return true
 }
 
+// Next moves the iterator and returns the row, column and value
 func (s *DenseVectorIterator) Next() (int, int, float64) {
 	if s.r == s.Matrix.Rows() {
 		s.r = 0
@@ -230,6 +232,7 @@ func (s *DenseVectorIterator) Next() (int, int, float64) {
 	return s.rOld, 0, s.Matrix.At(s.rOld, 0)
 }
 
+// Update updates the value of from the Iteration does not advanced the iterator like Next
 func (s *DenseVectorIterator) Update(v float64) {
 	s.Matrix.SetVec(s.rOld, v)
 }

@@ -249,6 +249,7 @@ type SparseVectorIterator struct {
 	old    int
 }
 
+// HasNext checks the iterator has any more values
 func (s *SparseVectorIterator) HasNext() bool {
 	if s.last >= len(s.Matrix.values) {
 		return false
@@ -256,12 +257,14 @@ func (s *SparseVectorIterator) HasNext() bool {
 	return true
 }
 
+// Next moves the iterator and returns the row, column and value
 func (s *SparseVectorIterator) Next() (int, int, float64) {
 	s.old = s.last
 	s.last++
 	return s.Matrix.indices[s.old], 0, s.Matrix.values[s.old]
 }
 
+// Update updates the value of from the Iteration does not advanced the iterator like Next
 func (s *SparseVectorIterator) Update(v float64) {
 	s.Matrix.values[s.old] = v
 }
