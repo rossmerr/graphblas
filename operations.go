@@ -163,7 +163,7 @@ func Equal(s, m Matrix) bool {
 		sR, sC, sV := sIterator.Next()
 		mR, mC, mV := mIterator.Next()
 
-		if sR != mR && sC != mC && sV != mV {
+		if sR != mR || sC != mC || sV != mV {
 			return false
 		}
 	}
