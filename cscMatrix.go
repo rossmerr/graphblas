@@ -187,17 +187,10 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 
 // Copy copies the matrix
 func (s *CSCMatrix) Copy() Matrix {
-	return s.CopyArithmetic(func(value float64) float64 {
-		return value
-	})
-}
-
-// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
-func (s *CSCMatrix) CopyArithmetic(action func(float64) float64) Matrix {
 	matrix := newCSCMatrix(s.r, s.c, nil, len(s.values))
 
 	for i := range s.values {
-		matrix.values[i] = action(s.values[i])
+		matrix.values[i] = s.values[i]
 		matrix.rows[i] = s.rows[i]
 	}
 
@@ -206,22 +199,6 @@ func (s *CSCMatrix) CopyArithmetic(action func(float64) float64) Matrix {
 	}
 
 	return matrix
-}
-
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *CSCMatrix) Iterator(i func(r, c int, v float64) bool) bool {
-	for c := 0; c < s.Columns(); c++ {
-		pointerStart := s.colStart[c]
-		pointerEnd := s.colStart[c+1]
-
-		for r := pointerStart; r < pointerEnd; r++ {
-			if i(s.rows[r], c, s.values[r]) == false {
-				return false
-			}
-		}
-	}
-
-	return true
 }
 
 // Scalar multiplication of a matrix by alpha
@@ -253,7 +230,7 @@ func (s *CSCMatrix) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *CSCMatrix) Transpose() Matrix {
-	matrix := newCSCMatrix(s.c, s.r, nil, len(s.values))
+	matrix := newCSCMatrix(s.c, s.r, nil, 0)
 
 	return Transpose(s, matrix)
 }
@@ -271,4 +248,50 @@ func (s *CSCMatrix) NotEqual(m Matrix) bool {
 // Size the number of non-zero elements in the matrix
 func (s *CSCMatrix) Size() int {
 	return len(s.values)
+}
+
+// Iterator iterates through all non-zero elements, order is not guaranteed
+func (s *CSCMatrix) Iterator() Iterator {
+	i := &CSCMatrixIterator{
+		Matrix:     s,
+		last:       0,
+		c:          0,
+		r:          s.colStart[0],
+		pointerEnd: s.colStart[0+1],
+		rOld:       0,
+	}
+	return i
+}
+
+type CSCMatrixIterator struct {
+	Matrix     *CSCMatrix
+	last       int
+	c          int
+	r          int
+	rOld       int
+	pointerEnd int
+}
+
+func (s *CSCMatrixIterator) HasNext() bool {
+	if s.last >= len(s.Matrix.values) {
+		return false
+	}
+	return true
+}
+
+func (s *CSCMatrixIterator) Next() (int, int, float64) {
+	if s.r == s.pointerEnd {
+		s.c++
+		s.r = s.Matrix.colStart[s.c]
+		s.pointerEnd = s.Matrix.colStart[s.c+1]
+	}
+
+	s.rOld = s.r
+	s.r++
+	s.last++
+	return s.Matrix.rows[s.rOld], s.c, s.Matrix.values[s.rOld]
+}
+
+func (s *CSCMatrixIterator) Update(v float64) {
+	s.Matrix.values[s.rOld] = v
 }

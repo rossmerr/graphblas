@@ -218,7 +218,8 @@ func TestMatrix_Transpose(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := tt.s.Transpose(); !got.Equal(want) {
+			got := tt.s.Transpose()
+			if !got.Equal(want) {
 				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
 			}
 		})

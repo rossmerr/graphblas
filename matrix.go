@@ -31,11 +31,9 @@ type Matrix interface {
 	// Copy copies the matrix
 	Copy() Matrix
 
-	// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
-	CopyArithmetic(i func(v float64) float64) Matrix
-
 	// Iterator iterates through all non-zero elements, order is not guaranteed
-	Iterator(i func(r, c int, v float64) bool) bool
+	Iterator() Iterator
+	//Iterator(i func(r, c int, v float64) bool) bool
 
 	// Scalar multiplication of a matrix by alpha
 	Scalar(alpha float64) Matrix
@@ -61,6 +59,6 @@ type Matrix interface {
 	// NotEqual the two matrices are not equal
 	NotEqual(m Matrix) bool
 
-	// The number of elements in the matrix (non-zero only for sparse matrices)
+	// The number of elements in the matrix (non-zero not counted only for sparse matrices)
 	Size() int
 }

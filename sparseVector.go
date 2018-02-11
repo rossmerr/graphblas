@@ -117,9 +117,7 @@ func (s *SparseVector) ColumnsAt(c int) Vector {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	return s.copy(func(value float64) float64 {
-		return value
-	})
+	return s.copy()
 }
 
 // RowsAt return the rows at r-th
@@ -133,22 +131,6 @@ func (s *SparseVector) RowsAt(r int) Vector {
 	rows.SetVec(0, v)
 
 	return rows
-}
-
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *SparseVector) Iterator(i func(r, c int, v float64) bool) bool {
-	for c := 0; c < s.Columns(); c++ {
-		for r := 0; r < s.Rows(); r++ {
-			v := s.At(r, c)
-			if v != 0.0 {
-				if i(r, c, v) == false {
-					return false
-				}
-			}
-		}
-	}
-
-	return true
 }
 
 func (s *SparseVector) insert(pointer, i int, value float64) {
@@ -188,11 +170,11 @@ func (s *SparseVector) index(i int) (int, int, error) {
 	return start, length, nil
 }
 
-func (s *SparseVector) copy(action func(float64) float64) *SparseVector {
+func (s *SparseVector) copy() *SparseVector {
 	vector := newSparseVector(s.l, len(s.indices))
 
 	for i := range s.values {
-		vector.values[i] = action(s.values[i])
+		vector.values[i] = s.values[i]
 		vector.indices[i] = s.indices[i]
 	}
 
@@ -201,21 +183,12 @@ func (s *SparseVector) copy(action func(float64) float64) *SparseVector {
 
 // Copy copies the vector
 func (s *SparseVector) Copy() Matrix {
-	return s.copy(func(value float64) float64 {
-		return value
-	})
-}
-
-// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
-func (s *SparseVector) CopyArithmetic(action func(float64) float64) Matrix {
-	return s.copy(action)
+	return s.copy()
 }
 
 // Scalar multiplication of a vector by alpha
 func (s *SparseVector) Scalar(alpha float64) Matrix {
-	return s.CopyArithmetic(func(value float64) float64 {
-		return alpha * value
-	})
+	return Scalar(s, alpha)
 }
 
 // Multiply multiplies a vector by another vector
@@ -259,4 +232,36 @@ func (s *SparseVector) NotEqual(m Matrix) bool {
 // Size the number of non-zero elements in the vector
 func (s *SparseVector) Size() int {
 	return len(s.values)
+}
+
+// Iterator iterates through all non-zero elements, order is not guaranteed
+func (s *SparseVector) Iterator() Iterator {
+	i := &SparseVectorIterator{
+		Matrix: s,
+		last:   0,
+	}
+	return i
+}
+
+type SparseVectorIterator struct {
+	Matrix *SparseVector
+	last   int
+	old    int
+}
+
+func (s *SparseVectorIterator) HasNext() bool {
+	if s.last >= len(s.Matrix.values) {
+		return false
+	}
+	return true
+}
+
+func (s *SparseVectorIterator) Next() (int, int, float64) {
+	s.old = s.last
+	s.last++
+	return s.Matrix.indices[s.old], 0, s.Matrix.values[s.old]
+}
+
+func (s *SparseVectorIterator) Update(v float64) {
+	s.Matrix.values[s.old] = v
 }

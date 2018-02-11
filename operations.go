@@ -72,12 +72,12 @@ func Add(s, m Matrix) Matrix {
 
 	matrix := m.Copy()
 
-	s.Iterator(func(r, c int, value float64) bool {
+	for iterator := s.Iterator(); iterator.HasNext(); {
+		r, c, value := iterator.Next()
 		matrix.Update(r, c, func(v float64) float64 {
 			return value + v
 		})
-		return true
-	})
+	}
 
 	return matrix
 }
@@ -94,38 +94,41 @@ func Subtract(s, m Matrix) Matrix {
 
 	matrix := m.Copy()
 
-	s.Iterator(func(r, c int, value float64) bool {
+	for iterator := s.Iterator(); iterator.HasNext(); {
+		r, c, value := iterator.Next()
 		matrix.Update(r, c, func(v float64) float64 {
 			return value - v
 		})
-		return true
-	})
-
+	}
 	return matrix
 }
 
 // Negative the negative of a matrix
 func Negative(s Matrix) Matrix {
-	return s.CopyArithmetic(func(v float64) float64 {
-		return -v
-	})
-
+	matrix := s.Copy()
+	for iterator := matrix.Iterator(); iterator.HasNext(); {
+		_, _, v := iterator.Next()
+		iterator.Update(-v)
+	}
+	return matrix
 }
 
 // Scalar multiplication of a matrix by alpha
 func Scalar(s Matrix, alpha float64) Matrix {
-	return s.CopyArithmetic(func(v float64) float64 {
-		return alpha * v
-	})
+	matrix := s.Copy()
+	for iterator := matrix.Iterator(); iterator.HasNext(); {
+		_, _, v := iterator.Next()
+		iterator.Update(alpha * v)
+	}
+	return matrix
 }
 
 // Transpose swaps the rows and columns
 func Transpose(s, m Matrix) Matrix {
-	s.Iterator(func(r, c int, value float64) bool {
+	for iterator := s.Iterator(); iterator.HasNext(); {
+		r, c, value := iterator.Next()
 		m.Set(c, r, value)
-		return true
-	})
-
+	}
 	return m
 }
 
@@ -153,13 +156,15 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	return s.Iterator(func(r, c int, v float64) bool {
+	for iterator := s.Iterator(); iterator.HasNext(); {
+		r, c, v := iterator.Next()
 		value := m.At(r, c)
 		if v != value {
 			return false
 		}
-		return true
-	})
+	}
+
+	return true
 }
 
 // NotEqual the two matrices are not equal

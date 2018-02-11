@@ -71,7 +71,8 @@ func TestVector_RowAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := tt.s.RowsAt(0); !got.Equal(want) {
+			got := tt.s.RowsAt(0)
+			if !got.Equal(want) {
 				t.Errorf("%+v RowsAt = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -405,7 +406,8 @@ func TestVector_Subtract(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := tt.s.Subtract(matrix); !got.Equal(want) {
+			got := tt.s.Subtract(matrix)
+			if !got.Equal(want) {
 				t.Errorf("%+v Subtract = %+v, want %+v", tt.name, got, want)
 			}
 		})

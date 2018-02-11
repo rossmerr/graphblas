@@ -112,27 +112,11 @@ func (s *DenseVector) RowsAt(r int) Vector {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	v := s.AtVec(1)
+	v := s.AtVec(r)
 	rows := NewDenseVector(1)
 	rows.SetVec(0, v)
 
 	return rows
-}
-
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *DenseVector) Iterator(i func(r, c int, v float64) bool) bool {
-	for c := 0; c < s.Columns(); c++ {
-		for r := 0; r < s.Rows(); r++ {
-			v := s.At(r, c)
-			if v != 0.0 {
-				if i(r, c, v) == false {
-					return false
-				}
-			}
-		}
-	}
-
-	return true
 }
 
 func (s *DenseVector) copy() *DenseVector {
@@ -147,18 +131,11 @@ func (s *DenseVector) copy() *DenseVector {
 
 // Copy copies the vector
 func (s *DenseVector) Copy() Matrix {
-	return s.CopyArithmetic(func(value float64) float64 {
-		return value
-	})
-}
-
-// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
-func (s *DenseVector) CopyArithmetic(action func(float64) float64) Matrix {
 	vector := NewDenseVector(s.l)
 
 	for i, v := range s.values {
 		if v != 0.0 {
-			vector.SetVec(i, action(v))
+			vector.SetVec(i, v)
 		} else {
 			vector.SetVec(i, v)
 		}
@@ -214,4 +191,45 @@ func (s *DenseVector) NotEqual(m Matrix) bool {
 // Size the number of elements in the vector
 func (s *DenseVector) Size() int {
 	return s.l
+}
+
+// Iterator iterates through all non-zero elements, order is not guaranteed
+func (s *DenseVector) Iterator() Iterator {
+	i := &DenseVectorIterator{
+		Matrix: s,
+		last:   0,
+		c:      0,
+		r:      0,
+	}
+	return i
+}
+
+type DenseVectorIterator struct {
+	Matrix *DenseVector
+	last   int
+	c      int
+	r      int
+	rOld   int
+}
+
+func (s *DenseVectorIterator) HasNext() bool {
+	if s.last >= s.Matrix.Size() {
+		return false
+	}
+	return true
+}
+
+func (s *DenseVectorIterator) Next() (int, int, float64) {
+	if s.r == s.Matrix.Rows() {
+		s.r = 0
+		s.c++
+	}
+	s.rOld = s.r
+	s.r++
+	s.last++
+	return s.rOld, 0, s.Matrix.At(s.rOld, 0)
+}
+
+func (s *DenseVectorIterator) Update(v float64) {
+	s.Matrix.SetVec(s.rOld, v)
 }

@@ -126,19 +126,12 @@ func (s *DenseMatrix) RowsAt(r int) Vector {
 
 // Copy copies the matrix
 func (s *DenseMatrix) Copy() Matrix {
-	return s.CopyArithmetic(func(value float64) float64 {
-		return value
-	})
-}
-
-// CopyArithmetic copies the matrix and applies a arithmetic function through all non-zero elements, order is not guaranteed
-func (s *DenseMatrix) CopyArithmetic(action func(float64) float64) Matrix {
 	v := 0.0
 	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
 			v = s.data[r][c]
 			if v != 0.0 {
-				row[c] = action(v)
+				row[c] = v
 			} else {
 				row[c] = v
 			}
@@ -146,22 +139,6 @@ func (s *DenseMatrix) CopyArithmetic(action func(float64) float64) Matrix {
 	})
 
 	return matrix
-}
-
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *DenseMatrix) Iterator(i func(r, c int, v float64) bool) bool {
-	for c := 0; c < s.Columns(); c++ {
-		for r := 0; r < s.Rows(); r++ {
-			v := s.At(r, c)
-			if v != 0.0 {
-				if i(r, c, v) == false {
-					return false
-				}
-			}
-		}
-	}
-
-	return true
 }
 
 // Scalar multiplication of a matrix by alpha
@@ -211,4 +188,45 @@ func (s *DenseMatrix) NotEqual(m Matrix) bool {
 // Size the number of elements in the matrix
 func (s *DenseMatrix) Size() int {
 	return s.r * s.c
+}
+
+// Iterator iterates through all non-zero elements, order is not guaranteed
+func (s *DenseMatrix) Iterator() Iterator {
+	i := &DenseMatrixIterator{
+		Matrix: s,
+		last:   0,
+		c:      0,
+		r:      0,
+	}
+	return i
+}
+
+type DenseMatrixIterator struct {
+	Matrix *DenseMatrix
+	last   int
+	c      int
+	r      int
+	cOld   int
+}
+
+func (s *DenseMatrixIterator) HasNext() bool {
+	if s.last >= s.Matrix.Size() {
+		return false
+	}
+	return true
+}
+
+func (s *DenseMatrixIterator) Next() (int, int, float64) {
+	if s.c == s.Matrix.Columns() {
+		s.c = 0
+		s.r++
+	}
+	s.cOld = s.c
+	s.c++
+	s.last++
+	return s.r, s.cOld, s.Matrix.At(s.r, s.cOld)
+}
+
+func (s *DenseMatrixIterator) Update(v float64) {
+	s.Matrix.Set(s.r, s.cOld, v)
 }
