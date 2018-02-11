@@ -156,10 +156,21 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	for iterator := s.Iterator(); iterator.HasNext(); {
-		r, c, v := iterator.Next()
-		value := m.At(r, c)
-		if v != value {
+	sIterator := s.Iterator()
+	mIterator := m.Iterator()
+
+	if sIterator.HasNext() && mIterator.HasNext() {
+		sR, sC, sV := sIterator.Next()
+		mR, mC, mV := mIterator.Next()
+
+		if sR != mR {
+			return false
+		}
+		if sC != mC {
+			return false
+		}
+
+		if sV != mV {
 			return false
 		}
 	}
