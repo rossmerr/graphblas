@@ -11,6 +11,67 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
+func TestMatrix_Update(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 4)
+		m.Set(0, 1, 0)
+		m.Set(1, 0, 1)
+		m.Set(1, 1, -9)
+	}
+
+	tests := []struct {
+		name  string
+		s     GraphBLAS.Matrix
+		want  float64
+		value float64
+	}{
+		{
+			name:  "DenseMatrix",
+			s:     GraphBLAS.NewDenseMatrix(2, 2),
+			want:  2,
+			value: 2,
+		},
+		{
+			name:  "CSCMatrix",
+			s:     GraphBLAS.NewCSCMatrix(2, 2),
+			want:  2,
+			value: 2,
+		},
+		{
+			name:  "CSRMatrix",
+			s:     GraphBLAS.NewCSRMatrix(2, 2),
+			want:  2,
+			value: 2,
+		},
+		// Checks values get removed for sparse matrix
+		{
+			name:  "CSCMatrix",
+			s:     GraphBLAS.NewCSCMatrix(2, 2),
+			want:  0,
+			value: 0,
+		},
+		{
+			name:  "CSRMatrix",
+			s:     GraphBLAS.NewCSRMatrix(2, 2),
+			want:  0,
+			value: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			tt.s.Update(0, 0, func(v float64) float64 {
+				return tt.value
+			})
+			v := tt.s.At(0, 0)
+			if tt.want != v {
+				t.Errorf("%+v Update = %+v, want %+v", tt.name, v, tt.want)
+			}
+		})
+	}
+}
+
 func TestMatrix_ColumnsAt(t *testing.T) {
 
 	setup := func(m GraphBLAS.Matrix) {
@@ -44,7 +105,8 @@ func TestMatrix_ColumnsAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := tt.s.ColumnsAt(0); !got.Equal(want) {
+			got := tt.s.ColumnsAt(0)
+			if !got.Equal(want) {
 				t.Errorf("%+v ColumnsAt = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -226,6 +288,100 @@ func TestMatrix_Transpose(t *testing.T) {
 	}
 }
 
+func TestMatrix_Transpose_To_CSR(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 6)
+		m.Set(0, 1, 4)
+		m.Set(0, 2, 24)
+		m.Set(1, 0, 1)
+		m.Set(1, 1, -9)
+		m.Set(1, 2, 8)
+	}
+
+	want := GraphBLAS.NewDenseMatrix(3, 2)
+	want.Set(0, 0, 6)
+	want.Set(0, 1, 1)
+	want.Set(1, 0, 4)
+	want.Set(1, 1, -9)
+	want.Set(2, 0, 24)
+	want.Set(2, 1, 8)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(2, 3),
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(2, 3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			got := GraphBLAS.TransposeToCSR(tt.s)
+			if !got.Equal(want) {
+				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
+			}
+		})
+	}
+}
+
+func TestMatrix_Transpose_To_CSC(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 6)
+		m.Set(0, 1, 4)
+		m.Set(0, 2, 24)
+		m.Set(1, 0, 1)
+		m.Set(1, 1, -9)
+		m.Set(1, 2, 8)
+	}
+
+	want := GraphBLAS.NewDenseMatrix(3, 2)
+	want.Set(0, 0, 6)
+	want.Set(0, 1, 1)
+	want.Set(1, 0, 4)
+	want.Set(1, 1, -9)
+	want.Set(2, 0, 24)
+	want.Set(2, 1, 8)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(2, 3),
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(2, 3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			got := GraphBLAS.TransposeToCSC(tt.s)
+			if !got.Equal(want) {
+				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
+			}
+		})
+	}
+}
+
 func TestMatrix_Equal(t *testing.T) {
 
 	setup := func(m GraphBLAS.Matrix) {
@@ -313,6 +469,53 @@ func TestMatrix_NotEqual(t *testing.T) {
 			setup(tt.s)
 			if !tt.s.NotEqual(want) {
 				t.Errorf("%+v NotEqual = %+v, want %+v", tt.name, tt.s, want)
+			}
+		})
+	}
+}
+
+func TestMatrix_NotEqual_Size(t *testing.T) {
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+		want GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix Row",
+			s:    GraphBLAS.NewDenseMatrix(2, 2),
+			want: GraphBLAS.NewDenseMatrix(3, 2),
+		},
+		{
+			name: "DenseMatrix Column",
+			s:    GraphBLAS.NewDenseMatrix(2, 2),
+			want: GraphBLAS.NewDenseMatrix(2, 3),
+		},
+		{
+			name: "CSCMatrix Row",
+			s:    GraphBLAS.NewCSCMatrix(2, 2),
+			want: GraphBLAS.NewDenseMatrix(3, 2),
+		},
+		{
+			name: "CSCMatrix Column",
+			s:    GraphBLAS.NewCSCMatrix(2, 2),
+			want: GraphBLAS.NewDenseMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix Row",
+			s:    GraphBLAS.NewCSRMatrix(2, 2),
+			want: GraphBLAS.NewDenseMatrix(3, 2),
+		},
+		{
+			name: "CSRMatrix Column",
+			s:    GraphBLAS.NewCSRMatrix(2, 2),
+			want: GraphBLAS.NewDenseMatrix(2, 3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if !tt.s.NotEqual(tt.want) {
+				t.Errorf("%+v NotEqual = %+v, want %+v", tt.name, tt.s, tt.want)
 			}
 		})
 	}
@@ -506,6 +709,49 @@ func TestMatrix_Subtract(t *testing.T) {
 			setup(tt.s)
 			if got := tt.s.Subtract(matrix); !got.Equal(want) {
 				t.Errorf("%+v Subtract = %+v, want %+v", tt.name, got, want)
+			}
+		})
+	}
+}
+
+func TestMatrix_Size(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 6)
+		m.Set(0, 1, 4)
+		m.Set(0, 2, 24)
+		m.Set(1, 0, 1)
+		m.Set(1, 1, 0)
+		m.Set(1, 2, 8)
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+		size int
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(2, 3),
+			size: 6,
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(2, 3),
+			size: 5,
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(2, 3),
+			size: 5,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			got := tt.s.Size()
+			if got != tt.size {
+				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, tt.size)
 			}
 		})
 	}

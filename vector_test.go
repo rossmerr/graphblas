@@ -11,6 +11,53 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
+func TestVector_Update(t *testing.T) {
+
+	setup := func(m GraphBLAS.Vector) {
+		m.SetVec(0, 3)
+		m.SetVec(1, 8)
+	}
+
+	tests := []struct {
+		name  string
+		s     GraphBLAS.Vector
+		want  float64
+		value float64
+	}{
+		{
+			name:  "DenseVector",
+			s:     GraphBLAS.NewDenseVector(2),
+			want:  2,
+			value: 2,
+		},
+		{
+			name:  "SparseVector",
+			s:     GraphBLAS.NewSparseVector(2),
+			want:  2,
+			value: 2,
+		},
+		// Checks values get removed for sparse matrix
+		{
+			name:  "DenseVector",
+			s:     GraphBLAS.NewDenseVector(2),
+			want:  0,
+			value: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			tt.s.Update(0, 0, func(v float64) float64 {
+				return tt.value
+			})
+			v := tt.s.At(0, 0)
+			if tt.want != v {
+				t.Errorf("%+v Update = %+v, want %+v", tt.name, v, tt.want)
+			}
+		})
+	}
+}
+
 func TestVector_ColumnsAt(t *testing.T) {
 
 	setup := func(m GraphBLAS.Vector) {
@@ -410,6 +457,44 @@ func TestVector_Subtract(t *testing.T) {
 			got := tt.s.Subtract(matrix)
 			if !got.Equal(want) {
 				t.Errorf("%+v Subtract = %+v, want %+v", tt.name, got, want)
+			}
+		})
+	}
+}
+
+func TestVector_Size(t *testing.T) {
+
+	setup := func(m GraphBLAS.Vector) {
+		m.SetVec(0, 6)
+		m.SetVec(1, 4)
+		m.SetVec(2, 24)
+		m.SetVec(3, 1)
+		m.SetVec(4, 0)
+		m.SetVec(5, 8)
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Vector
+		size int
+	}{
+		{
+			name: "DenseVector",
+			s:    GraphBLAS.NewDenseVector(6),
+			size: 6,
+		},
+		{
+			name: "SparseVector",
+			s:    GraphBLAS.NewSparseVector(6),
+			size: 5,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			got := tt.s.Size()
+			if got != tt.size {
+				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, tt.size)
 			}
 		})
 	}
