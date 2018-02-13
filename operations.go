@@ -11,8 +11,8 @@ import (
 
 // Multiply multiplies a matrix by another matrix
 func Multiply(s, m, matrix Matrix) Matrix {
-	if s.Rows() != m.Columns() {
-		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
+	if m.Rows() != s.Columns() {
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
 
 	for r := 0; r < s.Rows(); r++ {
@@ -33,30 +33,6 @@ func Multiply(s, m, matrix Matrix) Matrix {
 
 	}
 
-	return matrix
-}
-
-// multiplyVector multiplies a vector by another matrix
-func multiplyVector(s, m, matrix Matrix) Matrix {
-	if s.Rows() != m.Columns() {
-		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", s.Rows(), m.Columns())
-	}
-
-	for r := 0; r < m.Rows(); r++ {
-		rows := m.RowsAt(r)
-		for c := 0; c < s.Columns(); c++ {
-			column := s.ColumnsAt(c)
-			sum := 0.0
-			for l := 0; l < rows.Length(); l++ {
-				vC := column.AtVec(l)
-				vR := rows.AtVec(l)
-				sum += vR * vC
-			}
-
-			matrix.Set(r, c, sum)
-		}
-
-	}
 	return matrix
 }
 
