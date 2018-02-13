@@ -236,21 +236,21 @@ func (s *SparseVector) Size() int {
 
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *SparseVector) Iterator() Iterator {
-	i := &SparseVectorIterator{
+	i := &sparseVectorIterator{
 		matrix: s,
 		last:   0,
 	}
 	return i
 }
 
-type SparseVectorIterator struct {
+type sparseVectorIterator struct {
 	matrix *SparseVector
 	last   int
 	old    int
 }
 
 // HasNext checks the iterator has any more values
-func (s *SparseVectorIterator) HasNext() bool {
+func (s *sparseVectorIterator) HasNext() bool {
 	if s.last >= len(s.matrix.values) {
 		return false
 	}
@@ -258,13 +258,13 @@ func (s *SparseVectorIterator) HasNext() bool {
 }
 
 // Next moves the iterator and returns the row, column and value
-func (s *SparseVectorIterator) Next() (int, int, float64) {
+func (s *sparseVectorIterator) Next() (int, int, float64) {
 	s.old = s.last
 	s.last++
 	return s.matrix.indices[s.old], 0, s.matrix.values[s.old]
 }
 
 // Update updates the value of from the Iteration does not advanced the iterator like Next
-func (s *SparseVectorIterator) Update(v float64) {
+func (s *sparseVectorIterator) Update(v float64) {
 	s.matrix.values[s.old] = v
 }

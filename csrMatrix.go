@@ -255,7 +255,7 @@ func (s *CSRMatrix) Size() int {
 
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *CSRMatrix) Iterator() Iterator {
-	i := &CSRMatrixIterator{
+	i := &cSRMatrixIterator{
 		matrix:     s,
 		last:       0,
 		c:          s.rowStart[0],
@@ -266,7 +266,7 @@ func (s *CSRMatrix) Iterator() Iterator {
 	return i
 }
 
-type CSRMatrixIterator struct {
+type cSRMatrixIterator struct {
 	matrix     *CSRMatrix
 	last       int
 	c          int
@@ -276,7 +276,7 @@ type CSRMatrixIterator struct {
 }
 
 // HasNext checks the iterator has any more values
-func (s *CSRMatrixIterator) HasNext() bool {
+func (s *cSRMatrixIterator) HasNext() bool {
 	if s.last >= len(s.matrix.values) {
 		return false
 	}
@@ -284,7 +284,7 @@ func (s *CSRMatrixIterator) HasNext() bool {
 }
 
 // Next moves the iterator and returns the row, column and value
-func (s *CSRMatrixIterator) Next() (int, int, float64) {
+func (s *cSRMatrixIterator) Next() (int, int, float64) {
 	if s.c == s.pointerEnd {
 		s.r++
 		s.c = s.matrix.rowStart[s.r]
@@ -298,6 +298,6 @@ func (s *CSRMatrixIterator) Next() (int, int, float64) {
 }
 
 // Update updates the value of from the Iteration does not advanced the iterator like Next
-func (s *CSRMatrixIterator) Update(v float64) {
+func (s *cSRMatrixIterator) Update(v float64) {
 	s.matrix.values[s.cOld] = v
 }
