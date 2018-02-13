@@ -256,7 +256,7 @@ func (s *CSRMatrix) Size() int {
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *CSRMatrix) Iterator() Iterator {
 	i := &CSRMatrixIterator{
-		Matrix:     s,
+		matrix:     s,
 		last:       0,
 		c:          s.rowStart[0],
 		r:          0,
@@ -267,7 +267,7 @@ func (s *CSRMatrix) Iterator() Iterator {
 }
 
 type CSRMatrixIterator struct {
-	Matrix     *CSRMatrix
+	matrix     *CSRMatrix
 	last       int
 	c          int
 	r          int
@@ -277,7 +277,7 @@ type CSRMatrixIterator struct {
 
 // HasNext checks the iterator has any more values
 func (s *CSRMatrixIterator) HasNext() bool {
-	if s.last >= len(s.Matrix.values) {
+	if s.last >= len(s.matrix.values) {
 		return false
 	}
 	return true
@@ -287,17 +287,17 @@ func (s *CSRMatrixIterator) HasNext() bool {
 func (s *CSRMatrixIterator) Next() (int, int, float64) {
 	if s.c == s.pointerEnd {
 		s.r++
-		s.c = s.Matrix.rowStart[s.r]
-		s.pointerEnd = s.Matrix.rowStart[s.r+1]
+		s.c = s.matrix.rowStart[s.r]
+		s.pointerEnd = s.matrix.rowStart[s.r+1]
 	}
 
 	s.cOld = s.c
 	s.c++
 	s.last++
-	return s.r, s.Matrix.cols[s.cOld], s.Matrix.values[s.cOld]
+	return s.r, s.matrix.cols[s.cOld], s.matrix.values[s.cOld]
 }
 
 // Update updates the value of from the Iteration does not advanced the iterator like Next
 func (s *CSRMatrixIterator) Update(v float64) {
-	s.Matrix.values[s.cOld] = v
+	s.matrix.values[s.cOld] = v
 }

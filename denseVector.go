@@ -196,7 +196,7 @@ func (s *DenseVector) Size() int {
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *DenseVector) Iterator() Iterator {
 	i := &DenseVectorIterator{
-		Matrix: s,
+		matrix: s,
 		last:   0,
 		c:      0,
 		r:      0,
@@ -205,7 +205,7 @@ func (s *DenseVector) Iterator() Iterator {
 }
 
 type DenseVectorIterator struct {
-	Matrix *DenseVector
+	matrix *DenseVector
 	last   int
 	c      int
 	r      int
@@ -214,7 +214,7 @@ type DenseVectorIterator struct {
 
 // HasNext checks the iterator has any more values
 func (s *DenseVectorIterator) HasNext() bool {
-	if s.last >= s.Matrix.Size() {
+	if s.last >= s.matrix.Size() {
 		return false
 	}
 	return true
@@ -222,17 +222,17 @@ func (s *DenseVectorIterator) HasNext() bool {
 
 // Next moves the iterator and returns the row, column and value
 func (s *DenseVectorIterator) Next() (int, int, float64) {
-	if s.r == s.Matrix.Rows() {
+	if s.r == s.matrix.Rows() {
 		s.r = 0
 		s.c++
 	}
 	s.rOld = s.r
 	s.r++
 	s.last++
-	return s.rOld, 0, s.Matrix.At(s.rOld, 0)
+	return s.rOld, 0, s.matrix.At(s.rOld, 0)
 }
 
 // Update updates the value of from the Iteration does not advanced the iterator like Next
 func (s *DenseVectorIterator) Update(v float64) {
-	s.Matrix.SetVec(s.rOld, v)
+	s.matrix.SetVec(s.rOld, v)
 }
