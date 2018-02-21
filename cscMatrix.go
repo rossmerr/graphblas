@@ -20,31 +20,31 @@ type CSCMatrix struct {
 
 // NewCSCMatrix returns a GraphBLAS.CSCMatrix
 func NewCSCMatrix(r, c int) *CSCMatrix {
-	return newCSCMatrix(r, c, nil, 0)
+	return newCSCMatrix(r, c, 0)
 }
 
 // NewCSCMatrixFromArray returns a GraphBLAS.CSCMatrix
-// func NewCSCMatrixFromArray(data [][]float64) *CSCMatrix {
-// 	r := len(data)
-// 	c := len(data[0])
-// 	return newCSCMatrix(r, c, data, 0)
-// }
+func NewCSCMatrixFromArray(data [][]float64) *CSCMatrix {
+	r := len(data)
+	c := len(data[0])
+	s := newCSCMatrix(r, c, 0)
 
-func newCSCMatrix(r, c int, data [][]float64, l int) *CSCMatrix {
+	for i := 0; i < r; i++ {
+		for k := 0; k < c; k++ {
+			s.Set(i, k, data[i][k])
+		}
+	}
+
+	return s
+}
+
+func newCSCMatrix(r, c int, l int) *CSCMatrix {
 	s := &CSCMatrix{
 		r:        r,
 		c:        c,
 		values:   make([]float64, l),
 		rows:     make([]int, l),
 		colStart: make([]int, c+1),
-	}
-
-	if data != nil {
-		for i := 0; i < r; i++ {
-			for k := 0; k < c; k++ {
-				s.Set(i, k, data[i][k])
-			}
-		}
 	}
 
 	return s
@@ -187,7 +187,7 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 
 // Copy copies the matrix
 func (s *CSCMatrix) Copy() Matrix {
-	matrix := newCSCMatrix(s.r, s.c, nil, len(s.values))
+	matrix := newCSCMatrix(s.r, s.c, len(s.values))
 
 	for i := range s.values {
 		matrix.values[i] = s.values[i]
@@ -208,7 +208,7 @@ func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 
 // Multiply multiplies a matrix by another matrix
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
-	matrix := newCSCMatrix(s.Rows(), m.Columns(), nil, 0)
+	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
 	return Multiply(s, m, matrix)
 }
@@ -230,7 +230,7 @@ func (s *CSCMatrix) Negative() Matrix {
 
 // Transpose swaps the rows and columns
 func (s *CSCMatrix) Transpose() Matrix {
-	matrix := newCSCMatrix(s.c, s.r, nil, 0)
+	matrix := newCSCMatrix(s.c, s.r, 0)
 
 	return Transpose(s, matrix)
 }

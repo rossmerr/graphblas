@@ -190,6 +190,11 @@ func (s *DenseMatrix) Size() int {
 	return s.r * s.c
 }
 
+// RawMatrix returns the raw matrix
+func (s *DenseMatrix) RawMatrix() [][]float64 {
+	return s.data
+}
+
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *DenseMatrix) Iterator() Iterator {
 	i := &denseMatrixIterator{
