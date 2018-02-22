@@ -566,6 +566,7 @@ func TestMatrix_Copy(t *testing.T) {
 		})
 	}
 }
+
 func TestMatrix_Multiply(t *testing.T) {
 
 	setup := func(m GraphBLAS.Matrix) {
@@ -757,75 +758,41 @@ func TestMatrix_Size(t *testing.T) {
 	}
 }
 
-// ################################################################################################
+func TestMatrix_FromArray(t *testing.T) {
 
-// func BenchmarkMatrix(b *testing.B) {
-// 	for _, fn := range benchmarks {
-// 		fn.fn(b)
-// 	}
-// }
+	want := GraphBLAS.NewDenseMatrix(2, 3)
+	want.Set(0, 0, 1)
+	want.Set(0, 1, 2)
+	want.Set(0, 2, 3)
+	want.Set(1, 0, 4)
+	want.Set(1, 1, 5)
+	want.Set(1, 2, 6)
 
-// var benchmarks = []struct {
-// 	name string
-// 	fn   func(*testing.B)
-// }{
+	setup := want.RawMatrix()
 
-// 	{
-// 		name: "iteration_pi_sum",
-// 		fn: func(b *testing.B) {
-// 			for i := 0; i < b.N; i++ {
-// 				if math.Abs(pisum()-1.644834071848065) >= 1e-6 {
-// 					b.Fatal("pi_sum out of range")
-// 				}
-// 			}
-// 		},
-// 	},
-// 	{
-// 		name: "matrix_multiply",
-// 		fn: func(b *testing.B) {
-// 			for i := 0; i < b.N; i++ {
-// 				c := randmatmul(1)
-// 				v, _ := c.At(0, 0)
-// 				if !(v >= 0) {
-// 					b.Fatal("assert failed")
-// 				}
-// 			}
-// 		},
-// 	},
-// }
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrixFromArray(setup),
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrixFromArray(setup),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrixFromArray(setup),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
 
-// func pisum() float64 {
-// 	var sum float64
-// 	for i := 0; i < 500; i++ {
-// 		sum = 0.0
-// 		for k := 1.0; k <= 10000; k += 1 {
-// 			sum += 1.0 / (k * k)
-// 		}
-// 	}
-// 	return sum
-// }
-
-// func randmatmul(n int) GraphBLAS.Matrix {
-// 	aData := make([][]float64, n)
-// 	for r := range aData {
-// 		aData[r] = make([]float64, n)
-// 		for c := range aData {
-// 			aData[r][c] = rand.Float64()
-
-// 		}
-// 	}
-// 	a := GraphBLAS.NewDenseMatrixFromArray(aData)
-
-// 	bData := make([][]float64, n)
-// 	for r := range bData {
-// 		bData[r] = make([]float64, n)
-// 		for c := range bData {
-// 			bData[r][c] = rand.Float64()
-
-// 		}
-// 	}
-// 	b := GraphBLAS.NewDenseMatrixFromArray(bData)
-
-// 	c, _ := a.Multiply(b)
-// 	return c
-// }
+			if tt.s.NotEqual(want) {
+				t.Errorf("%+v From Array = want %+v", tt.name, want)
+			}
+		})
+	}
+}
