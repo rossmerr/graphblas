@@ -211,7 +211,7 @@ func (s *CSRMatrix) Multiply(m Matrix) Matrix {
 
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), 0)
 
-	return Multiply(s, m, matrix)
+	return NormalMultiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix

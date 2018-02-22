@@ -195,7 +195,7 @@ func (s *SparseVector) Scalar(alpha float64) Matrix {
 func (s *SparseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
-	return Multiply(s, m, matrix)
+	return NormalMultiply(s, m, matrix)
 }
 
 // Add addition of a metrix by another metrix

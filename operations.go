@@ -9,13 +9,78 @@ import (
 	"log"
 )
 
-//TODO Strassen algorithm
-func MultiplyStrassen(s, m, matrix Matrix) Matrix {
-	return nil
+//StrassenMultiply multiplies a matrix by another matrix using the Strassen algorithm
+func StrassenMultiply(s, m Matrix) Matrix {
+	if s.Columns() != m.Rows() {
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
+	}
+
+	n := m.Rows()
+	if n <= 48 {
+		return NormalMultiply(s, m, nil)
+	}
+
+	halfN := n / 2
+
+	a11 := subMatrix(s, 0, halfN, 0, halfN)
+	a12 := subMatrix(s, 0, halfN, halfN, n)
+	a21 := subMatrix(s, halfN, n, 0, halfN)
+	a22 := subMatrix(s, halfN, n, halfN, n)
+
+	b11 := subMatrix(m, 0, halfN, 0, halfN)
+	b12 := subMatrix(m, 0, halfN, halfN, n)
+	b21 := subMatrix(m, halfN, n, 0, halfN)
+	b22 := subMatrix(m, halfN, n, halfN, n)
+
+	mm := [7]Matrix{
+		StrassenMultiply(a11.Add(a22), b11.Add(b22)),      // m1
+		StrassenMultiply(a21.Add(a22), b11),               // m2
+		StrassenMultiply(a11, b12.Subtract(b22)),          // m3
+		StrassenMultiply(a22, b21.Subtract(b11)),          // m4
+		StrassenMultiply(a11.Add(a12), b22),               // m5
+		StrassenMultiply(a21.Subtract(a11), b11.Add(b12)), // m6
+		StrassenMultiply(a12.Subtract(a22), b21.Add(b22)), // m7
+	}
+
+	c11 := mm[0].Add(mm[3]).Subtract(mm[4]).Add(mm[6])
+	c12 := mm[2].Add(mm[4])
+	c21 := mm[1].Add(mm[3])
+	c22 := mm[0].Subtract(mm[1]).Add(mm[2]).Add(mm[5])
+
+	return combineSubMatrices(c11, c12, c21, c22)
 }
 
-// Multiply multiplies a matrix by another matrix
-func Multiply(s, m, matrix Matrix) Matrix {
+func subMatrix(s Matrix, rowFrom, rowTo, colFrom, colTo int) Matrix {
+	result := NewDenseMatrix(rowTo-rowFrom, colTo-colFrom)
+	i := 0
+	for row := rowFrom; row < rowTo; row++ {
+		i++
+		j := 0
+		for col := colFrom; col < colTo; col++ {
+			j++
+			result.Set(i, j, s.At(row, col))
+		}
+	}
+
+	return result
+}
+
+func combineSubMatrices(a11, a12, a21, a22 Matrix) Matrix {
+	result := NewDenseMatrix(a11.Rows()*2, a11.Rows()*2)
+	shift := a11.Rows()
+	for row := 0; row < a11.Rows(); row++ {
+		for col := 0; col < a11.Columns(); col++ {
+			result.Set(row, col, a11.At(row, col))
+			result.Set(row, col+shift, a12.At(row, col))
+			result.Set(row+shift, col, a21.At(row, col))
+			result.Set(row+shift, col+shift, a22.At(row, col))
+		}
+	}
+	return result
+}
+
+// NormalMultiply multiplies a matrix by another matrix
+func NormalMultiply(s, m, matrix Matrix) Matrix {
 	if m.Rows() != s.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
