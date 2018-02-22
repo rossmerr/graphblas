@@ -3,3 +3,4 @@ debug.test
 *.exe
 *.test
 *.prof
+*.svg
