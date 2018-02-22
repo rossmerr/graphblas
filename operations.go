@@ -9,6 +9,11 @@ import (
 	"log"
 )
 
+//TODO Strassen algorithm
+func MultiplyStrassen(s, m, matrix Matrix) Matrix {
+	return nil
+}
+
 // Multiply multiplies a matrix by another matrix
 func Multiply(s, m, matrix Matrix) Matrix {
 	if m.Rows() != s.Columns() {
