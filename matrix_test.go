@@ -796,3 +796,55 @@ func TestMatrix_FromArray(t *testing.T) {
 		})
 	}
 }
+
+func TestMatrix_MultiplyStrassen(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 1)
+		m.Set(0, 1, 2)
+		m.Set(0, 2, 3)
+		m.Set(1, 0, 4)
+		m.Set(1, 1, 5)
+		m.Set(1, 2, 6)
+	}
+
+	want := GraphBLAS.NewDenseMatrix(2, 2)
+	want.Set(0, 0, 58)
+	want.Set(0, 1, 64)
+	want.Set(1, 0, 139)
+	want.Set(1, 1, 154)
+
+	matrix := GraphBLAS.NewDenseMatrix(3, 2)
+	matrix.Set(0, 0, 7)
+	matrix.Set(0, 1, 8)
+	matrix.Set(1, 0, 9)
+	matrix.Set(1, 1, 10)
+	matrix.Set(2, 0, 11)
+	matrix.Set(2, 1, 12)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(2, 3),
+		},
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(2, 3),
+		// },
+		// {
+		// 	name: "CSRMatrix",
+		// 	s:    GraphBLAS.NewCSRMatrix(2, 3),
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			if got := GraphBLAS.StrassenMultiply(tt.s, matrix); !got.Equal(want) {
+				t.Errorf("%+v Multiply = got %+v, want %+v", tt.name, got, want)
+			}
+		})
+	}
+}
