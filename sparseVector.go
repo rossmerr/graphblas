@@ -236,8 +236,13 @@ func (s *SparseVector) Size() int {
 
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *SparseVector) Iterator() Iterator {
+	return s.iterator()
+}
+
+func (s *SparseVector) iterator() *sparseVectorIterator {
 	i := &sparseVectorIterator{
 		matrix: s,
+		size:   len(s.values),
 		last:   0,
 	}
 	return i
@@ -245,13 +250,14 @@ func (s *SparseVector) Iterator() Iterator {
 
 type sparseVectorIterator struct {
 	matrix *SparseVector
+	size   int
 	last   int
 	old    int
 }
 
 // HasNext checks the iterator has any more values
 func (s *sparseVectorIterator) HasNext() bool {
-	if s.last >= len(s.matrix.values) {
+	if s.last >= s.size {
 		return false
 	}
 	return true
@@ -264,7 +270,30 @@ func (s *sparseVectorIterator) Next() (int, int, float64) {
 	return s.matrix.indices[s.old], 0, s.matrix.values[s.old]
 }
 
-// Update updates the value of from the Iteration does not advanced the iterator like Next
-func (s *sparseVectorIterator) Update(v float64) {
-	s.matrix.values[s.old] = v
+// Map replace each element with the result of applying a function to its value
+func (s *SparseVector) Map() Map {
+	t := s.iterator()
+	i := &sparseVectorMap{t}
+	return i
+}
+
+type sparseVectorMap struct {
+	*sparseVectorIterator
+}
+
+// HasNext checks the iterator has any more values
+func (s *sparseVectorMap) HasNext() bool {
+	return s.sparseVectorIterator.HasNext()
+}
+
+// Map move the iterator and uses a higher order function to changes the elements current value
+func (s *sparseVectorMap) Map(f func(int, int, float64) float64) {
+	s.old = s.last
+	s.last++
+	value := f(s.matrix.indices[s.old], 0, s.matrix.values[s.old])
+	if value != 0 {
+		s.matrix.values[s.old] = value
+	} else {
+		s.matrix.remove(s.old)
+	}
 }

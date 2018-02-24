@@ -12,7 +12,4 @@ type Iterator interface {
 
 	// Next move the iterator over the matrix
 	Next() (r, c int, v float64)
-
-	// Update changes the elements current value
-	Update(v float64)
 }

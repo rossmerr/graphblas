@@ -33,7 +33,9 @@ type Matrix interface {
 
 	// Iterator iterates through all non-zero elements, order is not guaranteed
 	Iterator() Iterator
-	//Iterator(i func(r, c int, v float64) bool) bool
+
+	// Map iterates and replace each element with the result of applying a function to its value
+	Map() Map
 
 	// Scalar multiplication of a matrix by alpha
 	Scalar(alpha float64) Matrix

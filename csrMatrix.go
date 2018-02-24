@@ -252,8 +252,13 @@ func (s *CSRMatrix) Size() int {
 
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *CSRMatrix) Iterator() Iterator {
+	return s.iterator()
+}
+
+func (s *CSRMatrix) iterator() *cSRMatrixIterator {
 	i := &cSRMatrixIterator{
 		matrix:     s,
+		size:       len(s.values),
 		last:       0,
 		c:          s.rowStart[0],
 		r:          0,
@@ -265,6 +270,7 @@ func (s *CSRMatrix) Iterator() Iterator {
 
 type cSRMatrixIterator struct {
 	matrix     *CSRMatrix
+	size       int
 	last       int
 	c          int
 	r          int
@@ -274,7 +280,7 @@ type cSRMatrixIterator struct {
 
 // HasNext checks the iterator has any more values
 func (s *cSRMatrixIterator) HasNext() bool {
-	if s.last >= len(s.matrix.values) {
+	if s.last >= s.size {
 		return false
 	}
 	return true
@@ -294,7 +300,37 @@ func (s *cSRMatrixIterator) Next() (int, int, float64) {
 	return s.r, s.matrix.cols[s.cOld], s.matrix.values[s.cOld]
 }
 
-// Update updates the value of from the Iteration does not advanced the iterator like Next
-func (s *cSRMatrixIterator) Update(v float64) {
-	s.matrix.values[s.cOld] = v
+// Map replace each element with the result of applying a function to its value
+func (s *CSRMatrix) Map() Map {
+	t := s.iterator()
+	i := &cSRMatrixMap{t}
+	return i
+}
+
+type cSRMatrixMap struct {
+	*cSRMatrixIterator
+}
+
+// HasNext checks the iterator has any more values
+func (s *cSRMatrixMap) HasNext() bool {
+	return s.cSRMatrixIterator.HasNext()
+}
+
+// Map move the iterator and uses a higher order function to changes the elements current value
+func (s *cSRMatrixMap) Map(f func(int, int, float64) float64) {
+	if s.c == s.pointerEnd {
+		s.r++
+		s.c = s.matrix.rowStart[s.r]
+		s.pointerEnd = s.matrix.rowStart[s.r+1]
+	}
+
+	s.cOld = s.c
+	s.c++
+	s.last++
+	value := f(s.r, s.matrix.cols[s.cOld], s.matrix.values[s.cOld])
+	if value != 0 {
+		s.matrix.values[s.cOld] = value
+	} else {
+		s.matrix.remove(s.cOld, s.r)
+	}
 }

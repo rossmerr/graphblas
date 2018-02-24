@@ -82,9 +82,10 @@ func Subtract(s, m Matrix) Matrix {
 // Negative the negative of a matrix
 func Negative(s Matrix) Matrix {
 	matrix := s.Copy()
-	for iterator := matrix.Iterator(); iterator.HasNext(); {
-		_, _, v := iterator.Next()
-		iterator.Update(-v)
+	for iterator := matrix.Map(); iterator.HasNext(); {
+		iterator.Map(func(r, c int, v float64) float64 {
+			return -v
+		})
 	}
 	return matrix
 }
@@ -92,9 +93,10 @@ func Negative(s Matrix) Matrix {
 // Scalar multiplication of a matrix by alpha
 func Scalar(s Matrix, alpha float64) Matrix {
 	matrix := s.Copy()
-	for iterator := matrix.Iterator(); iterator.HasNext(); {
-		_, _, v := iterator.Next()
-		iterator.Update(alpha * v)
+	for iterator := matrix.Map(); iterator.HasNext(); {
+		iterator.Map(func(r, c int, v float64) float64 {
+			return alpha * v
+		})
 	}
 	return matrix
 }

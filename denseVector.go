@@ -195,8 +195,13 @@ func (s *DenseVector) Size() int {
 
 // Iterator iterates through all non-zero elements, order is not guaranteed
 func (s *DenseVector) Iterator() Iterator {
+	return s.iterator()
+}
+
+func (s *DenseVector) iterator() *denseVectorIterator {
 	i := &denseVectorIterator{
 		matrix: s,
+		size:   s.Size(),
 		last:   0,
 		c:      0,
 		r:      0,
@@ -206,6 +211,7 @@ func (s *DenseVector) Iterator() Iterator {
 
 type denseVectorIterator struct {
 	matrix *DenseVector
+	size   int
 	last   int
 	c      int
 	r      int
@@ -214,7 +220,7 @@ type denseVectorIterator struct {
 
 // HasNext checks the iterator has any more values
 func (s *denseVectorIterator) HasNext() bool {
-	if s.last >= s.matrix.Size() {
+	if s.last >= s.size {
 		return false
 	}
 	return true
@@ -232,7 +238,30 @@ func (s *denseVectorIterator) Next() (int, int, float64) {
 	return s.rOld, 0, s.matrix.At(s.rOld, 0)
 }
 
-// Update updates the value of from the Iteration does not advanced the iterator like Next
-func (s *denseVectorIterator) Update(v float64) {
-	s.matrix.SetVec(s.rOld, v)
+// Map replace each element with the result of applying a function to its value
+func (s *DenseVector) Map() Map {
+	t := s.iterator()
+	i := &denseVectorMap{t}
+	return i
+}
+
+type denseVectorMap struct {
+	*denseVectorIterator
+}
+
+// HasNext checks the iterator has any more values
+func (s *denseVectorMap) HasNext() bool {
+	return s.denseVectorIterator.HasNext()
+}
+
+// Map move the iterator and uses a higher order function to changes the elements current value
+func (s *denseVectorMap) Map(f func(int, int, float64) float64) {
+	if s.r == s.matrix.Rows() {
+		s.r = 0
+		s.c++
+	}
+	s.rOld = s.r
+	s.r++
+	s.last++
+	s.matrix.Set(s.rOld, 0, f(s.rOld, 0, s.matrix.At(s.rOld, 0)))
 }
