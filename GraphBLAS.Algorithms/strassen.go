@@ -58,13 +58,13 @@ func StrassenMultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphB
 
 	m := [8]GraphBLAS.Matrix{
 		nil, // a nil value is used just to pad the beginning to get the algorithm better match the documentation as arrays start at zero
-		StrassenMultiply(a11.Add(a22), b11.Add(b22)),      // m1
-		StrassenMultiply(a21.Add(a22), b11),               // m2
-		StrassenMultiply(a11, b12.Subtract(b22)),          // m3
-		StrassenMultiply(a22, b21.Subtract(b11)),          // m4
-		StrassenMultiply(a11.Add(a12), b22),               // m5
-		StrassenMultiply(a21.Subtract(a11), b11.Add(b12)), // m6
-		StrassenMultiply(a12.Subtract(a22), b21.Add(b22)), // m7
+		StrassenMultiplyCrossoverPoint(a11.Add(a22), b11.Add(b22), crossover),      // m1
+		StrassenMultiplyCrossoverPoint(a21.Add(a22), b11, crossover),               // m2
+		StrassenMultiplyCrossoverPoint(a11, b12.Subtract(b22), crossover),          // m3
+		StrassenMultiplyCrossoverPoint(a22, b21.Subtract(b11), crossover),          // m4
+		StrassenMultiplyCrossoverPoint(a11.Add(a12), b22, crossover),               // m5
+		StrassenMultiplyCrossoverPoint(a21.Subtract(a11), b11.Add(b12), crossover), // m6
+		StrassenMultiplyCrossoverPoint(a12.Subtract(a22), b21.Add(b22), crossover), // m7
 	}
 
 	c11 := m[1].Add(m[4]).Subtract(m[5]).Add(m[7])
