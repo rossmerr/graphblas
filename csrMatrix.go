@@ -286,8 +286,7 @@ func (s *cSRMatrixIterator) HasNext() bool {
 	return true
 }
 
-// Next moves the iterator and returns the row, column and value
-func (s *cSRMatrixIterator) Next() (int, int, float64) {
+func (s *cSRMatrixIterator) next() {
 	if s.c == s.pointerEnd {
 		s.r++
 		s.c = s.matrix.rowStart[s.r]
@@ -297,6 +296,11 @@ func (s *cSRMatrixIterator) Next() (int, int, float64) {
 	s.cOld = s.c
 	s.c++
 	s.last++
+}
+
+// Next moves the iterator and returns the row, column and value
+func (s *cSRMatrixIterator) Next() (int, int, float64) {
+	s.next()
 	return s.r, s.matrix.cols[s.cOld], s.matrix.values[s.cOld]
 }
 
@@ -318,15 +322,7 @@ func (s *cSRMatrixMap) HasNext() bool {
 
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *cSRMatrixMap) Map(f func(int, int, float64) float64) {
-	if s.c == s.pointerEnd {
-		s.r++
-		s.c = s.matrix.rowStart[s.r]
-		s.pointerEnd = s.matrix.rowStart[s.r+1]
-	}
-
-	s.cOld = s.c
-	s.c++
-	s.last++
+	s.next()
 	value := f(s.r, s.matrix.cols[s.cOld], s.matrix.values[s.cOld])
 	if value != 0 {
 		s.matrix.values[s.cOld] = value

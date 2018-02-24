@@ -226,8 +226,7 @@ func (s *denseVectorIterator) HasNext() bool {
 	return true
 }
 
-// Next moves the iterator and returns the row, column and value
-func (s *denseVectorIterator) Next() (int, int, float64) {
+func (s *denseVectorIterator) next() {
 	if s.r == s.matrix.Rows() {
 		s.r = 0
 		s.c++
@@ -235,6 +234,11 @@ func (s *denseVectorIterator) Next() (int, int, float64) {
 	s.rOld = s.r
 	s.r++
 	s.last++
+}
+
+// Next moves the iterator and returns the row, column and value
+func (s *denseVectorIterator) Next() (int, int, float64) {
+	s.next()
 	return s.rOld, 0, s.matrix.At(s.rOld, 0)
 }
 
@@ -256,12 +260,6 @@ func (s *denseVectorMap) HasNext() bool {
 
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *denseVectorMap) Map(f func(int, int, float64) float64) {
-	if s.r == s.matrix.Rows() {
-		s.r = 0
-		s.c++
-	}
-	s.rOld = s.r
-	s.r++
-	s.last++
+	s.next()
 	s.matrix.Set(s.rOld, 0, f(s.rOld, 0, s.matrix.At(s.rOld, 0)))
 }

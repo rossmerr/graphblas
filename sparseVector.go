@@ -263,10 +263,14 @@ func (s *sparseVectorIterator) HasNext() bool {
 	return true
 }
 
-// Next moves the iterator and returns the row, column and value
-func (s *sparseVectorIterator) Next() (int, int, float64) {
+func (s *sparseVectorIterator) next() {
 	s.old = s.last
 	s.last++
+}
+
+// Next moves the iterator and returns the row, column and value
+func (s *sparseVectorIterator) Next() (int, int, float64) {
+	s.next()
 	return s.matrix.indices[s.old], 0, s.matrix.values[s.old]
 }
 
@@ -288,8 +292,7 @@ func (s *sparseVectorMap) HasNext() bool {
 
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *sparseVectorMap) Map(f func(int, int, float64) float64) {
-	s.old = s.last
-	s.last++
+	s.next()
 	value := f(s.matrix.indices[s.old], 0, s.matrix.values[s.old])
 	if value != 0 {
 		s.matrix.values[s.old] = value
