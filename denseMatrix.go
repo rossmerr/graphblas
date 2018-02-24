@@ -150,7 +150,7 @@ func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(s.Rows(), m.Columns(), nil)
 
-	return NormalMultiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix

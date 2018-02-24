@@ -210,7 +210,7 @@ func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
-	return NormalMultiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix

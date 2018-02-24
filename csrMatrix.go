@@ -208,10 +208,9 @@ func (s *CSRMatrix) Scalar(alpha float64) Matrix {
 
 // Multiply multiplies a matrix by another matrix
 func (s *CSRMatrix) Multiply(m Matrix) Matrix {
-
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), 0)
 
-	return NormalMultiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix

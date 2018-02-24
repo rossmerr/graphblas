@@ -153,7 +153,7 @@ func (s *DenseVector) Scalar(alpha float64) Matrix {
 func (s *DenseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
-	return NormalMultiply(s, m, matrix)
+	return Multiply(s, m, matrix)
 }
 
 // Add addition of a vector by another vector

@@ -7,93 +7,10 @@ package GraphBLAS
 
 import (
 	"log"
-	"math"
 )
 
-//StrassenMultiply multiplies a matrix by another matrix using the Strassen algorithm
-func StrassenMultiply(a, b Matrix) Matrix {
-	if a.Columns() != b.Rows() {
-		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", b.Rows(), a.Columns())
-	}
-
-	n := b.Rows() - 1
-
-	maxdim := math.Max(float64(a.Columns()), float64(a.Rows()))
-	maxdim = math.Max(float64(b.Columns()), float64(maxdim))
-	maxdim = math.Max(float64(maxdim), float64(b.Rows()))
-	maxdim-- // because arrays are zero based need to subtract one
-
-	halfN := 0
-	if math.Mod(maxdim, 2) != 0 {
-		maxdim++
-	}
-	halfN = int(maxdim / 2)
-
-	a11 := subMatrix(a, 0, halfN, 0, halfN)
-	a12 := subMatrix(a, 0, halfN, halfN, n)
-	a21 := subMatrix(a, halfN, n, 0, halfN)
-	a22 := subMatrix(a, halfN, n, halfN, n)
-
-	b11 := subMatrix(b, 0, halfN, 0, halfN)
-	b12 := subMatrix(b, 0, halfN, halfN, n)
-	b21 := subMatrix(b, halfN, n, 0, halfN)
-	b22 := subMatrix(b, halfN, n, halfN, n)
-
-	m := [8]Matrix{
-		nil, // a nil value is used just to pad the beginning to get the algorithm better match the documentation as arrays start at zero
-		multiply(a11.Add(a22), b11.Add(b22)),      // m1
-		multiply(a21.Add(a22), b11),               // m2
-		multiply(a11, b12.Subtract(b22)),          // m3
-		multiply(a22, b21.Subtract(b11)),          // m4
-		multiply(a11.Add(a12), b22),               // m5
-		multiply(a21.Subtract(a11), b11.Add(b12)), // m6
-		multiply(a12.Subtract(a22), b21.Add(b22)), // m7
-	}
-
-	c11 := m[1].Add(m[4]).Subtract(m[5]).Add(m[7])
-	c12 := m[3].Add(m[5])
-	c21 := m[2].Add(m[4])
-	c22 := m[1].Subtract(m[2]).Add(m[3]).Add(m[6])
-
-	return combineSubMatrices(c11, c12, c21, c22)
-}
-
-func subMatrix(s Matrix, rowFrom, rowTo, colFrom, colTo int) Matrix {
-	result := NewDenseMatrix(rowTo-rowFrom, colTo-colFrom)
-	i := 0
-	for row := rowFrom; row < rowTo; row++ {
-		j := 0
-		for col := colFrom; col < colTo; col++ {
-			result.Set(i, j, s.At(row, col))
-			j++
-		}
-		i++
-	}
-
-	return result
-}
-
-func combineSubMatrices(a11, a12, a21, a22 Matrix) Matrix {
-	result := NewDenseMatrix(a11.Rows()*2, a11.Rows()*2)
-	shift := a11.Rows()
-	for row := 0; row < a11.Rows(); row++ {
-		for col := 0; col < a11.Columns(); col++ {
-			result.Set(row, col, a11.At(row, col))
-			result.Set(row, col+shift, a12.At(row, col))
-			result.Set(row+shift, col, a21.At(row, col))
-			result.Set(row+shift, col+shift, a22.At(row, col))
-		}
-	}
-	return result
-}
-
-func multiply(s, m Matrix) Matrix {
-	matrix := newMatrix(s.Rows(), m.Columns(), nil)
-	return NormalMultiply(s, m, matrix)
-}
-
-// NormalMultiply multiplies a matrix by another matrix
-func NormalMultiply(s, m, matrix Matrix) Matrix {
+// Multiply multiplies a matrix by another matrix
+func Multiply(s, m, matrix Matrix) Matrix {
 	if m.Rows() != s.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
