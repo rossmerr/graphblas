@@ -11,18 +11,22 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
-// StrassenSize is the point a which a any matrix smaller (rows) than this value use a normal multiply
-var StrassenSize = 64
-
-//StrassenMultiply multiplies a matrix by another matrix using the Strassen algorithm
+// StrassenMultiply multiplies a matrix by another matrix using the Strassen algorithm
 func StrassenMultiply(a, b GraphBLAS.Matrix) GraphBLAS.Matrix {
+	return StrassenMultiplyCrossoverPoint(a, b, 64)
+}
+
+// StrassenMultiplyCrossoverPoint multiplies a matrix by another matrix using the Strassen algorithm
+// the crossover point is when to switch standard methods of matrix multiplication for more efficiency
+func StrassenMultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matrix {
 	if a.Columns() != b.Rows() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", a.Columns(), b.Rows())
 	}
 
 	n := b.Rows()
-	if n <= StrassenSize {
-		return multiply(a, b)
+	if n <= crossover {
+		matrix := GraphBLAS.NewDenseMatrix(a.Rows(), b.Columns())
+		return GraphBLAS.Multiply(a, b, matrix)
 	}
 
 	size := n / 2
@@ -68,23 +72,18 @@ func StrassenMultiply(a, b GraphBLAS.Matrix) GraphBLAS.Matrix {
 	c21 := m[2].Add(m[4])
 	c22 := m[1].Subtract(m[2]).Add(m[3]).Add(m[6])
 
-	result := GraphBLAS.NewDenseMatrix(c11.Rows()*2, c11.Rows()*2)
+	matrix := GraphBLAS.NewDenseMatrix(c11.Rows()*2, c11.Rows()*2)
 	shift := c11.Rows()
 
 	// Combine the results
 	for r := 0; r < c11.Rows(); r++ {
 		for c := 0; c < c11.Columns(); c++ {
-			result.Set(r, c, c11.At(r, c))
-			result.Set(r, c+shift, c12.At(r, c))
-			result.Set(r+shift, c, c21.At(r, c))
-			result.Set(r+shift, c+shift, c22.At(r, c))
+			matrix.Set(r, c, c11.At(r, c))
+			matrix.Set(r, c+shift, c12.At(r, c))
+			matrix.Set(r+shift, c, c21.At(r, c))
+			matrix.Set(r+shift, c+shift, c22.At(r, c))
 		}
 	}
 
-	return result
-}
-
-func multiply(s, m GraphBLAS.Matrix) GraphBLAS.Matrix {
-	matrix := GraphBLAS.NewDenseMatrix(s.Rows(), m.Columns())
-	return GraphBLAS.Multiply(s, m, matrix)
+	return matrix
 }

@@ -13,8 +13,6 @@ import (
 )
 
 func TestMatrix_MultiplyStrassen(t *testing.T) {
-
-	Algorithms.StrassenSize = 2
 	setup := func(m GraphBLAS.Matrix) {
 		m.Set(0, 0, 1)
 		m.Set(0, 1, 2)
@@ -90,7 +88,7 @@ func TestMatrix_MultiplyStrassen(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := Algorithms.StrassenMultiply(tt.s, matrix); !got.Equal(want) {
+			if got := Algorithms.StrassenMultiplyCrossoverPoint(tt.s, matrix, 2); !got.Equal(want) {
 				t.Errorf("%+v Multiply = got %+v, want %+v", tt.name, got, want)
 			}
 		})
