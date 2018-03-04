@@ -195,8 +195,8 @@ func (s *DenseMatrix) RawMatrix() [][]float64 {
 	return s.data
 }
 
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *DenseMatrix) Iterator() Iterator {
+// Enumerate iterates through all non-zero elements, order is not guaranteed
+func (s *DenseMatrix) Enumerate() Enumerate {
 	return s.iterator()
 }
 

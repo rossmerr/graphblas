@@ -5,8 +5,8 @@
 
 package GraphBLAS
 
-// Iterator iterates over the matrix
-type Iterator interface {
+// Enumerate iterates over the matrix
+type Enumerate interface {
 	// HasNext checks for the next element in the matrix
 	HasNext() bool
 

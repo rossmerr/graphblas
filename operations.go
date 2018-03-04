@@ -48,7 +48,7 @@ func Add(s, m Matrix) Matrix {
 
 	matrix := m.Copy()
 
-	for iterator := s.Iterator(); iterator.HasNext(); {
+	for iterator := s.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()
 		matrix.Update(r, c, func(v float64) float64 {
 			return value + v
@@ -70,7 +70,7 @@ func Subtract(s, m Matrix) Matrix {
 
 	matrix := m.Copy()
 
-	for iterator := s.Iterator(); iterator.HasNext(); {
+	for iterator := s.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()
 		matrix.Update(r, c, func(v float64) float64 {
 			return value - v
@@ -103,7 +103,7 @@ func Scalar(s Matrix, alpha float64) Matrix {
 
 // Transpose swaps the rows and columns
 func Transpose(s, m Matrix) Matrix {
-	for iterator := s.Iterator(); iterator.HasNext(); {
+	for iterator := s.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()
 		m.Set(c, r, value)
 	}
@@ -134,8 +134,8 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	sIterator := s.Iterator()
-	mIterator := m.Iterator()
+	sIterator := s.Enumerate()
+	mIterator := m.Enumerate()
 
 	if sIterator.HasNext() && mIterator.HasNext() {
 		sR, sC, sV := sIterator.Next()

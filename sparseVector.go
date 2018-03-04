@@ -234,8 +234,8 @@ func (s *SparseVector) Size() int {
 	return len(s.values)
 }
 
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *SparseVector) Iterator() Iterator {
+// Enumerate iterates through all non-zero elements, order is not guaranteed
+func (s *SparseVector) Enumerate() Enumerate {
 	return s.iterator()
 }
 

@@ -250,8 +250,8 @@ func (s *CSRMatrix) Size() int {
 	return len(s.values)
 }
 
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *CSRMatrix) Iterator() Iterator {
+// Enumerate iterates through all non-zero elements, order is not guaranteed
+func (s *CSRMatrix) Enumerate() Enumerate {
 	return s.iterator()
 }
 

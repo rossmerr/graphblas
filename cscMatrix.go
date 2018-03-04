@@ -250,8 +250,8 @@ func (s *CSCMatrix) Size() int {
 	return len(s.values)
 }
 
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *CSCMatrix) Iterator() Iterator {
+// Enumerate iterates through all non-zero elements, order is not guaranteed
+func (s *CSCMatrix) Enumerate() Enumerate {
 	return s.iterator()
 }
 
@@ -307,21 +307,21 @@ func (s *cSCMatrixIterator) Next() (int, int, float64) {
 // Map replace each element with the result of applying a function to its value
 func (s *CSCMatrix) Map() Map {
 	t := s.iterator()
-	i := &cSCMatrixmap{t}
+	i := &cSCMatrixMap{t}
 	return i
 }
 
-type cSCMatrixmap struct {
+type cSCMatrixMap struct {
 	*cSCMatrixIterator
 }
 
 // HasNext checks the iterator has any more values
-func (s *cSCMatrixmap) HasNext() bool {
+func (s *cSCMatrixMap) HasNext() bool {
 	return s.cSCMatrixIterator.HasNext()
 }
 
 // Map move the iterator and uses a higher order function to changes the elements current value
-func (s *cSCMatrixmap) Map(f func(int, int, float64) float64) {
+func (s *cSCMatrixMap) Map(f func(int, int, float64) float64) {
 	s.next()
 	value := f(s.matrix.rows[s.rOld], s.c, s.matrix.values[s.rOld])
 	if value != 0 {
@@ -329,4 +329,43 @@ func (s *cSCMatrixmap) Map(f func(int, int, float64) float64) {
 	} else {
 		s.matrix.remove(s.rOld, s.c)
 	}
+}
+
+// EnumerateZeros iterates through all elements including zero elements, order is not guaranteed
+func (s *CSCMatrix) EnumerateZeros() Enumerate {
+	t := s.iterator()
+	t.size = s.Rows() * s.Columns()
+	i := &cSCMatrixIteratorWithZero{cSCMatrixIterator: t}
+	return i
+}
+
+type cSCMatrixIteratorWithZero struct {
+	*cSCMatrixIterator
+}
+
+// HasNext checks the iterator has any more values
+func (s *cSCMatrixIteratorWithZero) HasNext() bool {
+	return s.cSCMatrixIterator.HasNext()
+}
+
+// Map move the iterator and uses a higher order function to changes the elements current value
+func (s *cSCMatrixIteratorWithZero) Next() (int, int, float64) {
+	return s.nextWithZero()
+}
+
+func (s *cSCMatrixIterator) nextWithZero() (int, int, float64) {
+	if s.r == s.pointerEnd {
+		if s.r < s.matrix.Rows() {
+			s.r++
+			return s.r, s.c, 0
+		}
+		s.c++
+		s.r = s.matrix.colStart[s.c]
+		s.pointerEnd = s.matrix.colStart[s.c+1]
+	}
+
+	s.rOld = s.r
+	s.r++
+	s.last++
+	return s.matrix.rows[s.rOld], s.c, s.matrix.values[s.rOld]
 }

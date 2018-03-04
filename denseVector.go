@@ -193,8 +193,8 @@ func (s *DenseVector) Size() int {
 	return s.l
 }
 
-// Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *DenseVector) Iterator() Iterator {
+// Enumerate iterates through all non-zero elements, order is not guaranteed
+func (s *DenseVector) Enumerate() Enumerate {
 	return s.iterator()
 }
 

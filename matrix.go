@@ -32,7 +32,7 @@ type Matrix interface {
 	Copy() Matrix
 
 	// Iterator iterates through all non-zero elements, order is not guaranteed
-	Iterator() Iterator
+	Enumerate() Enumerate
 
 	// Map iterates and replace each element with the result of applying a function to its value
 	Map() Map
