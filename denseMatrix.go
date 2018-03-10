@@ -218,6 +218,7 @@ type denseMatrixIterator struct {
 	c      int
 	r      int
 	cOld   int
+	rOld   int
 }
 
 // HasNext checks the iterator has any more values
@@ -236,12 +237,21 @@ func (s *denseMatrixIterator) next() {
 	s.cOld = s.c
 	s.c++
 	s.last++
+
+	// if s.r == s.matrix.Rows() {
+	// 	s.r = 0
+	// 	s.c++
+	// }
+	// s.rOld = s.r
+	// s.r++
+	// s.last++
 }
 
 // Next moves the iterator and returns the row, column and value
 func (s *denseMatrixIterator) Next() (int, int, float64) {
 	s.next()
 	return s.r, s.cOld, s.matrix.At(s.r, s.cOld)
+	// return s.rOld, s.c, s.matrix.At(s.rOld, s.c)
 }
 
 // Map replace each element with the result of applying a function to its value

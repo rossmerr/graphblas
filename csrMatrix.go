@@ -289,7 +289,7 @@ func (s *cSRMatrixIterator) HasNext() bool {
 func (s *cSRMatrixIterator) next() {
 	if s.c == s.pointerEnd {
 		s.r++
-		s.c = s.matrix.rowStart[s.r]
+		s.c = s.pointerEnd
 		s.pointerEnd = s.matrix.rowStart[s.r+1]
 	}
 
