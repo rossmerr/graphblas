@@ -31,7 +31,7 @@ type Matrix interface {
 	// Copy copies the matrix
 	Copy() Matrix
 
-	// Iterator iterates through all non-zero elements, order is not guaranteed
+	// Enumerate iterates through all non-zero elements, order is not guaranteed
 	Enumerate() Enumerate
 
 	// Map iterates and replace each element with the result of applying a function to its value

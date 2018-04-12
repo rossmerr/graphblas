@@ -265,6 +265,7 @@ func (s *CSCMatrix) iterator() *cSCMatrixIterator {
 		pointerEnd: s.colStart[0+1],
 		rOld:       0,
 	}
+	i.rOld = i.r
 	return i
 }
 
@@ -334,14 +335,14 @@ func (s *cSCMatrixMap) Map(f func(int, int, float64) float64) {
 // EnumerateZeros iterates through all elements including zero elements, order is not guaranteed
 func (s *CSCMatrix) EnumerateZeros() Enumerate {
 	t := s.iterator()
-	t.size = s.Rows()*s.Columns() - 1
+	t.size = s.Rows() * s.Columns()
 	i := &cSCMatrixIteratorWithZero{cSCMatrixIterator: t}
 	return i
 }
 
 type cSCMatrixIteratorWithZero struct {
 	*cSCMatrixIterator
-	pointerStart int
+	row int
 }
 
 // HasNext checks the iterator has any more values
@@ -355,7 +356,6 @@ func (s *cSCMatrixIteratorWithZero) Next() (int, int, float64) {
 }
 
 func (s *cSCMatrixIteratorWithZero) nextWithZero() (int, int, float64) {
-
 	if s.r == s.pointerEnd {
 		s.c++
 		s.r = s.pointerEnd
@@ -365,6 +365,7 @@ func (s *cSCMatrixIteratorWithZero) nextWithZero() (int, int, float64) {
 	s.rOld = s.r
 	s.r++
 	s.last++
-	return s.matrix.rows[s.rOld], s.c, s.matrix.values[s.rOld]
+	s.row = s.matrix.rows[s.rOld]
+	return s.row, s.c, s.matrix.values[s.rOld]
 
 }
