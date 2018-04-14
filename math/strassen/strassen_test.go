@@ -3,16 +3,16 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package Algorithms_test
+package strassen_test
 
 import (
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
-	Algorithms "github.com/RossMerr/Caudex.GraphBLAS/GraphBLAS.Algorithms"
+	"github.com/RossMerr/Caudex.GraphBLAS/math/strassen"
 )
 
-func TestMatrix_MultiplyStrassen(t *testing.T) {
+func TestMatrix_Multiply(t *testing.T) {
 	setup := func(m GraphBLAS.Matrix) {
 		m.Set(0, 0, 1)
 		m.Set(0, 1, 2)
@@ -88,7 +88,7 @@ func TestMatrix_MultiplyStrassen(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := Algorithms.StrassenMultiplyCrossoverPoint(tt.s, matrix, 2); !got.Equal(want) {
+			if got := strassen.MultiplyCrossoverPoint(tt.s, matrix, 2); !got.Equal(want) {
 				t.Errorf("%+v Multiply = got %+v, want %+v", tt.name, got, want)
 			}
 		})
