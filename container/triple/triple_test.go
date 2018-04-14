@@ -77,8 +77,8 @@ func TestNewTripleFromTable(t *testing.T) {
 			args: args{
 				t: func() *triple.Store {
 					table, _ := table.NewTableFromReader(3, 5, &MockReaderImport{})
-					store := triple.NewTripleStoreTransposeFromTable(table)
-					return store
+					store := triple.NewTripleStoreFromTable(table)
+					return store.Transpose()
 				}(),
 				r: []string{"src_ip|128.0.0.1", "server_ip|208.29.69.138", "src_ip|192.168.1.2", "server_ip|157.166.255.18", "src_ip|128.0.0.1", "server_ip|74.125.224.72"},
 				c: []string{"log_id|001", "log_id|001", "log_id|002", "log_id|002", "log_id|003", "log_id|003"},
