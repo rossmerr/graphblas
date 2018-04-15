@@ -47,6 +47,7 @@ func (s *Reader) Read() (r, c int, value float64, err error) {
 
 // ReadAll reads all the remaining records from r.
 func (s *Reader) ReadAll() (matrix [][]float64, err error) {
+	columnMax := 0
 	for {
 		r, c, value, err := s.Read()
 
@@ -54,21 +55,34 @@ func (s *Reader) ReadAll() (matrix [][]float64, err error) {
 			break
 		}
 
+		if columnMax < c {
+			columnMax = c
+		}
+
 		if len(matrix) < r {
-			count := len(matrix) - r
+			count := r - len(matrix)
 			for i := 0; i < count; i++ {
-				matrix = append(matrix, make([]float64, c))
+				matrix = append(matrix, make([]float64, columnMax))
 			}
 		}
 
-		if len(matrix[r]) < c {
-			count := len(matrix[r]) - c
+		if len(matrix[r-1]) < c {
+			count := columnMax - len(matrix[r-1])
+			for i := 0; i < count; i++ {
+				matrix[r-1] = append(matrix[r-1], 0)
+			}
+		}
+
+		matrix[r-1][c-1] = value
+	}
+
+	for r := range matrix {
+		if len(matrix[r]) < columnMax {
+			count := columnMax - len(matrix[r])
 			for i := 0; i < count; i++ {
 				matrix[r] = append(matrix[r], 0)
 			}
 		}
-
-		matrix[r][c] = value
 	}
 
 	return
