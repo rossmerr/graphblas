@@ -2,6 +2,7 @@ package triple
 
 import "github.com/RossMerr/Caudex.GraphBLAS/container/table"
 
+// Store is a triplestore for the storage and retrieval of triples
 type Store struct {
 	Triples []*Tuple
 }
@@ -15,6 +16,7 @@ type Tuple struct {
 
 type tripleStart map[string]int
 
+// NewTripleStoreFromTable returns a triple.Store
 func NewTripleStoreFromTable(t table.Table) *Store {
 	ts := tripleStart{}
 	store := &Store{Triples: make([]*Tuple, 0)}
@@ -26,6 +28,7 @@ func NewTripleStoreFromTable(t table.Table) *Store {
 	return store
 }
 
+// NewTripleStoreTransposeFromTable returns a triple.Store transposed
 func NewTripleStoreTransposeFromTable(t table.Table) *Store {
 	ts := tripleStart{}
 	store := &Store{Triples: make([]*Tuple, 0)}
