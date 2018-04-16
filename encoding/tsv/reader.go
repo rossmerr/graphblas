@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"io"
 	"strconv"
+
+	"github.com/RossMerr/Caudex.GraphBLAS"
 )
 
 // Reader Tab-Separated Values (TSV) file format
@@ -24,7 +26,7 @@ func NewReader(r io.Reader) *Reader {
 }
 
 // Read reads one record (a slice of fields) from r.
-func (s *Reader) Read() (r, c int, value float64, err error) {
+func (s *Reader) read() (r, c int, value float64, err error) {
 	record, err := s.csv.Read()
 
 	if err != nil {
@@ -46,13 +48,16 @@ func (s *Reader) Read() (r, c int, value float64, err error) {
 }
 
 // ReadAll reads all the remaining records from r.
-func (s *Reader) ReadAll() (matrix [][]float64, err error) {
+func (s *Reader) ReadAll() (GraphBLAS.Matrix, error) {
 	columnMax := 0
+	matrix := [][]float64{}
 	for {
-		r, c, value, err := s.Read()
+		r, c, value, err := s.read()
 
-		if err != nil {
+		if err == io.EOF {
 			break
+		} else if err != nil {
+			return nil, err
 		}
 
 		if columnMax < c {
@@ -76,6 +81,7 @@ func (s *Reader) ReadAll() (matrix [][]float64, err error) {
 		matrix[r-1][c-1] = value
 	}
 
+	// Set all zero elements in the matrix
 	for r := range matrix {
 		if len(matrix[r]) < columnMax {
 			count := columnMax - len(matrix[r])
@@ -85,5 +91,7 @@ func (s *Reader) ReadAll() (matrix [][]float64, err error) {
 		}
 	}
 
-	return
+	graph := GraphBLAS.NewDenseMatrixFromArray(matrix)
+
+	return graph, nil
 }

@@ -850,3 +850,89 @@ func TestMatrix_EnumerateZeros(t *testing.T) {
 		})
 	}
 }
+
+func TestMatrix_Symmetric(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 1)
+		m.Set(0, 1, 7)
+		m.Set(0, 2, 3)
+		m.Set(1, 0, 7)
+		m.Set(1, 1, 4)
+		m.Set(1, 2, -5)
+		m.Set(2, 0, 3)
+		m.Set(2, 1, -5)
+		m.Set(2, 2, 6)
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+		want bool
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(3, 3),
+			want: true,
+		},
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
+		// },
+		// {
+		// 	name: "CSRMatrix",
+		// 	s:    GraphBLAS.NewCSRMatrix(3, 3),
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			if got := GraphBLAS.Symmetric(tt.s); got != tt.want {
+				t.Errorf("%+v Symmetric = %+v, want %+v", tt.name, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_SkewSymmetric(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 0)
+		m.Set(0, 1, 2)
+		m.Set(0, 2, -1)
+		m.Set(1, 0, -2)
+		m.Set(1, 1, 0)
+		m.Set(1, 2, -4)
+		m.Set(2, 0, 1)
+		m.Set(2, 1, 4)
+		m.Set(2, 2, 0)
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+		want bool
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(3, 3),
+			want: true,
+		},
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
+		// },
+		// {
+		// 	name: "CSRMatrix",
+		// 	s:    GraphBLAS.NewCSRMatrix(3, 3),
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			if got := GraphBLAS.SkewSymmetric(tt.s); got != tt.want {
+				t.Errorf("%+v SkewSymmetric = %+v, want %+v", tt.name, got, tt.want)
+			}
+		})
+	}
+}

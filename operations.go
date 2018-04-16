@@ -153,3 +153,40 @@ func Equal(s, m Matrix) bool {
 func NotEqual(s, m Matrix) bool {
 	return !s.Equal(m)
 }
+
+// SkewSymmetric (or antisymmetric or antimetric) matrix is a square matrix whose transpose equals its negative
+func SkewSymmetric(s Matrix) bool {
+	r := s.Rows()
+	c := s.Columns()
+	if r != c {
+		return false
+	}
+
+	t := s.Transpose()
+	negativeTranspose := t.Negative()
+	return negativeTranspose.Equal(s)
+}
+
+// Symmetric matrix is a square matrix that is equal to its transpose
+func Symmetric(s Matrix) bool {
+	r := s.Rows()
+	c := s.Columns()
+	if r != c {
+		return false
+	}
+
+	t := s.Transpose()
+	return t.Equal(s)
+}
+
+// // Hermitian
+// func Hermitian(s Matrix) bool {
+// 	r := s.Rows()
+// 	c := s.Columns()
+// 	if r != c {
+// 		return false
+// 	}
+
+// 	t := s.Transpose()
+// 	return t.Equal(s)
+// }

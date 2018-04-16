@@ -1,24 +1,26 @@
-package tsv_test
+package mmio_test
 
 import (
 	"strings"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
-	"github.com/RossMerr/Caudex.GraphBLAS/encoding/tsv"
+	"github.com/RossMerr/Caudex.GraphBLAS/encoding/mmio"
 )
 
-func TestTSV_Reader(t *testing.T) {
+func TestMMIO_Reader(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
 		want GraphBLAS.Matrix
 	}{
 		{
-			name: "Tab-Separated Values Read Raw",
-			in: `"1"	"1"	10
-3	3	8
-"2"	"2"	"3"`,
+			name: "Matrix Market sparse ",
+			in: `%%MatrixMarket matrix coordinate real general
+			3 3 3
+			1 1 10
+3 3 8
+2 2 3`,
 			want: func() GraphBLAS.Matrix {
 				matrix := make([][]float64, 3)
 				matrix[0] = make([]float64, 3)
@@ -33,7 +35,7 @@ func TestTSV_Reader(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := tsv.NewReader(strings.NewReader(tt.in))
+			r := mmio.NewReader(strings.NewReader(tt.in))
 
 			if got, err := r.ReadAll(); err == nil {
 
