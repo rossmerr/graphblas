@@ -7,6 +7,7 @@ package GraphBLAS
 
 import (
 	"log"
+	"reflect"
 )
 
 // Multiply multiplies a matrix by another matrix
@@ -134,19 +135,72 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	sIterator := s.Enumerate()
-	mIterator := m.Enumerate()
-
-	if sIterator.HasNext() && mIterator.HasNext() {
-		sR, sC, sV := sIterator.Next()
-		mR, mC, mV := mIterator.Next()
-
-		if sR != mR || sC != mC || sV != mV {
+	// Have to do a type check as order is only guaranteed for same types
+	if reflect.TypeOf(s) == reflect.TypeOf(m) {
+		if s.Size() != m.Size() {
 			return false
+		}
+
+		sIterator := s.Enumerate()
+		mIterator := m.Enumerate()
+
+		for {
+			if sIterator.HasNext() && mIterator.HasNext() {
+				sR, sC, sV := sIterator.Next()
+				mR, mC, mV := mIterator.Next()
+
+				if sR != mR || sC != mC || sV != mV {
+					return false
+				}
+			} else {
+				break
+			}
+
+		}
+	} else { // If not the same type we can only iterator over one matrix as order is not guaranteed
+		var iterator Enumerate
+		var matrix Matrix
+		// Check for sparse matrix as its faster to use it's Iterator than do a At operation on
+		if SparseMatrix(s) {
+			iterator = s.Enumerate()
+			matrix = m
+		} else {
+			iterator = m.Enumerate()
+			matrix = s
+		}
+
+		for {
+			if iterator.HasNext() {
+				sR, sC, sV := iterator.Next()
+				mV := matrix.At(sR, sC)
+				if sV != mV {
+					return false
+				}
+			} else {
+				break
+			}
+
 		}
 	}
 
 	return true
+}
+
+// SparseMatrix is 's' a sparse matrix
+func SparseMatrix(s Matrix) bool {
+	if _, ok := s.(*CSCMatrix); ok {
+		return true
+	}
+
+	if _, ok := s.(*CSRMatrix); ok {
+		return true
+	}
+
+	if _, ok := s.(*SparseVector); ok {
+		return true
+	}
+
+	return false
 }
 
 // NotEqual the two matrices are not equal

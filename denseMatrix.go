@@ -101,7 +101,7 @@ func (s *DenseMatrix) ColumnsAt(c int) Vector {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	columns := NewSparseVector(s.r)
+	columns := NewDenseVector(s.r)
 
 	for r := 0; r < s.r; r++ {
 		columns.SetVec(r, s.data[r][c])
@@ -116,7 +116,7 @@ func (s *DenseMatrix) RowsAt(r int) Vector {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	rows := NewSparseVector(s.c)
+	rows := NewDenseVector(s.c)
 	for i := 0; i < s.c; i++ {
 		rows.SetVec(i, s.data[r][i])
 	}
