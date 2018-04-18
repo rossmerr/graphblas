@@ -135,8 +135,12 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	// Have to do a type check as order is only guaranteed for same types
+	// Using two Enumerators is the fastest way to iterate over matrices for a
+	// equality checks of all values.
+	// However that only work's when they are of the same type as the order is
+	// not guaranteed and zero values are not returned for sparse matrices
 	if reflect.TypeOf(s) == reflect.TypeOf(m) {
+		// Same storage method so should have the same size
 		if s.Size() != m.Size() {
 			return false
 		}
@@ -157,30 +161,35 @@ func Equal(s, m Matrix) bool {
 			}
 
 		}
-	} else { // If not the same type we can only iterator over one matrix as order is not guaranteed
-		var iterator Enumerate
-		var matrix Matrix
-		// Check for sparse matrix as its faster to use it's Iterator than do a At operation on
-		if SparseMatrix(s) {
-			iterator = s.Enumerate()
-			matrix = m
-		} else {
-			iterator = m.Enumerate()
-			matrix = s
-		}
 
-		for {
-			if iterator.HasNext() {
-				sR, sC, sV := iterator.Next()
-				mV := matrix.At(sR, sC)
-				if sV != mV {
-					return false
-				}
-			} else {
-				break
+		return true
+	}
+
+	// If not the same type we can only enumerate over one matrix as order is not guaranteed
+	var iterator Enumerate
+	var matrix Matrix
+
+	// Check for a sparse matrix as we want to use its Enumerate operation
+	// Because any At operation on a sparse matrix is expensive
+	if SparseMatrix(s) {
+		iterator = s.Enumerate()
+		matrix = m
+	} else {
+		iterator = m.Enumerate()
+		matrix = s
+	}
+
+	for {
+		if iterator.HasNext() {
+			sR, sC, sV := iterator.Next()
+			mV := matrix.At(sR, sC)
+			if sV != mV {
+				return false
 			}
-
+		} else {
+			break
 		}
+
 	}
 
 	return true
