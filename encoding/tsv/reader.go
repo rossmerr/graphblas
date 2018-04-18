@@ -10,7 +10,6 @@ import (
 
 // Reader Tab-Separated Values (TSV) file format
 // (Row, Col, Value) tuple describing the adjacency matrix of the graph.
-// Adjacency matrix is of size Num_vertices x Num_vertices
 type Reader struct {
 	csv *csv.Reader
 }

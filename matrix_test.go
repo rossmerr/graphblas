@@ -824,7 +824,7 @@ func TestMatrix_EnumerateZeros(t *testing.T) {
 	// 	name: "CSCMatrix",
 	// 	s:    GraphBLAS.NewCSCMatrix(2, 3),
 	// },
-	// {
+	//{
 	// 	name: "CSRMatrix",
 	// 	s:    GraphBLAS.NewCSRMatrix(2, 3),
 	// },

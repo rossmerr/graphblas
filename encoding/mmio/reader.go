@@ -10,13 +10,6 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
-type format string
-type typeCode string
-
-type symmetry string
-
-type data string
-
 const (
 	stringEmpty string = ""
 	comment     string = "%"
@@ -25,8 +18,7 @@ const (
 	header string = comment + comment + "MatrixMarket"
 
 	// object
-	matrix string = "matrix"
-
+	matrix     string = "matrix"
 	coordinate string = "coordinate"
 
 	// data
