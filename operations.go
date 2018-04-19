@@ -140,7 +140,8 @@ func Equal(s, m Matrix) bool {
 	// However that only work's when they are of the same type as the order is
 	// not guaranteed and zero values are not returned for sparse matrices
 	if reflect.TypeOf(s) == reflect.TypeOf(m) {
-		// Same storage method so should have the same size
+		// Because they are the same type they have the same storage method
+		// so should or should not have the same size
 		if s.Size() != m.Size() {
 			return false
 		}
@@ -170,7 +171,7 @@ func Equal(s, m Matrix) bool {
 	var matrix Matrix
 
 	// Check for a sparse matrix as we want to use its Enumerate operation
-	// Because any At operation on a sparse matrix is expensive
+	// Because the use of the At operation on a sparse matrix is expensive
 	if SparseMatrix(s) {
 		iterator = s.Enumerate()
 		matrix = m

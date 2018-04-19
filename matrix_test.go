@@ -875,14 +875,16 @@ func TestMatrix_Symmetric(t *testing.T) {
 			s:    GraphBLAS.NewDenseMatrix(3, 3),
 			want: true,
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    GraphBLAS.NewCSRMatrix(3, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(3, 3),
+			want: true,
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(3, 3),
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -918,14 +920,16 @@ func TestMatrix_SkewSymmetric(t *testing.T) {
 			s:    GraphBLAS.NewDenseMatrix(3, 3),
 			want: true,
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    GraphBLAS.NewCSRMatrix(3, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(3, 3),
+			want: true,
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(3, 3),
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
