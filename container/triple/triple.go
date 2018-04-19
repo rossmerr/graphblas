@@ -1,3 +1,8 @@
+// Copyright (c) 2018 Ross Merrigan
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 package triple
 
 import "github.com/RossMerr/Caudex.GraphBLAS/container/table"
