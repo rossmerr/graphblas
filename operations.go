@@ -47,9 +47,18 @@ func Add(s, m Matrix) Matrix {
 		log.Panicf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	matrix := m.Copy()
+	var iterator Enumerate
+	var matrix Matrix
 
-	for iterator := s.Enumerate(); iterator.HasNext(); {
+	if SparseMatrix(s) {
+		iterator = s.Enumerate()
+		matrix = m.Copy()
+	} else {
+		iterator = m.Enumerate()
+		matrix = s.Copy()
+	}
+
+	for iterator.HasNext() {
 		r, c, value := iterator.Next()
 		matrix.Update(r, c, func(v float64) float64 {
 			return value + v
