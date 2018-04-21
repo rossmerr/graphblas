@@ -797,60 +797,6 @@ func TestMatrix_FromArray(t *testing.T) {
 	}
 }
 
-func TestMatrix_EnumerateZeros(t *testing.T) {
-
-	setup := func(m GraphBLAS.Matrix) {
-		m.Set(0, 0, 6)
-		m.Set(0, 1, 4)
-		m.Set(0, 2, 0)
-		m.Set(1, 0, 1)
-		m.Set(1, 1, -9)
-		m.Set(1, 2, 0)
-	}
-
-	want := GraphBLAS.NewDenseMatrix(2, 3)
-	want.Set(0, 0, 6)  // 0
-	want.Set(0, 1, 4)  // 1
-	want.Set(0, 2, 0)  // 2
-	want.Set(1, 0, 1)  // 3
-	want.Set(1, 1, -9) // 4
-	want.Set(1, 2, 0)  // 5
-
-	tests := []struct {
-		name string
-		s    *GraphBLAS.CSCMatrix
-	}{
-	// {
-	// 	name: "CSCMatrix",
-	// 	s:    GraphBLAS.NewCSCMatrix(2, 3),
-	// },
-	//{
-	// 	name: "CSRMatrix",
-	// 	s:    GraphBLAS.NewCSRMatrix(2, 3),
-	// },
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			setup(tt.s)
-
-			iterator := tt.s.EnumerateZeros()
-			wantIterator := want.Enumerate()
-			iteration := 0
-
-			for iterator.HasNext() && wantIterator.HasNext() {
-				r, c, value := iterator.Next()
-				wantR, wantC, wantValue := wantIterator.Next()
-				if r != wantR || c != wantC || value != wantValue {
-					t.Errorf("error %+v Iteration = %+v, EnumerateZeros = %+v, %+v, %+v want %+v, %+v, %+v", tt.name, iteration, r, c, value, wantR, wantC, wantValue)
-				} else {
-					t.Errorf("%+v Iteration = %+v, EnumerateZeros = %+v, %+v, %+v want %+v, %+v, %+v", tt.name, iteration, r, c, value, wantR, wantC, wantValue)
-				}
-				iteration++
-			}
-		})
-	}
-}
-
 func TestMatrix_Symmetric(t *testing.T) {
 
 	setup := func(m GraphBLAS.Matrix) {
