@@ -12,6 +12,6 @@ before_install:
   - docker pull uber/go-torch
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
-after_script:
+after_success:
   - go test -bench=. -cpuprofile='cpu.prof' -memprofile='mem.prof'
   - docker run uber/go-torch -s $HOME/gopath/src/github.com/RossMerr/Caudex.GraphBLAS/Caudex.GraphBLAS.test 'cpu.prof' -p > cpu.svg
