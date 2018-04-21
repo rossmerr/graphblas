@@ -7,10 +7,19 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
+var denseMatrix GraphBLAS.Matrix
+var csrMatrix GraphBLAS.Matrix
+var cscMatrix GraphBLAS.Matrix
+
+func init() {
+	denseMatrix = dense(100)
+	csrMatrix = csr(100)
+	cscMatrix = csc(100)
+}
+
 func BenchmarkMatrixDense(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		c := dense(1)
-		v := c.At(0, 0)
+		v := denseMatrix.At(50, 50)
 		if !(v >= 0) {
 			b.Fatal("assert failed")
 		}
@@ -20,8 +29,7 @@ func BenchmarkMatrixDense(b *testing.B) {
 
 func BenchmarkMatrixCSR(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		c := csr(1)
-		v := c.At(0, 0)
+		v := csrMatrix.At(50, 50)
 		if !(v >= 0) {
 			b.Fatal("assert failed")
 		}
@@ -30,11 +38,46 @@ func BenchmarkMatrixCSR(b *testing.B) {
 
 func BenchmarkMatrixCSC(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		c := csc(1)
-		v := c.At(0, 0)
+		v := cscMatrix.At(50, 50)
 		if !(v >= 0) {
 			b.Fatal("assert failed")
 		}
+	}
+}
+
+func BenchmarkMatrixDenseMultiply(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		denseMatrix.Multiply(denseMatrix)
+	}
+}
+
+func BenchmarkMatrixCSRMultiply(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		csrMatrix.Multiply(denseMatrix)
+	}
+}
+
+func BenchmarkMatrixCSCMultiply(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		cscMatrix.Multiply(denseMatrix)
+	}
+}
+
+func BenchmarkMatrixDenseAdd(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		denseMatrix.Add(denseMatrix)
+	}
+}
+
+func BenchmarkMatrixCSRAdd(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		csrMatrix.Add(denseMatrix)
+	}
+}
+
+func BenchmarkMatrixCSCAdd(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		cscMatrix.Add(denseMatrix)
 	}
 }
 
