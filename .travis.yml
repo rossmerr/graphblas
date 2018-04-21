@@ -1,8 +1,10 @@
 language: go
-sudo: false
+sudo: required
 go: 
   - 1.9
-sudo: required
+branches:
+  only:
+  - master
 services:
   - docker
 before_install:
@@ -12,7 +14,4 @@ script:
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -bench=. -cpuprofile='cpu.prof' -memprofile='mem.prof'
 after_script:
-  - docker run uber/go-torch -s $HOME/gopath/src/github.com/RossMerr/Caudex.GraphBLAS/cpu.prof -p > torch.svg
-branches:
-  only:
-  - master
+  - docker run uber/go-torch -s $HOME/gopath/src/github.com/RossMerr/Caudex.GraphBLAS/Caudex.GraphBLAS.test 'cpu.prof' -p > prof/torch.svg
