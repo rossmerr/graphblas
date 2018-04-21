@@ -4,6 +4,8 @@ go:
   - 1.9
 before_install:
   - go get github.com/mattn/goveralls
+  - go get github.com/uber/go-torch
+  - $GOPATH/src/github.com/uber/go-torch git clone https://github.com/brendangregg/FlameGraph.git
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
 branches:
