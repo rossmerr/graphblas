@@ -2,14 +2,16 @@ language: go
 sudo: false
 go: 
   - 1.9
+sudo: required
+services:
+  - docker
 before_install:
   - go get github.com/mattn/goveralls
-  - go get github.com/Masterminds/glide
-  - go get github.com/uber/go-torch
-  - git clone https://github.com/brendangregg/FlameGraph.git $GOPATH/src/github.com/brendangregg/FlameGraph
-  - mv $GOPATH/src/github.com/brendangregg/FlameGraph $GOPATH/src/github.com/uber/go-torch
+  - docker pull uber/go-torch
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
+after_script:
+  - docker run uber/go-torch -s $HOME/gopath/src/github.com/RossMerr/Caudex.GraphBLAS/cpu.prof -p > torch.svg
 branches:
   only:
   - master
