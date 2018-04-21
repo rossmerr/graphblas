@@ -18,6 +18,7 @@ func init() {
 }
 
 func BenchmarkMatrixDense(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		v := denseMatrix.At(50, 50)
 		if !(v >= 0) {
@@ -28,6 +29,7 @@ func BenchmarkMatrixDense(b *testing.B) {
 }
 
 func BenchmarkMatrixCSR(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		v := csrMatrix.At(50, 50)
 		if !(v >= 0) {
@@ -37,6 +39,7 @@ func BenchmarkMatrixCSR(b *testing.B) {
 }
 
 func BenchmarkMatrixCSC(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		v := cscMatrix.At(50, 50)
 		if !(v >= 0) {
@@ -46,36 +49,42 @@ func BenchmarkMatrixCSC(b *testing.B) {
 }
 
 func BenchmarkMatrixDenseMultiply(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		denseMatrix.Multiply(denseMatrix)
 	}
 }
 
 func BenchmarkMatrixCSRMultiply(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		csrMatrix.Multiply(denseMatrix)
 	}
 }
 
 func BenchmarkMatrixCSCMultiply(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		cscMatrix.Multiply(denseMatrix)
 	}
 }
 
 func BenchmarkMatrixDenseAdd(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		denseMatrix.Add(denseMatrix)
 	}
 }
 
 func BenchmarkMatrixCSRAdd(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		csrMatrix.Add(denseMatrix)
 	}
 }
 
 func BenchmarkMatrixCSCAdd(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		cscMatrix.Add(denseMatrix)
 	}
