@@ -13,7 +13,7 @@ import (
 	"github.com/RossMerr/Caudex.GraphBLAS/encoding/tsv"
 )
 
-func TestTSV_Reader(t *testing.T) {
+func TestTSV_ReadToMatrix(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
@@ -45,13 +45,13 @@ func TestTSV_Reader(t *testing.T) {
 				for r := 0; r < tt.want.Rows(); r++ {
 					for c := 0; c < tt.want.Columns(); c++ {
 						if got.At(r, c) != tt.want.At(r, c) {
-							t.Errorf("%+v ReadAll = got %+v, want %+v", tt.name, got.At(r, c), tt.want.At(r, c))
+							t.Errorf("%+v ReadToMatrix = got %+v, want %+v", tt.name, got.At(r, c), tt.want.At(r, c))
 						}
 					}
 				}
 
 			} else {
-				t.Errorf("%+v ReadAll error = %+v", tt.name, err)
+				t.Errorf("%+v ReadToMatrix error = %+v", tt.name, err)
 			}
 		})
 	}
