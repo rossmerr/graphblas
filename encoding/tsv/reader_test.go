@@ -40,7 +40,7 @@ func TestTSV_Reader(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			r := tsv.NewReader(strings.NewReader(tt.in))
 
-			if got, err := r.ReadAll(); err == nil {
+			if got, err := r.ReadToMatrix(); err == nil {
 
 				for r := 0; r < tt.want.Rows(); r++ {
 					for c := 0; c < tt.want.Columns(); c++ {

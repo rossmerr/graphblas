@@ -128,8 +128,8 @@ func (s *Reader) header() (string, error) {
 	return record[2], nil
 }
 
-// ReadAll reads all the remaining records from r.
-func (s *Reader) ReadAll() (GraphBLAS.Matrix, error) {
+// ReadToMatrix reads all records from r.
+func (s *Reader) ReadToMatrix() (GraphBLAS.Matrix, error) {
 
 	_, err := s.header()
 

@@ -6,14 +6,16 @@
 package table
 
 import (
+	"bufio"
 	"io"
+	"strings"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
-	"github.com/RossMerr/Caudex.GraphBLAS/container"
 )
 
 const (
-	emptyFloat64 = 0.0
+	emptyFloat64        = 0.0
+	stringEmpty  string = ""
 )
 
 // Table is a set of data elements using a model of columns and rows
@@ -42,11 +44,15 @@ func newTable(r, c int) *table {
 }
 
 // NewTableFromReader returns a table.Table
-func NewTableFromReader(r, c int, reader container.Reader) (Table, error) {
+func NewTableFromReader(r, c int, reader io.Reader) (Table, error) {
 	table := newTable(r, c)
 
+	container := container{
+		text: bufio.NewReader(reader),
+	}
+
 	// Read the header
-	line, err := reader.Read()
+	line, err := container.Read()
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +62,7 @@ func NewTableFromReader(r, c int, reader container.Reader) (Table, error) {
 	// Read the body
 	count := 0
 	for {
-		line, err := reader.Read()
+		line, err := container.Read()
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -133,4 +139,24 @@ func (s *table) Iterator(i func(string, string, interface{})) bool {
 	}
 
 	return false
+}
+
+type container struct {
+	text *bufio.Reader
+}
+
+func (s *container) readLine() (line string, err error) {
+	b, _, err := s.text.ReadLine()
+
+	if err != nil {
+		return stringEmpty, err
+	}
+
+	return string(b), nil
+}
+
+func (s *container) Read() (record []string, err error) {
+	line, err := s.readLine()
+	split := strings.Split(line, " ")
+	return split, err
 }

@@ -51,8 +51,8 @@ func (s *Reader) read() (r, c int, value float64, err error) {
 	return
 }
 
-// ReadAll reads all the remaining records from r.
-func (s *Reader) ReadAll() (GraphBLAS.Matrix, error) {
+// ReadToMatrix reads all records from r.
+func (s *Reader) ReadToMatrix() (GraphBLAS.Matrix, error) {
 	columnMax := 0
 	matrix := [][]float64{}
 	for {
