@@ -16,7 +16,7 @@ type Store struct {
 type Triple struct {
 	Row    string
 	Column string
-	Value  float64
+	Value  interface{}
 }
 
 type tripleStart map[string]int
@@ -26,7 +26,7 @@ func NewTripleStoreFromTable(t table.Table) *Store {
 	ts := tripleStart{}
 	store := &Store{Triples: make([]*Triple, 0)}
 
-	t.Iterator(func(r, c string, v float64) {
+	t.Iterator(func(r, c string, v interface{}) {
 		store.newTriple(ts, r, c, v)
 	})
 
@@ -38,14 +38,14 @@ func NewTripleStoreTransposeFromTable(t table.Table) *Store {
 	ts := tripleStart{}
 	store := &Store{Triples: make([]*Triple, 0)}
 
-	t.Iterator(func(r, c string, v float64) {
+	t.Iterator(func(r, c string, v interface{}) {
 		store.newTriple(ts, c, r, v)
 	})
 
 	return store
 }
 
-func (s *Store) newTriple(ts tripleStart, r, c string, v float64) {
+func (s *Store) newTriple(ts tripleStart, r, c string, v interface{}) {
 	triple := &Triple{Row: r, Column: c, Value: v}
 
 	if start, ok := ts[r]; ok {

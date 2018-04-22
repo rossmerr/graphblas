@@ -12,12 +12,17 @@ import (
 	"github.com/RossMerr/Caudex.GraphBLAS/container"
 )
 
+const (
+	emptyFloat64 = 0.0
+)
+
 // Table is a set of data elements using a model of columns and rows
 type Table interface {
-	Iterator(i func(string, string, float64)) bool
+	Iterator(i func(string, string, interface{})) bool
 	Columns() int
 	Rows() int
-	Get(r, c string) float64
+	Get(r, c string) interface{}
+	GetFloat64(r, c string) float64
 }
 
 type table struct {
@@ -97,7 +102,7 @@ func (s *table) Rows() int {
 }
 
 // Get (unoptimized) returns the value of a table element at r-th, c-th
-func (s *table) Get(r, c string) float64 {
+func (s *table) Get(r, c string) interface{} {
 	cPointer := s.columns[c]
 	rPointer := -1
 	for i, value := range s.rowIndices {
@@ -110,8 +115,16 @@ func (s *table) Get(r, c string) float64 {
 	return s.matrix.At(rPointer, cPointer)
 }
 
+func (s *table) GetFloat64(r, c string) float64 {
+	v := s.Get(r, c)
+	if value, ok := v.(float64); ok {
+		return value
+	}
+	return emptyFloat64
+}
+
 // Iterator iterates through all non-zero elements, order is not guaranteed
-func (s *table) Iterator(i func(string, string, float64)) bool {
+func (s *table) Iterator(i func(string, string, interface{})) bool {
 	enumerator := s.matrix.Enumerate()
 	if enumerator.HasNext() {
 		r, c, v := enumerator.Next()
