@@ -14,4 +14,5 @@ script:
   - $GOPATH/bin/goveralls -service=travis-ci
 after_success:
   - go test -bench=. -cpuprofile='cpu.prof' -memprofile='mem.prof'
+  - go test ./math/strassen -bench=. -cpuprofile='cpu.strassen.prof' -memprofile='mem.strassen.prof'
   - docker run uber/go-torch -s $HOME/gopath/src/github.com/RossMerr/Caudex.GraphBLAS/Caudex.GraphBLAS.test 'cpu.prof' -p > cpu.svg

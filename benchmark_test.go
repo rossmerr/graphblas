@@ -17,7 +17,7 @@ func init() {
 	cscMatrix = csc(100)
 }
 
-func BenchmarkMatrixDense(b *testing.B) {
+func BenchmarkMatrixDenseAt(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		v := denseMatrix.At(50, 50)
@@ -27,7 +27,7 @@ func BenchmarkMatrixDense(b *testing.B) {
 	}
 }
 
-func BenchmarkMatrixCSR(b *testing.B) {
+func BenchmarkMatrixCSRAt(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		v := csrMatrix.At(50, 50)
@@ -37,7 +37,7 @@ func BenchmarkMatrixCSR(b *testing.B) {
 	}
 }
 
-func BenchmarkMatrixCSC(b *testing.B) {
+func BenchmarkMatrixCSCAt(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		v := cscMatrix.At(50, 50)
