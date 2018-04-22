@@ -1,10 +1,11 @@
-package GraphBLAS_test
+package strassen_test
 
 import (
 	"math/rand"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
+	"github.com/RossMerr/Caudex.GraphBLAS/math/strassen"
 )
 
 var denseMatrix GraphBLAS.Matrix
@@ -17,75 +18,26 @@ func init() {
 	cscMatrix = csc(100)
 }
 
-func BenchmarkMatrixDense(b *testing.B) {
+func BenchmarkMatrixDenseMultiplyStrassen(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		v := denseMatrix.At(50, 50)
-		if !(v >= 0) {
-			b.Fatal("assert failed")
-		}
+		strassen.Multiply(denseMatrix, denseMatrix)
 	}
 }
 
-func BenchmarkMatrixCSR(b *testing.B) {
+func BenchmarkMatrixCSRMultiplyStrassen(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		v := csrMatrix.At(50, 50)
-		if !(v >= 0) {
-			b.Fatal("assert failed")
-		}
+		strassen.Multiply(csrMatrix, denseMatrix)
+
 	}
 }
 
-func BenchmarkMatrixCSC(b *testing.B) {
+func BenchmarkMatrixCSCMultiplyStrassen(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		v := cscMatrix.At(50, 50)
-		if !(v >= 0) {
-			b.Fatal("assert failed")
-		}
-	}
-}
+		strassen.Multiply(cscMatrix, denseMatrix)
 
-func BenchmarkMatrixDenseMultiply(b *testing.B) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		denseMatrix.Multiply(denseMatrix)
-	}
-}
-
-func BenchmarkMatrixCSRMultiply(b *testing.B) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		csrMatrix.Multiply(denseMatrix)
-	}
-}
-
-func BenchmarkMatrixCSCMultiply(b *testing.B) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		cscMatrix.Multiply(denseMatrix)
-	}
-}
-
-func BenchmarkMatrixDenseAdd(b *testing.B) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		denseMatrix.Add(denseMatrix)
-	}
-}
-
-func BenchmarkMatrixCSRAdd(b *testing.B) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		csrMatrix.Add(denseMatrix)
-	}
-}
-
-func BenchmarkMatrixCSCAdd(b *testing.B) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		cscMatrix.Add(denseMatrix)
 	}
 }
 
