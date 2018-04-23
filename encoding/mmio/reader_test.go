@@ -6,6 +6,7 @@
 package mmio_test
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 
@@ -75,7 +76,26 @@ func TestMMIO_ReadToTripleStore(t *testing.T) {
 3 3 8
 2 2 3`,
 			want: func() *triple.Store {
-				store := &triple.Store{}
+				triples := []*triple.Triple{
+					&triple.Triple{
+						Row:    "1",
+						Column: "1",
+						Value:  float64(10),
+					},
+					&triple.Triple{
+						Row:    "3",
+						Column: "3",
+						Value:  float64(8),
+					},
+					&triple.Triple{
+						Row:    "2",
+						Column: "2",
+						Value:  float64(3),
+					},
+				}
+
+				store := &triple.Store{Triples: triples}
+
 				return store
 			}(),
 		},
@@ -84,10 +104,14 @@ func TestMMIO_ReadToTripleStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			r := mmio.NewReader(strings.NewReader(tt.in))
 			if got, err := r.ReadToTripleStore(); err == nil {
-				for i := 0; i < len(tt.want.Triples); i++ {
-					if tt.want.Triples[i] != got.Triples[i] {
-						t.Errorf("%+v ReadToTripleStore = got %+v, want %+v", tt.name, got.Triples[i], tt.want.Triples[i])
+				if len(tt.want.Triples) == len(got.Triples) {
+					for i := 0; i < len(tt.want.Triples); i++ {
+						if !reflect.DeepEqual(tt.want.Triples[i], got.Triples[i]) {
+							t.Errorf("%+v ReadToTripleStore = got %+v, want %+v", tt.name, got.Triples[i], tt.want.Triples[i])
+						}
 					}
+				} else {
+					t.Errorf("%+v ReadToTripleStore length miss match = got %+v, want %+v", tt.name, len(got.Triples), len(tt.want.Triples))
 				}
 			} else {
 				t.Errorf("%+v ReadToTripleStore error = %+v", tt.name, err)
