@@ -5,6 +5,6 @@
 
 A sparse linear algebra library
 
-Working in progress features: associative arrays, fuzzy algebra, and distributed arrays.
+Work in progress: associative arrays, fuzzy algebra, and distributed arrays.
 
 
