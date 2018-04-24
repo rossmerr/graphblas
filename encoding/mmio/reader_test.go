@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/RossMerr/Caudex.GraphBLAS/container/triple"
+	"github.com/RossMerr/Caudex.GraphBLAS/container/triples"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 	"github.com/RossMerr/Caudex.GraphBLAS/encoding/mmio"
@@ -62,11 +62,11 @@ func TestMMIO_ReadToMatrix(t *testing.T) {
 	}
 }
 
-func TestMMIO_ReadToTripleStore(t *testing.T) {
+func TestMMIO_ReadToTriples(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
-		want *triple.Store
+		want []*triples.Triple
 	}{
 		{
 			name: "Matrix Market sparse",
@@ -75,46 +75,43 @@ func TestMMIO_ReadToTripleStore(t *testing.T) {
 			1 1 10
 3 3 8
 2 2 3`,
-			want: func() *triple.Store {
-				triples := []*triple.Triple{
-					&triple.Triple{
+			want: func() []*triples.Triple {
+				triples := []*triples.Triple{
+					&triples.Triple{
 						Row:    "1",
 						Column: "1",
 						Value:  float64(10),
 					},
-					&triple.Triple{
+					&triples.Triple{
 						Row:    "3",
 						Column: "3",
 						Value:  float64(8),
 					},
-					&triple.Triple{
+					&triples.Triple{
 						Row:    "2",
 						Column: "2",
 						Value:  float64(3),
 					},
 				}
-
-				store := &triple.Store{Triples: triples}
-
-				return store
+				return triples
 			}(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := mmio.NewReader(strings.NewReader(tt.in))
-			if got, err := r.ReadToTripleStore(); err == nil {
-				if len(tt.want.Triples) == len(got.Triples) {
-					for i := 0; i < len(tt.want.Triples); i++ {
-						if !reflect.DeepEqual(tt.want.Triples[i], got.Triples[i]) {
-							t.Errorf("%+v ReadToTripleStore = got %+v, want %+v", tt.name, got.Triples[i], tt.want.Triples[i])
+			if got, err := r.ReadToTriples(); err == nil {
+				if len(tt.want) == len(got) {
+					for i := 0; i < len(tt.want); i++ {
+						if !reflect.DeepEqual(tt.want[i], got[i]) {
+							t.Errorf("%+v ReadToTriples = got %+v, want %+v", tt.name, got[i], tt.want[i])
 						}
 					}
 				} else {
-					t.Errorf("%+v ReadToTripleStore length miss match = got %+v, want %+v", tt.name, len(got.Triples), len(tt.want.Triples))
+					t.Errorf("%+v ReadToTriples length miss match = got %+v, want %+v", tt.name, len(got), len(tt.want))
 				}
 			} else {
-				t.Errorf("%+v ReadToTripleStore error = %+v", tt.name, err)
+				t.Errorf("%+v ReadToTriples error = %+v", tt.name, err)
 			}
 		})
 	}

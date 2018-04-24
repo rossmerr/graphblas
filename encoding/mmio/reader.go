@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
-	"github.com/RossMerr/Caudex.GraphBLAS/container/triple"
+	"github.com/RossMerr/Caudex.GraphBLAS/container/triples"
 )
 
 const (
@@ -159,8 +159,8 @@ func (s *Reader) ReadToMatrix() (GraphBLAS.Matrix, error) {
 	}
 }
 
-// ReadToTripleStore reads all records from r and returns a TripleStore
-func (s *Reader) ReadToTripleStore() (*triple.Store, error) {
+// ReadToTriples reads all records from r and returns a Triples
+func (s *Reader) ReadToTriples() ([]*triples.Triple, error) {
 	_, err := s.header()
 
 	if err != nil {
@@ -173,20 +173,18 @@ func (s *Reader) ReadToTripleStore() (*triple.Store, error) {
 		return nil, err
 	}
 
-	store := &triple.Store{
-		Triples: make([]*triple.Triple, 0),
-	}
+	tt := make([]*triples.Triple, 0)
 
 	for {
 		r, c, value, err = s.read()
 
 		if err == io.EOF {
-			return store, nil
+			return tt, nil
 		} else if err != nil {
-			return nil, err
+			return tt, err
 		}
 
-		store.Triples = append(store.Triples, &triple.Triple{
+		tt = append(tt, &triples.Triple{
 			Row:    strconv.Itoa(r),
 			Column: strconv.Itoa(c),
 			Value:  value,

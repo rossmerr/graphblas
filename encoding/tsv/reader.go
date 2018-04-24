@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/RossMerr/Caudex.GraphBLAS"
+	"github.com/RossMerr/Caudex.GraphBLAS/container/triples"
 )
 
 // Reader Tab-Separated Values (TSV) file format
@@ -98,4 +99,25 @@ func (s *Reader) ReadToMatrix() (GraphBLAS.Matrix, error) {
 	graph := GraphBLAS.NewDenseMatrixFromArray(matrix)
 
 	return graph, nil
+}
+
+// ReadToTriples reads all records from r and returns a Triples
+func (s *Reader) ReadToTriples() ([]*triples.Triple, error) {
+	tt := make([]*triples.Triple, 0)
+	for {
+		r, c, value, err := s.read()
+
+		if err == io.EOF {
+			return tt, nil
+		} else if err != nil {
+			return tt, err
+		}
+
+		tt = append(tt, &triples.Triple{
+			Row:    strconv.Itoa(r),
+			Column: strconv.Itoa(c),
+			Value:  value,
+		})
+
+	}
 }
