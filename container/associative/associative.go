@@ -1,5 +1,9 @@
 package associative
 
+import (
+	"github.com/RossMerr/Caudex.GraphBLAS/container/triples"
+)
+
 // Array associative array
 type Array interface {
 	// Enumerate iterates through all elements
@@ -9,10 +13,10 @@ type Array interface {
 	Size() int
 
 	// At returns the value of a array element at n-th
-	At(n string) interface{}
-	Append(n string, value interface{})
-	Update(n string, value interface{})
-	Delete(n string) interface{}
+	At(n string) *triples.Triple
+	Append(n string, value *triples.Triple)
+	Update(n string, value *triples.Triple)
+	Delete(n string) *triples.Triple
 }
 
 // Enumerate iterates over the array
@@ -21,11 +25,11 @@ type Enumerate interface {
 	HasNext() bool
 
 	// Next move the iterator over the array
-	Next() (n string, v interface{})
+	Next() (n string, v *triples.Triple)
 }
 
 type array struct {
-	elements map[string]interface{}
+	elements map[string]*triples.Triple
 	index    []string
 }
 
@@ -40,20 +44,20 @@ func (s *array) Size() int {
 }
 
 // At returns the value of a array element at n-th
-func (s *array) At(n string) interface{} {
+func (s *array) At(n string) *triples.Triple {
 	return s.elements[n]
 }
 
-func (s *array) Append(n string, value interface{}) {
+func (s *array) Append(n string, value *triples.Triple) {
 	s.Update(n, value)
 	s.index = append(s.index, n)
 }
 
-func (s *array) Update(n string, value interface{}) {
+func (s *array) Update(n string, value *triples.Triple) {
 	s.elements[n] = value
 }
 
-func (s *array) Delete(n string) interface{} {
+func (s *array) Delete(n string) *triples.Triple {
 	value := s.elements[n]
 	delete(s.elements, n)
 	for i, v := range s.index {
@@ -90,7 +94,7 @@ func (s *arrayIterator) HasNext() bool {
 }
 
 // Next moves the iterator and returns the index and value
-func (s *arrayIterator) Next() (n string, v interface{}) {
+func (s *arrayIterator) Next() (n string, v *triples.Triple) {
 	p := s.last
 	s.last++
 	i := s.array.index[p]
