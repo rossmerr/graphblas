@@ -20,6 +20,8 @@ type Triple struct {
 func NewTriplesFromTable(t table.Table) []*Triple {
 	triples := make([]*Triple, 0)
 
+	t.ReadAll()
+
 	t.Iterator(func(r, c string, v interface{}) {
 		triple := &Triple{Row: r, Column: c, Value: v}
 		triples = append(triples, triple)
@@ -31,6 +33,8 @@ func NewTriplesFromTable(t table.Table) []*Triple {
 // NewTripleTransposeFromTable returns a []*Triple transposed
 func NewTripleTransposeFromTable(t table.Table) []*Triple {
 	triples := make([]*Triple, 0)
+
+	t.ReadAll()
 
 	t.Iterator(func(r, c string, v interface{}) {
 		triple := &Triple{Row: c, Column: r, Value: v}

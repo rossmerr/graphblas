@@ -20,6 +20,7 @@ const (
 
 // Table is a set of data elements using a model of columns and rows
 type Table interface {
+	ReadAll() error
 	Iterator(i func(string, string, interface{})) bool
 	Columns() int
 	Rows() int
@@ -32,57 +33,31 @@ type table struct {
 	rowIndices    []string
 	columnIndices []string
 	columns       map[string]int
+	delimiter     rune
+	reader        *container
 }
 
-func newTable(r, c int) *table {
+// NewTableFromReader returns a table.Table
+func NewTableFromReader(r, c int, reader io.Reader) Table {
 	return &table{
 		matrix:        GraphBLAS.NewCSCMatrix(r, c),
 		rowIndices:    make([]string, r),
 		columnIndices: make([]string, c),
 		columns:       make(map[string]int, c),
+		delimiter:     '|',
+		reader: &container{
+			text: bufio.NewReader(reader),
+		},
 	}
-}
-
-// NewTableFromReader returns a table.Table
-func NewTableFromReader(r, c int, reader io.Reader) (Table, error) {
-	table := newTable(r, c)
-
-	container := container{
-		text: bufio.NewReader(reader),
-	}
-
-	// Read the header
-	line, err := container.Read()
-	if err != nil {
-		return nil, err
-	}
-
-	header := line
-
-	// Read the body
-	count := 0
-	for {
-		line, err := container.Read()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			return nil, err
-		}
-
-		table.read(header, count, line)
-		count++
-	}
-
-	return table, nil
 }
 
 func (s *table) read(header []string, r int, row []string) {
 	indice := header[0]
-	s.rowIndices[r] = indice + "|" + row[0]
+	s.rowIndices[r] = indice + string(s.delimiter) + row[0]
 
 	for i := 1; i < len(row); i++ {
 		// Column header name
-		uniqueTypeValuePair := header[i] + "|" + row[i]
+		uniqueTypeValuePair := header[i] + string(s.delimiter) + row[i]
 		v := 1.0
 
 		if c, ok := s.columns[uniqueTypeValuePair]; ok {
@@ -95,6 +70,32 @@ func (s *table) read(header []string, r int, row []string) {
 			s.matrix.Set(r, c, v)
 		}
 	}
+}
+
+func (s *table) ReadAll() error {
+	// Read the header
+	line, err := s.reader.Read()
+	if err != nil {
+		return err
+	}
+
+	header := line
+
+	// Read the body
+	count := 0
+	for {
+		line, err := s.reader.Read()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return err
+		}
+
+		s.read(header, count, line)
+		count++
+	}
+
+	return nil
 }
 
 // Columns the number of columns of the matrix

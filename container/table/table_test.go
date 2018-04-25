@@ -25,8 +25,7 @@ func TestTable_Read(t *testing.T) {
 002 192.168.1.2 157.166.255.18
 003 128.0.0.1 74.125.224.72`,
 			t: func(in string) table.Table {
-				table, _ := table.NewTableFromReader(3, 5, strings.NewReader(in))
-				return table
+				return table.NewTableFromReader(3, 5, strings.NewReader(in))
 			},
 		},
 	}
@@ -35,6 +34,8 @@ func TestTable_Read(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			table := tt.t(tt.in)
+
+			table.ReadAll()
 
 			r1 := "log_id|001"
 			r2 := "log_id|002"
