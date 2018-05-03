@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package traversal
+package predecessor
 
 import GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 
