@@ -63,4 +63,7 @@ type Matrix interface {
 
 	// The number of elements in the matrix (non-zero not counted only for sparse matrices)
 	Size() int
+
+	// Reduce perform's a reduction on the Matrix
+	ReduceScalar() int
 }

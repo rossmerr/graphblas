@@ -136,6 +136,18 @@ func TransposeToCSC(s Matrix) Matrix {
 
 // Equal the two matrices are equal
 func Equal(s, m Matrix) bool {
+	if s == nil && m == nil {
+		return true
+	}
+
+	if s != nil && m == nil {
+		return false
+	}
+
+	if m != nil && s == nil {
+		return false
+	}
+
 	if s.Columns() != m.Columns() {
 		return false
 	}

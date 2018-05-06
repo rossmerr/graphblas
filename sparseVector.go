@@ -229,9 +229,14 @@ func (s *SparseVector) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
 
-// Size the number of non-zero elements in the vector
+// Size the number of non-zero elements in the Vector
 func (s *SparseVector) Size() int {
 	return len(s.values)
+}
+
+// ReduceScalar perform's a reduction on the Vector
+func (s *SparseVector) ReduceScalar() int {
+	return 0
 }
 
 // Enumerate iterates through all non-zero elements, order is not guaranteed

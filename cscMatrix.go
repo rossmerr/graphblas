@@ -250,6 +250,11 @@ func (s *CSCMatrix) Size() int {
 	return len(s.values)
 }
 
+// ReduceScalar perform's a reduction on the Matrix
+func (s *CSCMatrix) ReduceScalar() int {
+	return 0
+}
+
 // Enumerate iterates through all non-zero elements, order is not guaranteed
 func (s *CSCMatrix) Enumerate() Enumerate {
 	return s.iterator()

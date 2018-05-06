@@ -188,9 +188,14 @@ func (s *DenseVector) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
 
-// Size the number of elements in the vector
+// Size the number of elements in the Vector
 func (s *DenseVector) Size() int {
 	return s.l
+}
+
+// ReduceScalar perform's a reduction on the Vector
+func (s *DenseVector) ReduceScalar() int {
+	return 0
 }
 
 // Enumerate iterates through all non-zero elements, order is not guaranteed

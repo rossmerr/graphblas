@@ -190,6 +190,11 @@ func (s *DenseMatrix) Size() int {
 	return s.r * s.c
 }
 
+// ReduceScalar perform's a reduction on the Matrix
+func (s *DenseMatrix) ReduceScalar() int {
+	return 0
+}
+
 // RawMatrix returns the raw matrix
 func (s *DenseMatrix) RawMatrix() [][]float64 {
 	return s.data
