@@ -11,10 +11,9 @@ import GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 	v := make(map[int]GraphBLAS.Matrix)
 	// vertices visited in each level
-	q := GraphBLAS.NewDenseVector(a.Rows())
-	q.SetVec(s, float64(1))
-
-	qm := q.Copy()
+	visited := GraphBLAS.NewDenseVector(a.Rows())
+	visited.SetVec(s, float64(1))
+	var q GraphBLAS.Matrix = visited
 
 	// level in BFS traversal
 	d := 0
@@ -23,9 +22,9 @@ func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 
 	for succ {
 		d++
-		v[d] = qm.Copy()
-		qm = qm.Multiply(a)
-		if qm.ReduceScalar() == 1 {
+		v[d] = q.Copy()
+		q = q.Multiply(a)
+		if q.ReduceScalar() == 1 {
 			succ = true
 		}
 	}
