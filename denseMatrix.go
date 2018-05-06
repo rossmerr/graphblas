@@ -192,6 +192,9 @@ func (s *DenseMatrix) Size() int {
 
 // ReduceScalar perform's a reduction on the Matrix
 func (s *DenseMatrix) ReduceScalar() int {
+	// https://people.eecs.berkeley.edu/~aydin/GraphBLAS_API_C.pdf
+	// TODO need to reduce computes the result of performing a reduction
+	// across each of the elements of an input matrix
 	return 0
 }
 
