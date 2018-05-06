@@ -5,13 +5,25 @@
 
 package GraphBLAS
 
-type VectorSet struct {
+// VectorSet holds a array of VectorConstant's
+type VectorSet []*VectorConstant
+
+// VectorConstant holds a vector and a constant
+type VectorConstant struct {
 	Value  float64
 	Vector Vector
 }
 
+// NewVectorSet returns a VectorSet
+func NewVectorSet(value float64, v Vector) *VectorConstant {
+	return &VectorConstant{
+		Value:  value,
+		Vector: v,
+	}
+}
+
 // Span of a set of Vectors
-func Span(set ...VectorSet) Matrix {
+func Span(set VectorSet) Matrix {
 	results := make([]Matrix, len(set))
 
 	for i, s := range set {
