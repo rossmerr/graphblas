@@ -204,11 +204,6 @@ func (s *SparseVector) Multiply(m Matrix) Matrix {
 	return matrix
 }
 
-// MultiplyAccumulate multiplies a matrix by another matrix added to the existing matrix c
-func (s *SparseVector) MultiplyAccumulate(m, c Matrix) {
-	Multiply(s, m, c)
-}
-
 // Add addition of a metrix by another metrix
 func (s *SparseVector) Add(m Matrix) Matrix {
 	return Add(s, m)

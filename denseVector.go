@@ -157,11 +157,6 @@ func (s *DenseVector) Multiply(m Matrix) Matrix {
 	return matrix
 }
 
-// MultiplyAccumulate multiplies a matrix by another matrix added to the existing matrix c
-func (s *DenseVector) MultiplyAccumulate(m, c Matrix) {
-	Multiply(s, m, c)
-}
-
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) Matrix {
 	return Add(s, m)
