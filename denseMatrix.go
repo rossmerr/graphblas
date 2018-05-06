@@ -156,24 +156,31 @@ func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 
 // Add addition of a matrix by another matrix
 func (s *DenseMatrix) Add(m Matrix) Matrix {
-	return Add(s, m)
+	matrix := s.Copy()
+	Add(s, m, matrix)
+	return matrix
 }
 
 // Subtract subtracts one matrix from another matrix
 func (s *DenseMatrix) Subtract(m Matrix) Matrix {
-	return Subtract(s, m)
+	matrix := m.Copy()
+	Subtract(s, m, matrix)
+	return matrix
 }
 
 // Negative the negative of a matrix
 func (s *DenseMatrix) Negative() Matrix {
-	return Negative(s)
+	matrix := s.Copy()
+	Negative(s, matrix)
+	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseMatrix) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 
-	return Transpose(s, matrix)
+	Transpose(s, matrix)
+	return matrix
 }
 
 // Equal the two matrices are equal

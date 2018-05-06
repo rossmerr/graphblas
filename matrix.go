@@ -66,6 +66,10 @@ type Matrix interface {
 	// The number of elements in the matrix (non-zero not counted only for sparse matrices)
 	Size() int
 
+	// Apply modifies edge weights by the UnaryOperator
+	// C ⊕= f(A)
+	//Apply(u UnaryOperator)
+
 	// ReduceToScalar perform's a reduction on the Matrix
 	ReduceToScalar() int
 }

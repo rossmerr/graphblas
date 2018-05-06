@@ -10,11 +10,11 @@ import (
 	"reflect"
 )
 
-// BinaryOperator is defined by three domains, s in m in and Matrix out
-type BinaryOperator func(s, m Matrix) Matrix
+// BinaryOperator is defined by three domains, s in m in and matrix out
+type BinaryOperator func(s, m, matrix Matrix)
 
-// UnaryOperator is defined by two domains, s in and Matrix out
-type UnaryOperator func(s Matrix) Matrix
+// UnaryOperator is defined by two domains, s in and matrix out
+type UnaryOperator func(s, matrix Matrix)
 
 // Multiply multiplies a matrix by another matrix
 func Multiply(s, m, matrix Matrix) {
@@ -42,7 +42,7 @@ func Multiply(s, m, matrix Matrix) {
 }
 
 // Add addition of a matrix by another matrix
-func Add(s, m Matrix) Matrix {
+func Add(s, m, matrix Matrix) {
 	if s.Columns() != m.Columns() {
 		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -52,14 +52,11 @@ func Add(s, m Matrix) Matrix {
 	}
 
 	var iterator Enumerate
-	var matrix Matrix
 
 	if SparseMatrix(s) {
 		iterator = s.Enumerate()
-		matrix = m.Copy()
 	} else {
 		iterator = m.Enumerate()
-		matrix = s.Copy()
 	}
 
 	for iterator.HasNext() {
@@ -68,12 +65,10 @@ func Add(s, m Matrix) Matrix {
 			return value + v
 		})
 	}
-
-	return matrix
 }
 
 // Subtract subtracts one matrix from another matrix
-func Subtract(s, m Matrix) Matrix {
+func Subtract(s, m, matrix Matrix) {
 	if s.Columns() != m.Columns() {
 		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -82,50 +77,46 @@ func Subtract(s, m Matrix) Matrix {
 		log.Panicf("Row miss match %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	matrix := m.Copy()
-
 	for iterator := s.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()
 		matrix.Update(r, c, func(v float64) float64 {
 			return value - v
 		})
 	}
-	return matrix
 }
 
 // Negative the negative of a matrix
-func Negative(s Matrix) Matrix {
-	matrix := s.Copy()
+func Negative(s, matrix Matrix) {
 	for iterator := matrix.Map(); iterator.HasNext(); {
 		iterator.Map(func(r, c int, v float64) float64 {
 			return -v
 		})
 	}
-	return matrix
 }
 
 // Transpose swaps the rows and columns
 // C ⊕= Aᵀ
-func Transpose(s, m Matrix) Matrix {
+func Transpose(s, m Matrix) {
 	for iterator := s.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()
 		m.Set(c, r, value)
 	}
-	return m
 }
 
 // TransposeToCSR swaps the rows and columns and returns a compressed storage by rows (CSR) matrix
 func TransposeToCSR(s Matrix) Matrix {
 	matrix := NewCSRMatrix(s.Columns(), s.Rows())
 
-	return Transpose(s, matrix)
+	Transpose(s, matrix)
+	return matrix
 }
 
 // TransposeToCSC swaps the rows and columns and returns a compressed storage by columns (CSC) matrix
 func TransposeToCSC(s Matrix) Matrix {
 	matrix := NewCSCMatrix(s.Columns(), s.Rows())
 
-	return Transpose(s, matrix)
+	Transpose(s, matrix)
+	return matrix
 }
 
 // Equal the two matrices are equal

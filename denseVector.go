@@ -159,24 +159,31 @@ func (s *DenseVector) Multiply(m Matrix) Matrix {
 
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) Matrix {
-	return Add(s, m)
+	matrix := s.Copy()
+	Add(s, m, matrix)
+	return matrix
 }
 
 // Subtract subtracts one vector from another vector
 func (s *DenseVector) Subtract(m Matrix) Matrix {
-	return Subtract(s, m)
+	matrix := m.Copy()
+	Subtract(s, m, matrix)
+	return matrix
 }
 
 // Negative the negative of a metrix
 func (s *DenseVector) Negative() Matrix {
-	return Negative(s)
+	matrix := s.Copy()
+	Negative(s, matrix)
+	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
 
-	return Transpose(s, matrix)
+	Transpose(s, matrix)
+	return matrix
 }
 
 // Equal the two vectors are equal

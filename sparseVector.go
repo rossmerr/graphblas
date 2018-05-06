@@ -206,23 +206,30 @@ func (s *SparseVector) Multiply(m Matrix) Matrix {
 
 // Add addition of a metrix by another metrix
 func (s *SparseVector) Add(m Matrix) Matrix {
-	return Add(s, m)
+	matrix := s.Copy()
+	Add(s, m, matrix)
+	return matrix
 }
 
 // Subtract subtracts one metrix from another metrix
 func (s *SparseVector) Subtract(m Matrix) Matrix {
-	return Subtract(s, m)
+	matrix := m.Copy()
+	Subtract(s, m, matrix)
+	return matrix
 }
 
 // Negative the negative of a metrix
 func (s *SparseVector) Negative() Matrix {
-	return Negative(s)
+	matrix := s.Copy()
+	Negative(s, matrix)
+	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *SparseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-	return Transpose(s, matrix)
+	Transpose(s, matrix)
+	return matrix
 }
 
 // Equal the two metrics are equal
