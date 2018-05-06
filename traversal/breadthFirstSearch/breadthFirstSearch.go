@@ -24,7 +24,7 @@ func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 		d++
 		v[d] = q.Copy()
 		q = q.Multiply(a)
-		if q.ReduceScalar() == 1 {
+		if q.ReduceToScalar() == 1 {
 			succ = true
 		}
 	}

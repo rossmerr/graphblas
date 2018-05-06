@@ -7,7 +7,12 @@ package GraphBLAS
 
 import (
 	"log"
+	"reflect"
 )
+
+func init() {
+	RegisterMatrix(reflect.TypeOf((*CSCMatrix)(nil)).Elem())
+}
 
 // CSCMatrix compressed storage by columns (CSC)
 type CSCMatrix struct {
@@ -250,8 +255,8 @@ func (s *CSCMatrix) Size() int {
 	return len(s.values)
 }
 
-// ReduceScalar perform's a reduction on the Matrix
-func (s *CSCMatrix) ReduceScalar() int {
+// ReduceToScalar perform's a reduction on the Matrix
+func (s *CSCMatrix) ReduceToScalar() int {
 	return 0
 }
 

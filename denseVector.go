@@ -193,8 +193,8 @@ func (s *DenseVector) Size() int {
 	return s.l
 }
 
-// ReduceScalar perform's a reduction on the Vector
-func (s *DenseVector) ReduceScalar() int {
+// ReduceToScalar perform's a reduction on the Vector
+func (s *DenseVector) ReduceToScalar() int {
 	return 0
 }
 

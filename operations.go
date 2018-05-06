@@ -10,6 +10,12 @@ import (
 	"reflect"
 )
 
+// BinaryOperator is defined by three domains, s in m in and Matrix out
+type BinaryOperator func(s, m Matrix) Matrix
+
+// UnaryOperator is defined by two domains, s in and Matrix out
+type UnaryOperator func(s Matrix) Matrix
+
 // Multiply multiplies a matrix by another matrix
 func Multiply(s, m, matrix Matrix) Matrix {
 	if m.Rows() != s.Columns() {
@@ -95,17 +101,6 @@ func Negative(s Matrix) Matrix {
 	for iterator := matrix.Map(); iterator.HasNext(); {
 		iterator.Map(func(r, c int, v float64) float64 {
 			return -v
-		})
-	}
-	return matrix
-}
-
-// Scalar multiplication of a matrix by alpha
-func Scalar(s Matrix, alpha float64) Matrix {
-	matrix := s.Copy()
-	for iterator := matrix.Map(); iterator.HasNext(); {
-		iterator.Map(func(r, c int, v float64) float64 {
-			return alpha * v
 		})
 	}
 	return matrix
@@ -217,61 +212,18 @@ func Equal(s, m Matrix) bool {
 	return true
 }
 
-// SparseMatrix is 's' a sparse matrix
-func SparseMatrix(s Matrix) bool {
-	if _, ok := s.(*CSCMatrix); ok {
-		return true
-	}
-
-	if _, ok := s.(*CSRMatrix); ok {
-		return true
-	}
-
-	if _, ok := s.(*SparseVector); ok {
-		return true
-	}
-
-	return false
-}
-
 // NotEqual the two matrices are not equal
 func NotEqual(s, m Matrix) bool {
 	return !s.Equal(m)
 }
 
-// SkewSymmetric (or antisymmetric or antimetric) matrix is a square matrix whose transpose equals its negative
-func SkewSymmetric(s Matrix) bool {
-	r := s.Rows()
-	c := s.Columns()
-	if r != c {
-		return false
+// Scalar multiplication of a matrix by alpha
+func Scalar(s Matrix, alpha float64) Matrix {
+	matrix := s.Copy()
+	for iterator := matrix.Map(); iterator.HasNext(); {
+		iterator.Map(func(r, c int, v float64) float64 {
+			return alpha * v
+		})
 	}
-
-	t := s.Transpose()
-	negativeTranspose := t.Negative()
-	return negativeTranspose.Equal(s)
+	return matrix
 }
-
-// Symmetric matrix is a square matrix that is equal to its transpose
-func Symmetric(s Matrix) bool {
-	r := s.Rows()
-	c := s.Columns()
-	if r != c {
-		return false
-	}
-
-	t := s.Transpose()
-	return t.Equal(s)
-}
-
-// // Hermitian
-// func Hermitian(s Matrix) bool {
-// 	r := s.Rows()
-// 	c := s.Columns()
-// 	if r != c {
-// 		return false
-// 	}
-
-// 	t := s.Transpose()
-// 	return t.Equal(s)
-// }

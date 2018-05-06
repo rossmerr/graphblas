@@ -7,7 +7,12 @@ package GraphBLAS
 
 import (
 	"log"
+	"reflect"
 )
+
+func init() {
+	RegisterMatrix(reflect.TypeOf((*CSRMatrix)(nil)).Elem())
+}
 
 // CSRMatrix compressed storage by rows (CSR)
 type CSRMatrix struct {
@@ -250,8 +255,8 @@ func (s *CSRMatrix) Size() int {
 	return len(s.values)
 }
 
-// ReduceScalar perform's a reduction on the Matrix
-func (s *CSRMatrix) ReduceScalar() int {
+// ReduceToScalar perform's a reduction on the Matrix
+func (s *CSRMatrix) ReduceToScalar() int {
 	return 0
 }
 

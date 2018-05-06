@@ -7,7 +7,12 @@ package GraphBLAS
 
 import (
 	"log"
+	"reflect"
 )
+
+func init() {
+	RegisterMatrix(reflect.TypeOf((*SparseVector)(nil)).Elem())
+}
 
 // SparseVector compressed storage by indices
 type SparseVector struct {
@@ -126,7 +131,7 @@ func (s *SparseVector) RowsAt(r int) Vector {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	v := s.AtVec(1)
+	v := s.AtVec(r)
 	rows := NewSparseVector(1)
 	rows.SetVec(0, v)
 
@@ -234,8 +239,8 @@ func (s *SparseVector) Size() int {
 	return len(s.values)
 }
 
-// ReduceScalar perform's a reduction on the Vector
-func (s *SparseVector) ReduceScalar() int {
+// ReduceToScalar perform's a reduction on the Vector
+func (s *SparseVector) ReduceToScalar() int {
 	return 0
 }
 
