@@ -153,7 +153,13 @@ func (s *DenseVector) Scalar(alpha float64) Matrix {
 func (s *DenseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
-	return Multiply(s, m, matrix)
+	Multiply(s, m, matrix)
+	return matrix
+}
+
+// MultiplyAccumulate multiplies a matrix by another matrix added to the existing matrix c
+func (s *DenseVector) MultiplyAccumulate(m, c Matrix) {
+	Multiply(s, m, c)
 }
 
 // Add addition of a vector by another vector

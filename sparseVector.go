@@ -200,7 +200,13 @@ func (s *SparseVector) Scalar(alpha float64) Matrix {
 func (s *SparseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
-	return Multiply(s, m, matrix)
+	Multiply(s, m, matrix)
+	return matrix
+}
+
+// MultiplyAccumulate multiplies a matrix by another matrix added to the existing matrix c
+func (s *SparseVector) MultiplyAccumulate(m, c Matrix) {
+	Multiply(s, m, c)
 }
 
 // Add addition of a metrix by another metrix

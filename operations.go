@@ -17,7 +17,7 @@ type BinaryOperator func(s, m Matrix) Matrix
 type UnaryOperator func(s Matrix) Matrix
 
 // Multiply multiplies a matrix by another matrix
-func Multiply(s, m, matrix Matrix) Matrix {
+func Multiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
@@ -39,8 +39,6 @@ func Multiply(s, m, matrix Matrix) Matrix {
 		}
 
 	}
-
-	return matrix
 }
 
 // Add addition of a matrix by another matrix
@@ -107,6 +105,7 @@ func Negative(s Matrix) Matrix {
 }
 
 // Transpose swaps the rows and columns
+// C ⊕= Aᵀ
 func Transpose(s, m Matrix) Matrix {
 	for iterator := s.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()

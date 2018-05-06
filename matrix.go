@@ -41,7 +41,12 @@ type Matrix interface {
 	Scalar(alpha float64) Matrix
 
 	// Multiply multiplies a matrix by another matrix
+	// C = AB
 	Multiply(m Matrix) Matrix
+
+	// MultiplyAccumulate multiplies a matrix by another matrix added to the existing matrix c
+	// C += AB
+	MultiplyAccumulate(m, c Matrix)
 
 	// Add addition of a matrix by another matrix
 	Add(m Matrix) Matrix
@@ -53,6 +58,7 @@ type Matrix interface {
 	Negative() Matrix
 
 	// Transpose swaps the rows and columns
+	// C ⊕= Aᵀ
 	Transpose() Matrix
 
 	// Equal the two matrices are equal

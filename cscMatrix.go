@@ -215,7 +215,13 @@ func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
 
-	return Multiply(s, m, matrix)
+	Multiply(s, m, matrix)
+	return matrix
+}
+
+// MultiplyAccumulate multiplies a matrix by another matrix added to the existing matrix c
+func (s *CSCMatrix) MultiplyAccumulate(m, c Matrix) {
+	Multiply(s, m, c)
 }
 
 // Add addition of a matrix by another matrix
