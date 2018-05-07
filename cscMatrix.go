@@ -263,6 +263,12 @@ func (s *CSCMatrix) Size() int {
 	return len(s.values)
 }
 
+// Apply modifies edge weights by the UnaryOperator
+// C ⊕= f(A)
+func (s *CSCMatrix) Apply(u UnaryOperator) {
+	Apply(s, s, u)
+}
+
 // ReduceToScalar perform's a reduction on the Matrix
 func (s *CSCMatrix) ReduceToScalar() int {
 	return 0

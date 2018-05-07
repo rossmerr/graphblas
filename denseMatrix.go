@@ -198,6 +198,17 @@ func (s *DenseMatrix) Size() int {
 	return s.r * s.c
 }
 
+// Apply modifies edge weights by the UnaryOperator
+// C ⊕= f(A)
+func (s *DenseMatrix) Apply(u UnaryOperator) {
+	for iterator := s.Map(); iterator.HasNext(); {
+		iterator.Map(func(r, c int, v float64) (result float64) {
+			u(v, result)
+			return
+		})
+	}
+}
+
 // ReduceToScalar perform's a reduction on the Matrix
 func (s *DenseMatrix) ReduceToScalar() int {
 	// https://people.eecs.berkeley.edu/~aydin/GraphBLAS_API_C.pdf

@@ -68,7 +68,7 @@ type Matrix interface {
 
 	// Apply modifies edge weights by the UnaryOperator
 	// C ⊕= f(A)
-	//Apply(u UnaryOperator)
+	Apply(u UnaryOperator)
 
 	// ReduceToScalar perform's a reduction on the Matrix
 	ReduceToScalar() int

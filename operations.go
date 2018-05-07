@@ -10,11 +10,11 @@ import (
 	"reflect"
 )
 
-// BinaryOperator is defined by three domains, s in m in and matrix out
-type BinaryOperator func(s, m, matrix Matrix)
+// BinaryOperator is defined by three domains
+type BinaryOperator func(in1, in2, out float64)
 
-// UnaryOperator is defined by two domains, s in and matrix out
-type UnaryOperator func(s, matrix Matrix)
+// UnaryOperator is defined by two domains
+type UnaryOperator func(in, out float64)
 
 // Multiply multiplies a matrix by another matrix
 func Multiply(s, m, matrix Matrix) {
@@ -82,6 +82,28 @@ func Subtract(s, m, matrix Matrix) {
 		matrix.Update(r, c, func(v float64) float64 {
 			return value - v
 		})
+	}
+}
+
+// Apply modifies edge weights by the UnaryOperator
+// C ⊕= f(A)
+func Apply(in, out Matrix, u UnaryOperator) {
+	if in == out {
+		for iterator := in.Map(); iterator.HasNext(); {
+			iterator.Map(func(r, c int, value float64) (result float64) {
+				u(value, result)
+				return
+			})
+		}
+
+		return
+	}
+
+	for iterator := in.Enumerate(); iterator.HasNext(); {
+		r, c, value := iterator.Next()
+		var result float64
+		u(value, result)
+		out.Set(c, r, result)
 	}
 }
 

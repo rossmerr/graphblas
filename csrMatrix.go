@@ -263,6 +263,12 @@ func (s *CSRMatrix) Size() int {
 	return len(s.values)
 }
 
+// Apply modifies edge weights by the UnaryOperator
+// C ⊕= f(A)
+func (s *CSRMatrix) Apply(u UnaryOperator) {
+	Apply(s, s, u)
+}
+
 // ReduceToScalar perform's a reduction on the Matrix
 func (s *CSRMatrix) ReduceToScalar() int {
 	return 0

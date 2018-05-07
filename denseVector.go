@@ -201,6 +201,12 @@ func (s *DenseVector) Size() int {
 	return s.l
 }
 
+// Apply modifies edge weights by the UnaryOperator
+// C ⊕= f(A)
+func (s *DenseVector) Apply(u UnaryOperator) {
+	Apply(s, s, u)
+}
+
 // ReduceToScalar perform's a reduction on the Vector
 func (s *DenseVector) ReduceToScalar() int {
 	return 0
