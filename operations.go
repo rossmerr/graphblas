@@ -10,12 +10,6 @@ import (
 	"reflect"
 )
 
-// BinaryOperator is defined by three domains
-type BinaryOperator func(in1, in2, out float64)
-
-// UnaryOperator is defined by two domains
-type UnaryOperator func(in, out float64)
-
 // Multiply multiplies a matrix by another matrix
 func Multiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
