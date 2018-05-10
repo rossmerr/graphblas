@@ -6,12 +6,14 @@
 package binaryOp
 
 type BinaryOp interface {
+	operator()
 	binaryOp()
 }
 
 type BinaryOpFloat64 interface {
 	Operator(in1, in2 float64) float64
 	binaryOp()
+	operator()
 }
 
 type binaryOpFloat64 struct {
@@ -19,6 +21,7 @@ type binaryOpFloat64 struct {
 }
 
 func (s *binaryOpFloat64) binaryOp() {}
+func (s *binaryOpFloat64) operator() {}
 
 func (s *binaryOpFloat64) Operator(in1, in2 float64) float64 {
 	return s.op(in1, in2)
@@ -27,6 +30,7 @@ func (s *binaryOpFloat64) Operator(in1, in2 float64) float64 {
 type BinaryOpBool interface {
 	Operator(in1, in2 bool) bool
 	binaryOp()
+	operator()
 }
 
 type binaryOpBool struct {
@@ -34,6 +38,7 @@ type binaryOpBool struct {
 }
 
 func (s *binaryOpBool) binaryOp() {}
+func (s *binaryOpBool) operator() {}
 
 func (s *binaryOpBool) Operator(in1, in2 bool) bool {
 	return s.op(in1, in2)
@@ -42,6 +47,7 @@ func (s *binaryOpBool) Operator(in1, in2 bool) bool {
 type BinaryOpFloat64ToBool interface {
 	Operator(in1, in2 float64) bool
 	binaryOp()
+	operator()
 }
 
 type binaryOpFloat64ToBool struct {
@@ -49,6 +55,7 @@ type binaryOpFloat64ToBool struct {
 }
 
 func (s *binaryOpFloat64ToBool) binaryOp() {}
+func (s *binaryOpFloat64ToBool) operator() {}
 
 func (s *binaryOpFloat64ToBool) Operator(in1, in2 float64) bool {
 	return s.op(in1, in2)
