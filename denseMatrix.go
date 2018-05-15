@@ -193,8 +193,13 @@ func (s *DenseMatrix) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
 
-// Size the number of elements in the matrix
+// Size of the matrix
 func (s *DenseMatrix) Size() int {
+	return s.r * s.c
+}
+
+// Values the number of elements in the matrix
+func (s *DenseMatrix) Values() int {
 	return s.r * s.c
 }
 
@@ -230,7 +235,7 @@ func (s *DenseMatrix) Enumerate() Enumerate {
 func (s *DenseMatrix) iterator() *denseMatrixIterator {
 	i := &denseMatrixIterator{
 		matrix: s,
-		size:   s.Size(),
+		size:   s.Values(),
 		last:   0,
 		c:      0,
 		r:      0,

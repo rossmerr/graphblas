@@ -4,3 +4,5 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/RossMerr/Caudex.GraphBLAS)](https://goreportcard.com/report/github.com/RossMerr/Caudex.GraphBLAS)[![Read the Docs](https://godoc.org/github.com/RossMerr/Caudex.GraphBLAS?status.svg)](https://godoc.org/github.com/RossMerr/Caudex.GraphBLAS)[![Coverage Status](https://coveralls.io/repos/github/RossMerr/Caudex.GraphBLAS/badge.svg?branch=master)](https://coveralls.io/github/RossMerr/Caudex.GraphBLAS?branch=master)
 
 A sparse linear algebra library
+
+Only supports float64 types

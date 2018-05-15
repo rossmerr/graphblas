@@ -18,10 +18,19 @@ type monoID struct {
 	operation Operator
 }
 
-// NewBoolMonoID returns a BoolMonoID
+// NewBoolMonoID returns a bool type MonoID
 func NewBoolMonoID(b bool, o Operator) MonoID {
 	return &monoID{
 		typ:       Bool,
+		unit:      b,
+		operation: o,
+	}
+}
+
+// NewFloat64MonoID returns a float64 type MonoID
+func NewFloat64MonoID(b float64, o Operator) MonoID {
+	return &monoID{
+		typ:       Float64,
 		unit:      b,
 		operation: o,
 	}

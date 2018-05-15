@@ -45,6 +45,11 @@ func (s *DenseVector) SetVec(i int, value float64) {
 	s.values[i] = value
 }
 
+// Size of the vector
+func (s *DenseVector) Size() int {
+	return s.l
+}
+
 // Length of the vector
 func (s *DenseVector) Length() int {
 	return s.l
@@ -196,8 +201,8 @@ func (s *DenseVector) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
 
-// Size the number of elements in the Vector
-func (s *DenseVector) Size() int {
+// Values the number of elements in the Vector
+func (s *DenseVector) Values() int {
 	return s.l
 }
 
@@ -209,6 +214,11 @@ func (s *DenseVector) Apply(u UnaryOperator) {
 
 // ReduceToScalar perform's a reduction on the Vector
 func (s *DenseVector) ReduceToScalar() int {
+	// xor, _ := binaryOp.LXOR().(binaryOp.BinaryOpBool)
+
+	// for i := 0; i < s.Values(); i++ {
+	// 	xor.Operator()
+	// }
 	return 0
 }
 
@@ -220,7 +230,7 @@ func (s *DenseVector) Enumerate() Enumerate {
 func (s *DenseVector) iterator() *denseVectorIterator {
 	i := &denseVectorIterator{
 		matrix: s,
-		size:   s.Size(),
+		size:   s.Values(),
 		last:   0,
 		c:      0,
 		r:      0,

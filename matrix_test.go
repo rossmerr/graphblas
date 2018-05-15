@@ -750,7 +750,7 @@ func TestMatrix_Size(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			got := tt.s.Size()
+			got := tt.s.Values()
 			if got != tt.size {
 				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, tt.size)
 			}

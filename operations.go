@@ -164,7 +164,7 @@ func Equal(s, m Matrix) bool {
 	if reflect.TypeOf(s) == reflect.TypeOf(m) {
 		// Because they are the same type they have the same storage method
 		// so should or should not have the same size
-		if s.Size() != m.Size() {
+		if s.Values() != m.Values() {
 			return false
 		}
 

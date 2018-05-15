@@ -258,8 +258,13 @@ func (s *CSCMatrix) NotEqual(m Matrix) bool {
 	return NotEqual(s, m)
 }
 
-// Size the number of non-zero elements in the matrix
+// Size of the matrix
 func (s *CSCMatrix) Size() int {
+	return s.Rows() * s.Columns()
+}
+
+// Values the number of non-zero elements in the matrix
+func (s *CSCMatrix) Values() int {
 	return len(s.values)
 }
 

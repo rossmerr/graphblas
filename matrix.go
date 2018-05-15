@@ -63,8 +63,11 @@ type Matrix interface {
 	// NotEqual the two matrices are not equal
 	NotEqual(m Matrix) bool
 
-	// The number of elements in the matrix (non-zero not counted only for sparse matrices)
+	// Size of the matrix
 	Size() int
+
+	// The number of elements in the matrix (non-zero counted for dense matrices)
+	Values() int
 
 	// Apply modifies edge weights by the UnaryOperator
 	// C ⊕= f(A)
