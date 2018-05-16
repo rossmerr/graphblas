@@ -23,22 +23,16 @@ func (s *binaryOpBool) Apply(in1, in2 bool) bool {
 }
 
 // LOR logical OR f(x, y) = x ∨ y
-var LOR = func() BinaryOp {
-	return &binaryOpBool{apply: func(in1, in2 bool) bool {
-		return in1 || in2
-	}}
-}
+var LOR = &binaryOpBool{apply: func(in1, in2 bool) bool {
+	return in1 || in2
+}}
 
 // LAND logical AND f(x, y) = x ∧ y
-var LAND = func() BinaryOp {
-	return &binaryOpBool{apply: func(in1, in2 bool) bool {
-		return in1 && in2
-	}}
-}
+var LAND = &binaryOpBool{apply: func(in1, in2 bool) bool {
+	return in1 && in2
+}}
 
 // LXOR logical XOR f(x, y) = x ⊕ y
-var LXOR = func() BinaryOp {
-	return &binaryOpBool{apply: func(in1, in2 bool) bool {
-		return in1 != in2
-	}}
-}
+var LXOR = &binaryOpBool{apply: func(in1, in2 bool) bool {
+	return in1 != in2
+}}

@@ -23,65 +23,49 @@ func (s *binaryOpFloat64) Apply(in1, in2 float64) float64 {
 }
 
 // FirstArgument f(x, y) = x
-var FirstArgument = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		return in1
-	}}
-}
+var FirstArgument = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	return in1
+}}
 
 // SecondArgument f(x, y) = y
-var SecondArgument = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		return in2
-	}}
-}
+var SecondArgument = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	return in2
+}}
 
 // Minimum f(x, y) = (x < y) ? x : y
-var Minimum = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		if in1 < in2 {
-			return in1
-		}
+var Minimum = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	if in1 < in2 {
+		return in1
+	}
 
-		return in2
-	}}
-}
+	return in2
+}}
 
 // Maximum f(x, y) = (x > y) ? x : y
-var Maximum = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		if in1 > in2 {
-			return in1
-		}
+var Maximum = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	if in1 > in2 {
+		return in1
+	}
 
-		return in2
-	}}
-}
+	return in2
+}}
 
 // Addition f(x, y) = x + y
-var Addition = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		return in1 + in2
-	}}
-}
+var Addition = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	return in1 + in2
+}}
 
 // Subtraction f(x, y) = x - y
-var Subtraction = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		return in1 - in2
-	}}
-}
+var Subtraction = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	return in1 - in2
+}}
 
 // Multiplication f(x, y) = x * y
-var Multiplication = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		return in1 * in2
-	}}
-}
+var Multiplication = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	return in1 * in2
+}}
 
 // Division f(x, y) = x / y
-var Division = func() BinaryOp {
-	return &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
-		return in1 / in2
-	}}
-}
+var Division = &binaryOpFloat64{apply: func(in1, in2 float64) float64 {
+	return in1 / in2
+}}

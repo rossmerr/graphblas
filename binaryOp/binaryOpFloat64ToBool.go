@@ -23,43 +23,31 @@ func (s *binaryOpFloat64ToBool) Apply(in1, in2 float64) bool {
 }
 
 // Equal f(x, y) = (x == y)
-var Equal = func() BinaryOp {
-	return &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-		return in1 == in2
-	}}
-}
+var Equal = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+	return in1 == in2
+}}
 
 // NotEqual f(x, y) = (x != y)
-var NotEqual = func() BinaryOp {
-	return &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-		return in1 != in2
-	}}
-}
+var NotEqual = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+	return in1 != in2
+}}
 
 // GreaterThan f(x, y) = (x > y)
-var GreaterThan = func() BinaryOp {
-	return &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-		return in1 > in2
-	}}
-}
+var GreaterThan = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+	return in1 > in2
+}}
 
 // LessThan f(x, y) = (x < y)
-var LessThan = func() BinaryOp {
-	return &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-		return in1 < in2
-	}}
-}
+var LessThan = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+	return in1 < in2
+}}
 
 // GreaterThanOrEqual f(x, y) = (x >= y)
-var GreaterThanOrEqual = func() BinaryOp {
-	return &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-		return in1 >= in2
-	}}
-}
+var GreaterThanOrEqual = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+	return in1 >= in2
+}}
 
 // LessThanOrEqual f(x, y) = (x <= y)
-var LessThanOrEqual = func() BinaryOp {
-	return &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-		return in1 <= in2
-	}}
-}
+var LessThanOrEqual = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+	return in1 <= in2
+}}
