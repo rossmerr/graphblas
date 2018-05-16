@@ -1,0 +1,44 @@
+// Copyright (c) 2018 Ross Merrigan
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+package binaryOp
+
+type BinaryOpBool interface {
+	Semigroup
+	Apply(in1, in2 bool) bool
+}
+
+type binaryOpBool struct {
+	apply func(bool, bool) bool
+}
+
+func (s *binaryOpBool) operator()  {}
+func (s *binaryOpBool) binaryOp()  {}
+func (s *binaryOpBool) semigroup() {}
+
+func (s *binaryOpBool) Apply(in1, in2 bool) bool {
+	return s.apply(in1, in2)
+}
+
+// LOR logical OR f(x, y) = x ∨ y
+var LOR = func() BinaryOp {
+	return &binaryOpBool{apply: func(in1, in2 bool) bool {
+		return in1 || in2
+	}}
+}
+
+// LAND logical AND f(x, y) = x ∧ y
+var LAND = func() BinaryOp {
+	return &binaryOpBool{apply: func(in1, in2 bool) bool {
+		return in1 && in2
+	}}
+}
+
+// LXOR logical XOR f(x, y) = x ⊕ y
+var LXOR = func() BinaryOp {
+	return &binaryOpBool{apply: func(in1, in2 bool) bool {
+		return in1 != in2
+	}}
+}

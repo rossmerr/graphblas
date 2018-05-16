@@ -51,7 +51,7 @@ func Test_LOR(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -101,7 +101,7 @@ func Test_LAND(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -151,7 +151,7 @@ func Test_LXOR(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -194,7 +194,7 @@ func Test_Equal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -237,7 +237,7 @@ func Test_NotEqual(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -280,7 +280,7 @@ func Test_GreaterThan(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -323,7 +323,7 @@ func Test_LessThan(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -366,7 +366,7 @@ func Test_GreaterThanOrEqual(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -409,7 +409,7 @@ func Test_LessThanOrEqual(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
 			} else {
@@ -452,7 +452,7 @@ func Test_FirstArgument(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.in1)
 				}
 			} else {
@@ -495,7 +495,7 @@ func Test_SecondArgument(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.in2)
 				}
 			} else {
@@ -538,7 +538,7 @@ func Test_Minimum(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
 			} else {
@@ -581,7 +581,7 @@ func Test_Maximum(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
 			} else {
@@ -610,7 +610,7 @@ func Test_Addition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
 			} else {
@@ -639,7 +639,7 @@ func Test_Subtraction(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
 			} else {
@@ -668,7 +668,7 @@ func Test_Multiplication(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
 			} else {
@@ -697,7 +697,7 @@ func Test_Division(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
-				if tt.result != op.Operator(tt.in1, tt.in2) {
+				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
 			} else {
