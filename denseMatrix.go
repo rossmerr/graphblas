@@ -214,11 +214,90 @@ func (s *DenseMatrix) Apply(u UnaryOperator) {
 	}
 }
 
+// Reduced row echelon form of matrix (Gauss-Jordan elimination)
+// rref
+func (s *DenseMatrix) Reduced() Matrix {
+	m := s.Copy()
+	lead := 0
+	rowCount := m.Rows()
+	columnCount := m.Columns()
+	for r := 0; r < rowCount; r++ {
+		if lead >= columnCount {
+			return m
+		}
+		i := r
+		for m.At(i, lead) == 0 {
+			i++
+			if rowCount == i {
+				i = r
+				lead++
+				if columnCount == lead {
+					return m
+				}
+			}
+		}
+
+		v1 := m.RowsAt(i)
+		v2 := m.RowsAt(r)
+
+		for iterator := v1.Map(); iterator.HasNext(); {
+			iterator.Map(func(c, _ int, value float64) float64 {
+				m.Set(r, c, value)
+				return value
+			})
+		}
+
+		for iterator := v2.Map(); iterator.HasNext(); {
+			iterator.Map(func(c, _ int, value float64) float64 {
+				m.Set(i, c, value)
+				return value
+			})
+		}
+
+		f := 1 / m.At(r, lead)
+
+		vector := m.RowsAt(r)
+		for iterator := vector.Map(); iterator.HasNext(); {
+			iterator.Map(func(c, _ int, value float64) float64 {
+				value *= f
+				m.Set(r, c, value)
+				return value
+			})
+		}
+
+		for i = 0; i < rowCount; i++ {
+			if i != r {
+				f = m.At(i, lead)
+
+				vector := m.RowsAt(r)
+				for iterator := vector.Map(); iterator.HasNext(); {
+					iterator.Map(func(c, _ int, value float64) float64 {
+						v := m.At(i, c)
+						v -= value * f
+						m.Set(i, c, v)
+						return value
+					})
+				}
+			}
+		}
+		lead++
+	}
+
+	return m
+}
+
 // ReduceToScalar perform's a reduction on the Matrix
 func (s *DenseMatrix) ReduceToScalar() int {
 	// https://people.eecs.berkeley.edu/~aydin/GraphBLAS_API_C.pdf
 	// TODO need to reduce computes the result of performing a reduction
 	// across each of the elements of an input matrix
+
+	// monoid := binaryOp.NewMonoIDBool(true, binaryOp.LXOR)
+
+	// monoid.Reduce()
+	// for i := 0; i < s.Values(); i++ {
+	// 	xor.Apply()
+	// }
 	return 0
 }
 

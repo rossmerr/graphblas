@@ -214,11 +214,6 @@ func (s *DenseVector) Apply(u UnaryOperator) {
 
 // ReduceToScalar perform's a reduction on the Vector
 func (s *DenseVector) ReduceToScalar() int {
-	// xor, _ := binaryOp.LXOR().(binaryOp.BinaryOpBool)
-
-	// for i := 0; i < s.Values(); i++ {
-	// 	xor.Operator()
-	// }
 	return 0
 }
 
