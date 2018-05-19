@@ -834,20 +834,20 @@ func TestMatrix_Reduced(t *testing.T) {
 
 	tests := []struct {
 		name string
-		s    *GraphBLAS.DenseMatrix
+		s    GraphBLAS.Matrix
 	}{
 		{
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(3, 4),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(3, 4),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    GraphBLAS.NewCSRMatrix(3, 4),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(3, 4),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(3, 4),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

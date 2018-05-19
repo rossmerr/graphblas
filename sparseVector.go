@@ -138,6 +138,19 @@ func (s *SparseVector) RowsAt(r int) Vector {
 	return rows
 }
 
+// RowsAtToArray return the rows at r-th
+func (s *SparseVector) RowsAtToArray(r int) []float64 {
+	if r < 0 || r >= s.Rows() {
+		log.Panicf("Row '%+v' is invalid", r)
+	}
+
+	v := s.AtVec(r)
+	rows := make([]float64, 1)
+	rows[0] = v
+
+	return rows
+}
+
 func (s *SparseVector) insert(pointer, i int, value float64) {
 	if value == 0 {
 		return
@@ -256,6 +269,12 @@ func (s *SparseVector) Values() int {
 // C ⊕= f(A)
 func (s *SparseVector) Apply(u UnaryOperator) {
 	Apply(s, s, u)
+}
+
+// Reduced row echelon form of matrix (Gauss-Jordan elimination)
+// rref
+func (s *SparseVector) Reduced() Matrix {
+	return Reduced(s)
 }
 
 // ReduceToScalar perform's a reduction on the Vector

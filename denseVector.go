@@ -124,6 +124,19 @@ func (s *DenseVector) RowsAt(r int) Vector {
 	return rows
 }
 
+// RowsAtToArray return the rows at r-th
+func (s *DenseVector) RowsAtToArray(r int) []float64 {
+	if r < 0 || r >= s.Rows() {
+		log.Panicf("Row '%+v' is invalid", r)
+	}
+
+	v := s.AtVec(r)
+	rows := make([]float64, 1)
+	rows[0] = v
+
+	return rows
+}
+
 func (s *DenseVector) copy() *DenseVector {
 	vector := NewDenseVector(s.l)
 
@@ -210,6 +223,12 @@ func (s *DenseVector) Values() int {
 // C ⊕= f(A)
 func (s *DenseVector) Apply(u UnaryOperator) {
 	Apply(s, s, u)
+}
+
+// Reduced row echelon form of matrix (Gauss-Jordan elimination)
+// rref
+func (s *DenseVector) Reduced() Matrix {
+	return Reduced(s)
 }
 
 // ReduceToScalar perform's a reduction on the Vector

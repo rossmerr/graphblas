@@ -141,6 +141,24 @@ func (s *CSRMatrix) RowsAt(r int) Vector {
 	return rows
 }
 
+// RowsAtToArray return the rows at r-th
+func (s *CSRMatrix) RowsAtToArray(r int) []float64 {
+	if r < 0 || r >= s.Rows() {
+		log.Panicf("Row '%+v' is invalid", r)
+	}
+
+	start := s.rowStart[r]
+	end := s.rowStart[r+1]
+
+	rows := make([]float64, s.c)
+
+	for i := start; i < end; i++ {
+		rows[s.cols[i]] = s.values[i]
+	}
+
+	return rows
+}
+
 func (s *CSRMatrix) insert(pointer, r, c int, value float64) {
 	if value == 0 {
 		return
@@ -272,6 +290,12 @@ func (s *CSRMatrix) Values() int {
 // C ⊕= f(A)
 func (s *CSRMatrix) Apply(u UnaryOperator) {
 	Apply(s, s, u)
+}
+
+// Reduced row echelon form of matrix (Gauss-Jordan elimination)
+// rref
+func (s *CSRMatrix) Reduced() Matrix {
+	return Reduced(s)
 }
 
 // ReduceToScalar perform's a reduction on the Matrix
