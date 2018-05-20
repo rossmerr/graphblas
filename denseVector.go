@@ -171,14 +171,14 @@ func (s *DenseVector) Scalar(alpha float64) Matrix {
 func (s *DenseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
-	Multiply(s, m, matrix)
+	MatrixMatrixMultiply(s, m, matrix)
 	return matrix
 }
 
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	ElementWiseMatrixAdd(s, m, matrix)
 	return matrix
 }
 
@@ -223,12 +223,6 @@ func (s *DenseVector) Values() int {
 // C ⊕= f(A)
 func (s *DenseVector) Apply(u UnaryOperator) {
 	Apply(s, s, u)
-}
-
-// Reduced row echelon form of matrix (Gauss-Jordan elimination)
-// rref
-func (s *DenseVector) Reduced() Matrix {
-	return Reduced(s)
 }
 
 // ReduceToScalar perform's a reduction on the Vector

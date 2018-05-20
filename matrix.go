@@ -75,11 +75,4 @@ type Matrix interface {
 	// Apply modifies edge weights by the UnaryOperator
 	// C ⊕= f(A)
 	Apply(u UnaryOperator)
-
-	// Reduced row echelon form of matrix (Gauss-Jordan elimination)
-	// rref
-	Reduced() Matrix
-
-	// ReduceToScalar perform's a reduction on the Matrix
-	ReduceToScalar() int
 }

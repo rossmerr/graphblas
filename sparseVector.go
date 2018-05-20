@@ -213,14 +213,14 @@ func (s *SparseVector) Scalar(alpha float64) Matrix {
 func (s *SparseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
 
-	Multiply(s, m, matrix)
+	MatrixMatrixMultiply(s, m, matrix)
 	return matrix
 }
 
 // Add addition of a metrix by another metrix
 func (s *SparseVector) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	ElementWiseMatrixAdd(s, m, matrix)
 	return matrix
 }
 
@@ -269,12 +269,6 @@ func (s *SparseVector) Values() int {
 // C ⊕= f(A)
 func (s *SparseVector) Apply(u UnaryOperator) {
 	Apply(s, s, u)
-}
-
-// Reduced row echelon form of matrix (Gauss-Jordan elimination)
-// rref
-func (s *SparseVector) Reduced() Matrix {
-	return Reduced(s)
 }
 
 // ReduceToScalar perform's a reduction on the Vector

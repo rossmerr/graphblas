@@ -619,6 +619,210 @@ func TestMatrix_Multiply(t *testing.T) {
 	}
 }
 
+func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
+
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 0)
+		m.Set(0, 1, 1)
+		m.Set(0, 2, 0)
+		m.Set(0, 3, 1)
+		m.Set(0, 4, 0)
+		m.Set(0, 5, 0)
+		m.Set(0, 6, 0)
+
+		m.Set(1, 0, 0)
+		m.Set(1, 1, 0)
+		m.Set(1, 2, 0)
+		m.Set(1, 3, 0)
+		m.Set(1, 4, 0)
+		m.Set(1, 5, 0)
+		m.Set(1, 6, 1)
+
+		m.Set(2, 0, 0)
+		m.Set(2, 1, 0)
+		m.Set(2, 2, 0)
+		m.Set(2, 3, 0)
+		m.Set(2, 4, 0)
+		m.Set(2, 5, 0)
+		m.Set(2, 6, 0)
+
+		m.Set(3, 0, 1)
+		m.Set(3, 1, 0)
+		m.Set(3, 2, 0)
+		m.Set(3, 3, 0)
+		m.Set(3, 4, 0)
+		m.Set(3, 5, 0)
+		m.Set(3, 6, 0)
+
+		m.Set(4, 0, 0)
+		m.Set(4, 1, 0)
+		m.Set(4, 2, 0)
+		m.Set(4, 3, 0)
+		m.Set(4, 4, 0)
+		m.Set(4, 5, 0)
+		m.Set(4, 6, 0)
+
+		m.Set(5, 0, 0)
+		m.Set(5, 1, 0)
+		m.Set(5, 2, 0)
+		m.Set(5, 3, 0)
+		m.Set(5, 4, 0)
+		m.Set(5, 5, 0)
+		m.Set(5, 6, 0)
+
+		m.Set(6, 0, 0)
+		m.Set(6, 1, 0)
+		m.Set(6, 2, 0)
+		m.Set(6, 3, 1)
+		m.Set(6, 4, 0)
+		m.Set(6, 5, 0)
+		m.Set(6, 6, 0)
+
+	}
+
+	want := GraphBLAS.NewDenseMatrix(7, 7)
+	want.Set(0, 0, 0)
+	want.Set(0, 1, 0)
+	want.Set(0, 2, 0)
+	want.Set(0, 3, 0)
+	want.Set(0, 4, 0)
+	want.Set(0, 5, 0)
+	want.Set(0, 6, 0)
+
+	want.Set(1, 0, 0)
+	want.Set(1, 1, 0)
+	want.Set(1, 2, 0)
+	want.Set(1, 3, 0)
+	want.Set(1, 4, 0)
+	want.Set(1, 5, 0)
+	want.Set(1, 6, 1)
+
+	want.Set(2, 0, 0)
+	want.Set(2, 1, 0)
+	want.Set(2, 2, 0)
+	want.Set(2, 3, 0)
+	want.Set(2, 4, 0)
+	want.Set(2, 5, 0)
+	want.Set(2, 6, 0)
+
+	want.Set(3, 0, 0)
+	want.Set(3, 1, 0)
+	want.Set(3, 2, 0)
+	want.Set(3, 3, 0)
+	want.Set(3, 4, 0)
+	want.Set(3, 5, 0)
+	want.Set(3, 6, 0)
+
+	want.Set(4, 0, 0)
+	want.Set(4, 1, 0)
+	want.Set(4, 2, 0)
+	want.Set(4, 3, 0)
+	want.Set(4, 4, 0)
+	want.Set(4, 5, 0)
+	want.Set(4, 6, 0)
+
+	want.Set(5, 0, 0)
+	want.Set(5, 1, 0)
+	want.Set(5, 2, 0)
+	want.Set(5, 3, 0)
+	want.Set(5, 4, 0)
+	want.Set(5, 5, 0)
+	want.Set(5, 6, 0)
+
+	want.Set(6, 0, 0)
+	want.Set(6, 1, 0)
+	want.Set(6, 2, 0)
+	want.Set(6, 3, 0)
+	want.Set(6, 4, 0)
+	want.Set(6, 5, 0)
+	want.Set(6, 6, 0)
+
+	matrix := GraphBLAS.NewDenseMatrix(7, 7)
+	matrix.Set(0, 0, 0)
+	matrix.Set(0, 1, 0)
+	matrix.Set(0, 2, 0)
+	matrix.Set(0, 3, 0)
+	matrix.Set(0, 4, 0)
+	matrix.Set(0, 5, 0)
+	matrix.Set(0, 6, 0)
+
+	matrix.Set(1, 0, 0)
+	matrix.Set(1, 1, 0)
+	matrix.Set(1, 2, 0)
+	matrix.Set(1, 3, 0)
+	matrix.Set(1, 4, 1)
+	matrix.Set(1, 5, 0)
+	matrix.Set(1, 6, 1)
+	matrix.Set(2, 0, 0)
+	matrix.Set(2, 1, 0)
+	matrix.Set(2, 2, 0)
+	matrix.Set(2, 3, 0)
+	matrix.Set(2, 4, 0)
+	matrix.Set(2, 5, 0)
+	matrix.Set(2, 6, 0)
+
+	matrix.Set(3, 0, 0)
+	matrix.Set(3, 1, 0)
+	matrix.Set(3, 2, 0)
+	matrix.Set(3, 3, 0)
+	matrix.Set(3, 4, 0)
+	matrix.Set(3, 5, 0)
+	matrix.Set(3, 6, 0)
+
+	matrix.Set(4, 0, 0)
+	matrix.Set(4, 1, 0)
+	matrix.Set(4, 2, 0)
+	matrix.Set(4, 3, 0)
+	matrix.Set(4, 4, 0)
+	matrix.Set(4, 5, 0)
+	matrix.Set(4, 6, 0)
+
+	matrix.Set(5, 0, 0)
+	matrix.Set(5, 1, 0)
+	matrix.Set(5, 2, 0)
+	matrix.Set(5, 3, 0)
+	matrix.Set(5, 4, 0)
+	matrix.Set(5, 5, 0)
+	matrix.Set(5, 6, 0)
+
+	matrix.Set(6, 0, 0)
+	matrix.Set(6, 1, 0)
+	matrix.Set(6, 2, 0)
+	matrix.Set(6, 3, 0)
+	matrix.Set(6, 4, 1)
+	matrix.Set(6, 5, 0)
+	matrix.Set(6, 6, 0)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(7, 7),
+		},
+		// TODO I think CSC has a bug
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(7, 7),
+		// },
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(7, 7),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			got := GraphBLAS.NewDenseMatrix(tt.s.Rows(), matrix.Columns())
+			GraphBLAS.ElementWiseMatrixMultiply(tt.s, matrix, got)
+			if !got.Equal(want) {
+				t.Errorf("%+v ElementWiseMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
+			}
+		})
+	}
+}
+
 func TestMatrix_Add(t *testing.T) {
 
 	setup := func(m GraphBLAS.Matrix) {
@@ -792,69 +996,6 @@ func TestMatrix_FromArray(t *testing.T) {
 
 			if tt.s.NotEqual(want) {
 				t.Errorf("%+v From Array = want %+v", tt.name, want)
-			}
-		})
-	}
-}
-
-func TestMatrix_Reduced(t *testing.T) {
-
-	setup := func(m GraphBLAS.Matrix) {
-		m.Set(0, 0, 1)
-		m.Set(0, 1, 2)
-		m.Set(0, 2, -1)
-		m.Set(0, 3, -4)
-
-		m.Set(1, 0, 2)
-		m.Set(1, 1, 3)
-		m.Set(1, 2, -1)
-		m.Set(1, 3, -11)
-
-		m.Set(2, 0, -2)
-		m.Set(2, 1, 0)
-		m.Set(2, 2, -3)
-		m.Set(2, 3, 22)
-	}
-
-	want := GraphBLAS.NewDenseMatrix(3, 4)
-	want.Set(0, 0, 1)
-	want.Set(0, 1, 0)
-	want.Set(0, 2, 0)
-	want.Set(0, 3, -8)
-
-	want.Set(1, 0, -0)
-	want.Set(1, 1, 1)
-	want.Set(1, 2, 0)
-	want.Set(1, 3, 1)
-
-	want.Set(2, 0, -0)
-	want.Set(2, 1, -0)
-	want.Set(2, 2, 1)
-	want.Set(2, 3, -2)
-
-	tests := []struct {
-		name string
-		s    GraphBLAS.Matrix
-	}{
-		{
-			name: "DenseMatrix",
-			s:    GraphBLAS.NewDenseMatrix(3, 4),
-		},
-		{
-			name: "CSCMatrix",
-			s:    GraphBLAS.NewCSCMatrix(3, 4),
-		},
-		{
-			name: "CSRMatrix",
-			s:    GraphBLAS.NewCSRMatrix(3, 4),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			setup(tt.s)
-			got := tt.s.Reduced()
-			if got.NotEqual(want) {
-				t.Errorf("%+v Reduced = %+v, want %+v", tt.name, got, want)
 			}
 		})
 	}

@@ -5,7 +5,9 @@
 
 package breadthFirstSearch
 
-import GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
+import (
+	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
+)
 
 // BreadthFirstSearch a breadth-first search v is the source
 func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
@@ -23,8 +25,8 @@ func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 	for succ {
 		d++
 		v[d] = q.Copy()
-		q = q.Multiply(a)
-		if q.ReduceToScalar() == 1 {
+		GraphBLAS.ElementWiseMatrixMultiply(q, a, q)
+		if GraphBLAS.ReduceMatrixToScalar(q) == 1 {
 			succ = true
 		}
 	}

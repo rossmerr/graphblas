@@ -6,12 +6,12 @@
 package GraphBLAS
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 )
 
-// Multiply multiplies a matrix by another matrix
-func Multiply(s, m, matrix Matrix) {
+func multiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
@@ -35,8 +35,96 @@ func Multiply(s, m, matrix Matrix) {
 	}
 }
 
+// MatrixMatrixMultiply multiplies a matrix by another matrix
+// mxm
+func MatrixMatrixMultiply(s, m, matrix Matrix) {
+	multiply(s, m, matrix)
+}
+
+// VectorMatrixMultiply multiplies a vector by a matrix
+// vxm
+func VectorMatrixMultiply(s Vector, m Matrix, vector Vector) {
+	multiply(s, m, vector)
+}
+
+// MatrixVectorMultiply multiplies a matrix by a vector
+// mxv
+func MatrixVectorMultiply(s Matrix, m Vector, matrix Matrix) {
+	multiply(s, m, matrix)
+}
+
+func elementWiseMultiply(s, m, matrix Matrix) {
+	if m.Rows() != s.Columns() {
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
+	}
+
+	// When it's two dense matrix you can do a simple enumerate
+	if !SparseMatrix(s) && !SparseMatrix(m) {
+		sIterator := s.Enumerate()
+		mIterator := m.Enumerate()
+
+		for {
+			if sIterator.HasNext() && mIterator.HasNext() {
+				sR, sC, sV := sIterator.Next()
+				mR, mC, mV := mIterator.Next()
+
+				if sR == mR && sC == mC && sV == mV {
+					matrix.Set(sR, sC, sV)
+				}
+			} else {
+				break
+			}
+
+		}
+
+		return
+	}
+
+	// If not the same type we can only enumerate over one matrix as order is not guaranteed
+	var iterator Enumerate
+	var source Matrix
+
+	// Check for a sparse matrix as we want to use its Enumerate operation
+	// Because the use of the At operation on a sparse matrix is expensive
+	if SparseMatrix(s) {
+		iterator = s.Enumerate()
+		source = m
+	} else {
+		iterator = m.Enumerate()
+		source = s
+	}
+
+	fmt.Printf("\n matrix%+v", s)
+	for {
+		if iterator.HasNext() {
+			sR, sC, sV := iterator.Next()
+			fmt.Printf("\n%+v, %+v, %+v", sR, sC, sV)
+			mV := source.At(sR, sC)
+			if sV == mV {
+				matrix.Set(sR, sC, sV)
+			}
+		} else {
+			break
+		}
+	}
+}
+
+// ElementWiseMatrixMultiply Element-wise multiplication on a matrix
+// eWiseMult
+func ElementWiseMatrixMultiply(s, m, matrix Matrix) {
+	// TODO
+	elementWiseMultiply(s, m, matrix)
+}
+
+// ElementWiseVectorMultiply Element-wise multiplication on a vector
+// eWiseMult
+func ElementWiseVectorMultiply(s, m, matrix Matrix) {
+	// TODO
+	elementWiseMultiply(s, m, matrix)
+}
+
 // Add addition of a matrix by another matrix
-func Add(s, m, matrix Matrix) {
+func add(s, m, matrix Matrix) {
 	if s.Columns() != m.Columns() {
 		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -46,19 +134,32 @@ func Add(s, m, matrix Matrix) {
 	}
 
 	var iterator Enumerate
-
+	var source Matrix
 	if SparseMatrix(s) {
 		iterator = s.Enumerate()
+		source = m
 	} else {
 		iterator = m.Enumerate()
+		source = s
 	}
 
 	for iterator.HasNext() {
-		r, c, value := iterator.Next()
-		matrix.Update(r, c, func(v float64) float64 {
-			return value + v
-		})
+		r, c, v := iterator.Next()
+		value := source.At(r, c)
+		matrix.Set(r, c, value+v)
 	}
+}
+
+// ElementWiseMatrixAdd Element-wise addition on a matrix
+// eWiseMult
+func ElementWiseMatrixAdd(s, m, matrix Matrix) {
+	add(s, m, matrix)
+}
+
+// ElementWiseVectorAdd Element-wise addition on a vector
+// eWiseMult
+func ElementWiseVectorAdd(s, m, matrix Matrix) {
+	add(s, m, matrix)
 }
 
 // Subtract subtracts one matrix from another matrix
@@ -234,68 +335,27 @@ func Scalar(s Matrix, alpha float64) Matrix {
 	return matrix
 }
 
-// Reduced row echelon form of matrix (Gauss-Jordan elimination)
-// rref
-func Reduced(s Matrix) Matrix {
-	m := s.Copy()
-	lead := 0
-	rowCount := m.Rows()
-	columnCount := m.Columns()
+// ReduceVectorToScalar perform's a reduction on the Matrix
+func ReduceVectorToScalar(s Vector) int {
+	// https://people.eecs.berkeley.edu/~aydin/GraphBLAS_API_C.pdf
+	// TODO need to reduce computes the result of performing a reduction
+	// across each of the elements of an input matrix
 
-	for r := 0; r < rowCount; r++ {
-		if lead >= columnCount {
-			return m
-		}
-		i := r
-		for m.At(i, lead) == 0 {
-			i++
-			if rowCount == i {
-				i = r
-				lead++
-				if columnCount == lead {
-					return m
-				}
-			}
-		}
+	// monoid := binaryOp.NewMonoIDBool(true, binaryOp.LXOR)
 
-		if i != r {
-			v1 := m.RowsAtToArray(i)
-			v2 := m.RowsAtToArray(r)
+	// monoid.Reduce()
+	// for i := 0; i < s.Values(); i++ {
+	// 	xor.Apply()
+	// }
+	return 0
+}
 
-			for c := 0; c < len(v1); c++ {
-				m.Set(r, c, v1[c])
-			}
+// ReduceMatrixToVector perform's a reduction on the Matrix
+func ReduceMatrixToVector(s Matrix) Vector {
+	return NewDenseVector(0)
+}
 
-			for c := 0; c < len(v2); c++ {
-				m.Set(i, c, v2[c])
-			}
-		}
-
-		f := 1 / m.At(r, lead)
-
-		vector := m.RowsAtToArray(r)
-		for c := 0; c < len(vector); c++ {
-			value := vector[c]
-			value *= f
-			m.Set(r, c, value)
-		}
-
-		for i = 0; i < rowCount; i++ {
-			if i != r {
-				f = m.At(i, lead)
-				vector := m.RowsAtToArray(r)
-				for c := 0; c < len(vector); c++ {
-					value := vector[c]
-					m.Update(i, c, func(v float64) float64 {
-						v -= value * f
-						return v
-					})
-
-				}
-			}
-		}
-		lead++
-	}
-
-	return m
+// ReduceMatrixToScalar perform's a reduction on the Matrix
+func ReduceMatrixToScalar(s Matrix) int {
+	return 0
 }

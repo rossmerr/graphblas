@@ -164,14 +164,14 @@ func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(s.Rows(), m.Columns(), nil)
 
-	Multiply(s, m, matrix)
+	MatrixMatrixMultiply(s, m, matrix)
 	return matrix
 }
 
 // Add addition of a matrix by another matrix
 func (s *DenseMatrix) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	ElementWiseMatrixAdd(s, m, matrix)
 	return matrix
 }
 
@@ -226,27 +226,6 @@ func (s *DenseMatrix) Apply(u UnaryOperator) {
 			return
 		})
 	}
-}
-
-// Reduced row echelon form of matrix (Gauss-Jordan elimination)
-// rref
-func (s *DenseMatrix) Reduced() Matrix {
-	return Reduced(s)
-}
-
-// ReduceToScalar perform's a reduction on the Matrix
-func (s *DenseMatrix) ReduceToScalar() int {
-	// https://people.eecs.berkeley.edu/~aydin/GraphBLAS_API_C.pdf
-	// TODO need to reduce computes the result of performing a reduction
-	// across each of the elements of an input matrix
-
-	// monoid := binaryOp.NewMonoIDBool(true, binaryOp.LXOR)
-
-	// monoid.Reduce()
-	// for i := 0; i < s.Values(); i++ {
-	// 	xor.Apply()
-	// }
-	return 0
 }
 
 // RawMatrix returns the raw matrix

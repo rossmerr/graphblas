@@ -233,14 +233,14 @@ func (s *CSRMatrix) Scalar(alpha float64) Matrix {
 func (s *CSRMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), 0)
 
-	Multiply(s, m, matrix)
+	MatrixMatrixMultiply(s, m, matrix)
 	return matrix
 }
 
 // Add addition of a matrix by another matrix
 func (s *CSRMatrix) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	ElementWiseMatrixAdd(s, m, matrix)
 	return matrix
 }
 
@@ -290,12 +290,6 @@ func (s *CSRMatrix) Values() int {
 // C ⊕= f(A)
 func (s *CSRMatrix) Apply(u UnaryOperator) {
 	Apply(s, s, u)
-}
-
-// Reduced row echelon form of matrix (Gauss-Jordan elimination)
-// rref
-func (s *CSRMatrix) Reduced() Matrix {
-	return Reduced(s)
 }
 
 // ReduceToScalar perform's a reduction on the Matrix
