@@ -6,6 +6,7 @@
 package GraphBLAS_test
 
 import (
+	"fmt"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -67,6 +68,175 @@ func TestMatrix_Update(t *testing.T) {
 			v := tt.s.At(0, 0)
 			if tt.want != v {
 				t.Errorf("%+v Update = %+v, want %+v", tt.name, v, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_SparseEnumerate(t *testing.T) {
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 9)
+		m.Set(0, 1, 0)
+		m.Set(0, 2, 7)
+		m.Set(1, 0, 0)
+		m.Set(1, 1, 0)
+		m.Set(1, 2, 0)
+		m.Set(2, 0, 3)
+		m.Set(2, 1, 0)
+		m.Set(2, 2, 1)
+	}
+
+	dense := GraphBLAS.NewDenseMatrix(3, 3)
+	setup(dense)
+	denseCount := 0
+	for iterator := dense.Enumerate(); iterator.HasNext(); {
+		_, _, value := iterator.Next()
+		if value != 0 {
+			denseCount++
+		}
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
+		// },
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(3, 3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			count := 0
+			for iterator := tt.s.Enumerate(); iterator.HasNext(); {
+				r, c, value := iterator.Next()
+				fmt.Printf("%+v, %+v, %+v \n", r, c, value)
+				v := dense.At(r, c)
+				if v != value {
+					t.Errorf("%+v Sparse Enumerate = %+v, want %+v, (r %+v, c %+v)", tt.name, value, v, r, c)
+				} else {
+					count++
+				}
+			}
+			if denseCount != count {
+				t.Errorf("%+v Length miss match = %+v, want %+v", tt.name, count, denseCount)
+			}
+		})
+	}
+}
+
+func TestMatrix_SparseEnumerateSmall(t *testing.T) {
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 4)
+		m.Set(0, 1, 0)
+		//	m.Set(0, 1, 2)
+		m.Set(1, 0, 1)
+		m.Set(1, 1, -9)
+	}
+
+	dense := GraphBLAS.NewDenseMatrix(2, 2)
+	setup(dense)
+	denseCount := 0
+	for iterator := dense.Enumerate(); iterator.HasNext(); {
+		_, _, value := iterator.Next()
+		if value != 0 {
+			denseCount++
+		}
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
+		// },
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(2, 2),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			count := 0
+			for iterator := tt.s.Enumerate(); iterator.HasNext(); {
+				r, c, value := iterator.Next()
+				fmt.Printf("%+v, %+v, %+v \n", r, c, value)
+				v := dense.At(r, c)
+				if v != value {
+					t.Errorf("%+v Sparse Enumerate = %+v, want %+v, (r %+v, c %+v)", tt.name, value, v, r, c)
+				} else {
+					count++
+				}
+			}
+			if denseCount != count {
+				t.Errorf("%+v Length miss match = %+v, want %+v", tt.name, count, denseCount)
+			}
+		})
+	}
+}
+
+func TestMatrix_SparseMap(t *testing.T) {
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 9)
+		m.Set(0, 1, 0)
+		m.Set(0, 2, 7)
+		m.Set(1, 0, 0)
+		m.Set(1, 1, 0)
+		m.Set(1, 2, 0)
+		m.Set(2, 0, 3)
+		m.Set(2, 1, 0)
+		m.Set(2, 2, 1)
+	}
+
+	dense := GraphBLAS.NewDenseMatrix(3, 3)
+	setup(dense)
+	denseCount := 0
+	for iterator := dense.Enumerate(); iterator.HasNext(); {
+		_, _, value := iterator.Next()
+		if value != 0 {
+			denseCount++
+		}
+	}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
+		// },
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(3, 3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			count := 0
+			for iterator := tt.s.Map(); iterator.HasNext(); {
+				iterator.Map(func(r, c int, value float64) float64 {
+					v := dense.At(r, c)
+					if v != value {
+						t.Errorf("%+v Sparse Enumerate = %+v, want %+v, (r %+v, c %+v)", tt.name, value, v, r, c)
+					} else {
+						count++
+					}
+					return value
+				})
+
+			}
+			if denseCount != count {
+				t.Errorf("%+v Length miss match = %+v, want %+v", tt.name, count, denseCount)
 			}
 		})
 	}
@@ -173,16 +343,16 @@ func TestMatrix_Scalar(t *testing.T) {
 		s     GraphBLAS.Matrix
 		alpha float64
 	}{
-		{
-			name:  "DenseMatrix",
-			s:     GraphBLAS.NewDenseMatrix(2, 2),
-			alpha: 2,
-		},
-		{
-			name:  "CSCMatrix",
-			s:     GraphBLAS.NewCSCMatrix(2, 2),
-			alpha: 2,
-		},
+		// {
+		// 	name:  "DenseMatrix",
+		// 	s:     GraphBLAS.NewDenseMatrix(2, 2),
+		// 	alpha: 2,
+		// },
+		// {
+		// 	name:  "CSCMatrix",
+		// 	s:     GraphBLAS.NewCSCMatrix(2, 2),
+		// 	alpha: 2,
+		// },
 		{
 			name:  "CSRMatrix",
 			s:     GraphBLAS.NewCSRMatrix(2, 2),
@@ -192,7 +362,8 @@ func TestMatrix_Scalar(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := tt.s.Scalar(tt.alpha); !got.Equal(want) {
+			got := tt.s.Scalar(tt.alpha)
+			if !got.Equal(want) {
 				t.Errorf("%+v Scalar = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -234,7 +405,10 @@ func TestMatrix_Negative(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := tt.s.Negative(); !got.Equal(want) {
+			got := tt.s.Negative()
+			fmt.Printf("%+v", got.At(1, 0))
+			fmt.Printf("%+v", got.At(1, 1))
+			if !got.Equal(want) {
 				t.Errorf("%+v Negative = %+v, want %+v", tt.name, got, want)
 			}
 		})
@@ -801,7 +975,6 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(7, 7),
 		},
-		// TODO I think CSC has a bug
 		// {
 		// 	name: "CSCMatrix",
 		// 	s:    GraphBLAS.NewCSCMatrix(7, 7),
