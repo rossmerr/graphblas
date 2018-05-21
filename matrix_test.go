@@ -130,59 +130,6 @@ func TestMatrix_SparseEnumerate(t *testing.T) {
 	}
 }
 
-func TestMatrix_SparseEnumerateSmall(t *testing.T) {
-	setup := func(m GraphBLAS.Matrix) {
-		m.Set(0, 0, 4)
-		m.Set(0, 1, 0)
-		//	m.Set(0, 1, 2)
-		m.Set(1, 0, 1)
-		m.Set(1, 1, -9)
-	}
-
-	dense := GraphBLAS.NewDenseMatrix(2, 2)
-	setup(dense)
-	denseCount := 0
-	for iterator := dense.Enumerate(); iterator.HasNext(); {
-		_, _, value := iterator.Next()
-		if value != 0 {
-			denseCount++
-		}
-	}
-
-	tests := []struct {
-		name string
-		s    GraphBLAS.Matrix
-	}{
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
-		// },
-		{
-			name: "CSRMatrix",
-			s:    GraphBLAS.NewCSRMatrix(2, 2),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			setup(tt.s)
-			count := 0
-			for iterator := tt.s.Enumerate(); iterator.HasNext(); {
-				r, c, value := iterator.Next()
-				fmt.Printf("%+v, %+v, %+v \n", r, c, value)
-				v := dense.At(r, c)
-				if v != value {
-					t.Errorf("%+v Sparse Enumerate = %+v, want %+v, (r %+v, c %+v)", tt.name, value, v, r, c)
-				} else {
-					count++
-				}
-			}
-			if denseCount != count {
-				t.Errorf("%+v Length miss match = %+v, want %+v", tt.name, count, denseCount)
-			}
-		})
-	}
-}
-
 func TestMatrix_SparseMap(t *testing.T) {
 	setup := func(m GraphBLAS.Matrix) {
 		m.Set(0, 0, 9)
