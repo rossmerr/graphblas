@@ -6,10 +6,11 @@
 package GraphBLAS
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 )
+
+const defaultFloat64 = float64(0)
 
 func multiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
@@ -94,11 +95,9 @@ func elementWiseMultiply(s, m, matrix Matrix) {
 		source = s
 	}
 
-	fmt.Printf("\n matrix%+v", s)
 	for {
 		if iterator.HasNext() {
 			sR, sC, sV := iterator.Next()
-			fmt.Printf("\n%+v, %+v, %+v", sR, sC, sV)
 			mV := source.At(sR, sC)
 			if sV == mV {
 				matrix.Set(sR, sC, sV)
@@ -112,19 +111,17 @@ func elementWiseMultiply(s, m, matrix Matrix) {
 // ElementWiseMatrixMultiply Element-wise multiplication on a matrix
 // eWiseMult
 func ElementWiseMatrixMultiply(s, m, matrix Matrix) {
-	// TODO
 	elementWiseMultiply(s, m, matrix)
 }
 
 // ElementWiseVectorMultiply Element-wise multiplication on a vector
 // eWiseMult
 func ElementWiseVectorMultiply(s, m, matrix Matrix) {
-	// TODO
 	elementWiseMultiply(s, m, matrix)
 }
 
 // Add addition of a matrix by another matrix
-func add(s, m, matrix Matrix) {
+func Add(s, m, matrix Matrix) {
 	if s.Columns() != m.Columns() {
 		log.Panicf("Column miss match %+v, %+v", s.Columns(), m.Columns())
 	}
@@ -150,16 +147,36 @@ func add(s, m, matrix Matrix) {
 	}
 }
 
+func elementWiseAdd(s, m, matrix Matrix) {
+	if m.Rows() != s.Columns() {
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
+	}
+
+	for iterator := s.Enumerate(); iterator.HasNext(); {
+		r, c, value := iterator.Next()
+		if value != defaultFloat64 {
+			matrix.Set(r, c, value)
+		}
+	}
+
+	for iterator := m.Enumerate(); iterator.HasNext(); {
+		r, c, value := iterator.Next()
+		if value != defaultFloat64 {
+			matrix.Set(r, c, value)
+		}
+	}
+}
+
 // ElementWiseMatrixAdd Element-wise addition on a matrix
 // eWiseMult
 func ElementWiseMatrixAdd(s, m, matrix Matrix) {
-	add(s, m, matrix)
+	elementWiseAdd(s, m, matrix)
 }
 
 // ElementWiseVectorAdd Element-wise addition on a vector
 // eWiseMult
 func ElementWiseVectorAdd(s, m, matrix Matrix) {
-	add(s, m, matrix)
+	elementWiseAdd(s, m, matrix)
 }
 
 // Subtract subtracts one matrix from another matrix

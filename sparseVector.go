@@ -220,7 +220,7 @@ func (s *SparseVector) Multiply(m Matrix) Matrix {
 // Add addition of a metrix by another metrix
 func (s *SparseVector) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	ElementWiseMatrixAdd(s, m, matrix)
+	Add(s, m, matrix)
 	return matrix
 }
 

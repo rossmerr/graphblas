@@ -178,7 +178,7 @@ func (s *DenseVector) Multiply(m Matrix) Matrix {
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	ElementWiseMatrixAdd(s, m, matrix)
+	Add(s, m, matrix)
 	return matrix
 }
 

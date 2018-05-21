@@ -6,7 +6,6 @@
 package GraphBLAS_test
 
 import (
-	"fmt"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -115,7 +114,6 @@ func TestMatrix_SparseEnumerate(t *testing.T) {
 			count := 0
 			for iterator := tt.s.Enumerate(); iterator.HasNext(); {
 				r, c, value := iterator.Next()
-				fmt.Printf("%+v, %+v, %+v \n", r, c, value)
 				v := dense.At(r, c)
 				if v != value {
 					t.Errorf("%+v Sparse Enumerate = %+v, want %+v, (r %+v, c %+v)", tt.name, value, v, r, c)
@@ -353,8 +351,6 @@ func TestMatrix_Negative(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
 			got := tt.s.Negative()
-			fmt.Printf("%+v", got.At(1, 0))
-			fmt.Printf("%+v", got.At(1, 1))
 			if !got.Equal(want) {
 				t.Errorf("%+v Negative = %+v, want %+v", tt.name, got, want)
 			}
@@ -801,118 +797,27 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 
 	}
 
-	want := GraphBLAS.NewDenseMatrix(7, 7)
-	want.Set(0, 0, 0)
-	want.Set(0, 1, 0)
-	want.Set(0, 2, 0)
-	want.Set(0, 3, 0)
-	want.Set(0, 4, 0)
-	want.Set(0, 5, 0)
-	want.Set(0, 6, 0)
+	array := [][]float64{
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 1},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+	}
+	want := GraphBLAS.NewDenseMatrixFromArray(array)
 
-	want.Set(1, 0, 0)
-	want.Set(1, 1, 0)
-	want.Set(1, 2, 0)
-	want.Set(1, 3, 0)
-	want.Set(1, 4, 0)
-	want.Set(1, 5, 0)
-	want.Set(1, 6, 1)
-
-	want.Set(2, 0, 0)
-	want.Set(2, 1, 0)
-	want.Set(2, 2, 0)
-	want.Set(2, 3, 0)
-	want.Set(2, 4, 0)
-	want.Set(2, 5, 0)
-	want.Set(2, 6, 0)
-
-	want.Set(3, 0, 0)
-	want.Set(3, 1, 0)
-	want.Set(3, 2, 0)
-	want.Set(3, 3, 0)
-	want.Set(3, 4, 0)
-	want.Set(3, 5, 0)
-	want.Set(3, 6, 0)
-
-	want.Set(4, 0, 0)
-	want.Set(4, 1, 0)
-	want.Set(4, 2, 0)
-	want.Set(4, 3, 0)
-	want.Set(4, 4, 0)
-	want.Set(4, 5, 0)
-	want.Set(4, 6, 0)
-
-	want.Set(5, 0, 0)
-	want.Set(5, 1, 0)
-	want.Set(5, 2, 0)
-	want.Set(5, 3, 0)
-	want.Set(5, 4, 0)
-	want.Set(5, 5, 0)
-	want.Set(5, 6, 0)
-
-	want.Set(6, 0, 0)
-	want.Set(6, 1, 0)
-	want.Set(6, 2, 0)
-	want.Set(6, 3, 0)
-	want.Set(6, 4, 0)
-	want.Set(6, 5, 0)
-	want.Set(6, 6, 0)
-
-	matrix := GraphBLAS.NewDenseMatrix(7, 7)
-	matrix.Set(0, 0, 0)
-	matrix.Set(0, 1, 0)
-	matrix.Set(0, 2, 0)
-	matrix.Set(0, 3, 0)
-	matrix.Set(0, 4, 0)
-	matrix.Set(0, 5, 0)
-	matrix.Set(0, 6, 0)
-
-	matrix.Set(1, 0, 0)
-	matrix.Set(1, 1, 0)
-	matrix.Set(1, 2, 0)
-	matrix.Set(1, 3, 0)
-	matrix.Set(1, 4, 1)
-	matrix.Set(1, 5, 0)
-	matrix.Set(1, 6, 1)
-	matrix.Set(2, 0, 0)
-	matrix.Set(2, 1, 0)
-	matrix.Set(2, 2, 0)
-	matrix.Set(2, 3, 0)
-	matrix.Set(2, 4, 0)
-	matrix.Set(2, 5, 0)
-	matrix.Set(2, 6, 0)
-
-	matrix.Set(3, 0, 0)
-	matrix.Set(3, 1, 0)
-	matrix.Set(3, 2, 0)
-	matrix.Set(3, 3, 0)
-	matrix.Set(3, 4, 0)
-	matrix.Set(3, 5, 0)
-	matrix.Set(3, 6, 0)
-
-	matrix.Set(4, 0, 0)
-	matrix.Set(4, 1, 0)
-	matrix.Set(4, 2, 0)
-	matrix.Set(4, 3, 0)
-	matrix.Set(4, 4, 0)
-	matrix.Set(4, 5, 0)
-	matrix.Set(4, 6, 0)
-
-	matrix.Set(5, 0, 0)
-	matrix.Set(5, 1, 0)
-	matrix.Set(5, 2, 0)
-	matrix.Set(5, 3, 0)
-	matrix.Set(5, 4, 0)
-	matrix.Set(5, 5, 0)
-	matrix.Set(5, 6, 0)
-
-	matrix.Set(6, 0, 0)
-	matrix.Set(6, 1, 0)
-	matrix.Set(6, 2, 0)
-	matrix.Set(6, 3, 0)
-	matrix.Set(6, 4, 1)
-	matrix.Set(6, 5, 0)
-	matrix.Set(6, 6, 0)
+	array2 := [][]float64{
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 1},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 0},
+	}
+	matrix := GraphBLAS.NewDenseMatrixFromArray(array2)
 
 	tests := []struct {
 		name string
@@ -938,6 +843,117 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 			GraphBLAS.ElementWiseMatrixMultiply(tt.s, matrix, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
+			}
+		})
+	}
+}
+
+func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
+	setup := func(m GraphBLAS.Matrix) {
+		m.Set(0, 0, 0)
+		m.Set(0, 1, 1)
+		m.Set(0, 2, 0)
+		m.Set(0, 3, 1)
+		m.Set(0, 4, 0)
+		m.Set(0, 5, 0)
+		m.Set(0, 6, 0)
+
+		m.Set(1, 0, 0)
+		m.Set(1, 1, 0)
+		m.Set(1, 2, 0)
+		m.Set(1, 3, 0)
+		m.Set(1, 4, 0)
+		m.Set(1, 5, 0)
+		m.Set(1, 6, 1)
+
+		m.Set(2, 0, 0)
+		m.Set(2, 1, 0)
+		m.Set(2, 2, 0)
+		m.Set(2, 3, 0)
+		m.Set(2, 4, 0)
+		m.Set(2, 5, 0)
+		m.Set(2, 6, 0)
+
+		m.Set(3, 0, 1)
+		m.Set(3, 1, 0)
+		m.Set(3, 2, 0)
+		m.Set(3, 3, 0)
+		m.Set(3, 4, 0)
+		m.Set(3, 5, 0)
+		m.Set(3, 6, 0)
+
+		m.Set(4, 0, 0)
+		m.Set(4, 1, 0)
+		m.Set(4, 2, 0)
+		m.Set(4, 3, 0)
+		m.Set(4, 4, 0)
+		m.Set(4, 5, 0)
+		m.Set(4, 6, 0)
+
+		m.Set(5, 0, 0)
+		m.Set(5, 1, 0)
+		m.Set(5, 2, 0)
+		m.Set(5, 3, 0)
+		m.Set(5, 4, 0)
+		m.Set(5, 5, 0)
+		m.Set(5, 6, 0)
+
+		m.Set(6, 0, 0)
+		m.Set(6, 1, 0)
+		m.Set(6, 2, 0)
+		m.Set(6, 3, 1)
+		m.Set(6, 4, 0)
+		m.Set(6, 5, 0)
+		m.Set(6, 6, 0)
+
+	}
+
+	array := [][]float64{
+		[]float64{0, 1, 0, 1, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 1},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{1, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 1, 1, 0, 0},
+	}
+	want := GraphBLAS.NewDenseMatrixFromArray(array)
+
+	array2 := [][]float64{
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 1},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 0},
+	}
+	matrix := GraphBLAS.NewDenseMatrixFromArray(array2)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(7, 7),
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(7, 7),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(7, 7),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup(tt.s)
+			got := GraphBLAS.NewDenseMatrix(tt.s.Rows(), matrix.Columns())
+			GraphBLAS.ElementWiseMatrixAdd(tt.s, matrix, got)
+			if !got.Equal(want) {
+				t.Errorf("%+v ElementWiseMatrixAdd = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
 			}
 		})
 	}

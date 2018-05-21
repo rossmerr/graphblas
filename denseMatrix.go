@@ -171,7 +171,7 @@ func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 // Add addition of a matrix by another matrix
 func (s *DenseMatrix) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	ElementWiseMatrixAdd(s, m, matrix)
+	Add(s, m, matrix)
 	return matrix
 }
 
