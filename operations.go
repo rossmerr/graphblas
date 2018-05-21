@@ -45,7 +45,7 @@ func MatrixMatrixMultiply(s, m, matrix Matrix) {
 // VectorMatrixMultiply multiplies a vector by a matrix
 // vxm
 func VectorMatrixMultiply(s Vector, m Matrix, vector Vector) {
-	multiply(s, m, vector)
+	multiply(m, s, vector)
 }
 
 // MatrixVectorMultiply multiplies a matrix by a vector

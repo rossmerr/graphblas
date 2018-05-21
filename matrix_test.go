@@ -736,67 +736,66 @@ func TestMatrix_Multiply(t *testing.T) {
 	}
 }
 
+func setupMatrix(m GraphBLAS.Matrix) {
+	m.Set(0, 0, 0)
+	m.Set(0, 1, 1)
+	m.Set(0, 2, 0)
+	m.Set(0, 3, 1)
+	m.Set(0, 4, 0)
+	m.Set(0, 5, 0)
+	m.Set(0, 6, 0)
+
+	m.Set(1, 0, 0)
+	m.Set(1, 1, 0)
+	m.Set(1, 2, 0)
+	m.Set(1, 3, 0)
+	m.Set(1, 4, 0)
+	m.Set(1, 5, 0)
+	m.Set(1, 6, 1)
+
+	m.Set(2, 0, 0)
+	m.Set(2, 1, 0)
+	m.Set(2, 2, 0)
+	m.Set(2, 3, 0)
+	m.Set(2, 4, 0)
+	m.Set(2, 5, 0)
+	m.Set(2, 6, 0)
+
+	m.Set(3, 0, 1)
+	m.Set(3, 1, 0)
+	m.Set(3, 2, 0)
+	m.Set(3, 3, 0)
+	m.Set(3, 4, 0)
+	m.Set(3, 5, 0)
+	m.Set(3, 6, 0)
+
+	m.Set(4, 0, 0)
+	m.Set(4, 1, 0)
+	m.Set(4, 2, 0)
+	m.Set(4, 3, 0)
+	m.Set(4, 4, 0)
+	m.Set(4, 5, 0)
+	m.Set(4, 6, 0)
+
+	m.Set(5, 0, 0)
+	m.Set(5, 1, 0)
+	m.Set(5, 2, 0)
+	m.Set(5, 3, 0)
+	m.Set(5, 4, 0)
+	m.Set(5, 5, 0)
+	m.Set(5, 6, 0)
+
+	m.Set(6, 0, 0)
+	m.Set(6, 1, 0)
+	m.Set(6, 2, 0)
+	m.Set(6, 3, 1)
+	m.Set(6, 4, 0)
+	m.Set(6, 5, 0)
+	m.Set(6, 6, 0)
+
+}
+
 func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
-
-	setup := func(m GraphBLAS.Matrix) {
-		m.Set(0, 0, 0)
-		m.Set(0, 1, 1)
-		m.Set(0, 2, 0)
-		m.Set(0, 3, 1)
-		m.Set(0, 4, 0)
-		m.Set(0, 5, 0)
-		m.Set(0, 6, 0)
-
-		m.Set(1, 0, 0)
-		m.Set(1, 1, 0)
-		m.Set(1, 2, 0)
-		m.Set(1, 3, 0)
-		m.Set(1, 4, 0)
-		m.Set(1, 5, 0)
-		m.Set(1, 6, 1)
-
-		m.Set(2, 0, 0)
-		m.Set(2, 1, 0)
-		m.Set(2, 2, 0)
-		m.Set(2, 3, 0)
-		m.Set(2, 4, 0)
-		m.Set(2, 5, 0)
-		m.Set(2, 6, 0)
-
-		m.Set(3, 0, 1)
-		m.Set(3, 1, 0)
-		m.Set(3, 2, 0)
-		m.Set(3, 3, 0)
-		m.Set(3, 4, 0)
-		m.Set(3, 5, 0)
-		m.Set(3, 6, 0)
-
-		m.Set(4, 0, 0)
-		m.Set(4, 1, 0)
-		m.Set(4, 2, 0)
-		m.Set(4, 3, 0)
-		m.Set(4, 4, 0)
-		m.Set(4, 5, 0)
-		m.Set(4, 6, 0)
-
-		m.Set(5, 0, 0)
-		m.Set(5, 1, 0)
-		m.Set(5, 2, 0)
-		m.Set(5, 3, 0)
-		m.Set(5, 4, 0)
-		m.Set(5, 5, 0)
-		m.Set(5, 6, 0)
-
-		m.Set(6, 0, 0)
-		m.Set(6, 1, 0)
-		m.Set(6, 2, 0)
-		m.Set(6, 3, 1)
-		m.Set(6, 4, 0)
-		m.Set(6, 5, 0)
-		m.Set(6, 6, 0)
-
-	}
-
 	array := [][]float64{
 		[]float64{0, 0, 0, 0, 0, 0, 0},
 		[]float64{0, 0, 0, 0, 0, 0, 1},
@@ -838,7 +837,7 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			setup(tt.s)
+			setupMatrix(tt.s)
 			got := GraphBLAS.NewDenseMatrix(tt.s.Rows(), matrix.Columns())
 			GraphBLAS.ElementWiseMatrixMultiply(tt.s, matrix, got)
 			if !got.Equal(want) {
@@ -848,66 +847,50 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 	}
 }
 
-func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
-	setup := func(m GraphBLAS.Matrix) {
-		m.Set(0, 0, 0)
-		m.Set(0, 1, 1)
-		m.Set(0, 2, 0)
-		m.Set(0, 3, 1)
-		m.Set(0, 4, 0)
-		m.Set(0, 5, 0)
-		m.Set(0, 6, 0)
+func TestMatrix_VectorMatrixMultiply(t *testing.T) {
+	want := GraphBLAS.NewDenseVectorFromArray([]float64{0, 1, 0, 0, 0, 0, 0})
 
-		m.Set(1, 0, 0)
-		m.Set(1, 1, 0)
-		m.Set(1, 2, 0)
-		m.Set(1, 3, 0)
-		m.Set(1, 4, 0)
-		m.Set(1, 5, 0)
-		m.Set(1, 6, 1)
-
-		m.Set(2, 0, 0)
-		m.Set(2, 1, 0)
-		m.Set(2, 2, 0)
-		m.Set(2, 3, 0)
-		m.Set(2, 4, 0)
-		m.Set(2, 5, 0)
-		m.Set(2, 6, 0)
-
-		m.Set(3, 0, 1)
-		m.Set(3, 1, 0)
-		m.Set(3, 2, 0)
-		m.Set(3, 3, 0)
-		m.Set(3, 4, 0)
-		m.Set(3, 5, 0)
-		m.Set(3, 6, 0)
-
-		m.Set(4, 0, 0)
-		m.Set(4, 1, 0)
-		m.Set(4, 2, 0)
-		m.Set(4, 3, 0)
-		m.Set(4, 4, 0)
-		m.Set(4, 5, 0)
-		m.Set(4, 6, 0)
-
-		m.Set(5, 0, 0)
-		m.Set(5, 1, 0)
-		m.Set(5, 2, 0)
-		m.Set(5, 3, 0)
-		m.Set(5, 4, 0)
-		m.Set(5, 5, 0)
-		m.Set(5, 6, 0)
-
-		m.Set(6, 0, 0)
-		m.Set(6, 1, 0)
-		m.Set(6, 2, 0)
-		m.Set(6, 3, 1)
-		m.Set(6, 4, 0)
-		m.Set(6, 5, 0)
-		m.Set(6, 6, 0)
-
+	array2 := [][]float64{
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 1},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 0},
 	}
+	matrix := GraphBLAS.NewDenseMatrixFromArray(array2)
 
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		// {
+		// 	name: "DenseMatrix",
+		// 	s:    GraphBLAS.NewDenseMatrix(7, 7),
+		// },
+		// {
+		// 	name: "CSCMatrix",
+		// 	s:    GraphBLAS.NewCSCMatrix(7, 7),
+		// },
+		// {
+		// 	name: "CSRMatrix",
+		// 	s:    GraphBLAS.NewCSRMatrix(7, 7),
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setupMatrix(tt.s)
+			got := GraphBLAS.NewDenseVector(matrix.Columns())
+			GraphBLAS.VectorMatrixMultiply(tt.s.ColumnsAt(6), matrix, got)
+			if !got.Equal(want) {
+				t.Errorf("%+v VectorMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
+			}
+		})
+	}
+}
+
+func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
 	array := [][]float64{
 		[]float64{0, 1, 0, 1, 0, 0, 0},
 		[]float64{0, 0, 0, 0, 1, 0, 1},
@@ -949,7 +932,7 @@ func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			setup(tt.s)
+			setupMatrix(tt.s)
 			got := GraphBLAS.NewDenseMatrix(tt.s.Rows(), matrix.Columns())
 			GraphBLAS.ElementWiseMatrixAdd(tt.s, matrix, got)
 			if !got.Equal(want) {
@@ -960,7 +943,6 @@ func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
 }
 
 func TestMatrix_Add(t *testing.T) {
-
 	setup := func(m GraphBLAS.Matrix) {
 		m.Set(0, 0, 3)
 		m.Set(0, 1, 8)
