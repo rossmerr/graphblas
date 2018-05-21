@@ -302,20 +302,6 @@ func (s *CSCMatrix) Enumerate() Enumerate {
 	return s.iterator()
 }
 
-// func (s *CSCMatrix) iterator() *cSCMatrixIterator {
-// 	i := &cSCMatrixIterator{
-// 		matrix:     s,
-// 		size:       len(s.values),
-// 		last:       0,
-// 		c:          0,
-// 		r:          s.colStart[0],
-// 		pointerEnd: s.colStart[0+1],
-// 		rOld:       0,
-// 	}
-// 	i.rOld = i.r
-// 	return i
-// }
-
 func (s *CSCMatrix) iterator() *cSCMatrixIterator {
 	i := &cSCMatrixIterator{
 		matrix: s,
@@ -344,18 +330,6 @@ func (s *cSCMatrixIterator) HasNext() bool {
 	}
 	return true
 }
-
-// func (s *cSCMatrixIterator) next() {
-// 	if s.r == s.pointerEnd {
-// 		s.c++
-// 		s.r = s.pointerEnd
-// 		s.pointerEnd = s.matrix.colStart[s.c+1]
-// 	}
-
-// 	s.rOld = s.r
-// 	s.r++
-// 	s.last++
-// }
 
 func (s *cSCMatrixIterator) next() {
 
