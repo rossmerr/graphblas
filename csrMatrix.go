@@ -308,8 +308,8 @@ type cSRMatrixIterator struct {
 	last         int
 	c            int
 	r            int
-	cOld         int
 	cIndex       int
+	index        int
 	pointerStart int
 	pointerEnd   int
 }
@@ -329,19 +329,19 @@ func (s *cSRMatrixIterator) next() {
 		s.r++
 		s.pointerStart = s.matrix.rowStart[s.r]
 		s.pointerEnd = s.matrix.rowStart[s.r+1]
-		s.cOld = s.matrix.cols[s.pointerStart]
+		s.cIndex = s.matrix.cols[s.pointerStart]
 	}
 
 	for s.pointerStart < s.pointerEnd {
-		if s.matrix.cols[s.pointerStart] == s.cOld {
-			s.cIndex = s.pointerStart
+		if s.matrix.cols[s.pointerStart] == s.cIndex {
+			s.index = s.pointerStart
 			s.pointerStart++
-			s.c = s.cOld
-			s.cOld++
+			s.c = s.cIndex
+			s.cIndex++
 			s.last++
 			return
 		}
-		s.cOld++
+		s.cIndex++
 	}
 }
 
@@ -356,7 +356,7 @@ func (s *cSRMatrixIterator) HasNext() bool {
 // Next moves the iterator and returns the row, column and value
 func (s *cSRMatrixIterator) Next() (int, int, float64) {
 	s.next()
-	return s.r, s.c, s.matrix.values[s.cIndex]
+	return s.r, s.c, s.matrix.values[s.index]
 }
 
 // Map replace each element with the result of applying a function to its value
@@ -378,10 +378,10 @@ func (s *cSRMatrixMap) HasNext() bool {
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *cSRMatrixMap) Map(f func(int, int, float64) float64) {
 	s.next()
-	value := f(s.r, s.c, s.matrix.values[s.cIndex])
+	value := f(s.r, s.c, s.matrix.values[s.index])
 	if value != 0 {
-		s.matrix.values[s.cIndex] = value
+		s.matrix.values[s.index] = value
 	} else {
-		s.matrix.remove(s.cIndex, s.r)
+		s.matrix.remove(s.index, s.r)
 	}
 }

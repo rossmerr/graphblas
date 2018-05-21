@@ -100,10 +100,10 @@ func TestMatrix_SparseEnumerate(t *testing.T) {
 		name string
 		s    GraphBLAS.Matrix
 	}{
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(3, 3),
+		},
 		{
 			name: "CSRMatrix",
 			s:    GraphBLAS.NewCSRMatrix(3, 3),
@@ -157,10 +157,10 @@ func TestMatrix_SparseMap(t *testing.T) {
 		name string
 		s    GraphBLAS.Matrix
 	}{
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(3, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(3, 3),
+		},
 		{
 			name: "CSRMatrix",
 			s:    GraphBLAS.NewCSRMatrix(3, 3),
@@ -290,16 +290,16 @@ func TestMatrix_Scalar(t *testing.T) {
 		s     GraphBLAS.Matrix
 		alpha float64
 	}{
-		// {
-		// 	name:  "DenseMatrix",
-		// 	s:     GraphBLAS.NewDenseMatrix(2, 2),
-		// 	alpha: 2,
-		// },
-		// {
-		// 	name:  "CSCMatrix",
-		// 	s:     GraphBLAS.NewCSCMatrix(2, 2),
-		// 	alpha: 2,
-		// },
+		{
+			name:  "DenseMatrix",
+			s:     GraphBLAS.NewDenseMatrix(2, 2),
+			alpha: 2,
+		},
+		{
+			name:  "CSCMatrix",
+			s:     GraphBLAS.NewCSCMatrix(2, 2),
+			alpha: 2,
+		},
 		{
 			name:  "CSRMatrix",
 			s:     GraphBLAS.NewCSRMatrix(2, 2),
@@ -922,10 +922,10 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(7, 7),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(7, 7),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(7, 7),
+		},
 		{
 			name: "CSRMatrix",
 			s:    GraphBLAS.NewCSRMatrix(7, 7),
