@@ -7,7 +7,6 @@ package GraphBLAS
 
 import (
 	"log"
-	"reflect"
 )
 
 const defaultFloat64 = float64(0)
@@ -59,35 +58,35 @@ func elementWiseMultiply(s, m, matrix Matrix) {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
 
-	// When it's two dense matrix you can do a simple enumerate
-	if !SparseMatrix(s) && !SparseMatrix(m) {
-		sIterator := s.Enumerate()
-		mIterator := m.Enumerate()
-
-		for {
-			if sIterator.HasNext() && mIterator.HasNext() {
-				sR, sC, sV := sIterator.Next()
-				mR, mC, mV := mIterator.Next()
-
-				if sR == mR && sC == mC && sV == mV {
-					matrix.Set(sR, sC, sV)
-				}
-			} else {
-				break
-			}
-
-		}
-
-		return
-	}
-
-	// If not the same type we can only enumerate over one matrix as order is not guaranteed
 	var iterator Enumerate
 	var source Matrix
 
-	// Check for a sparse matrix as we want to use its Enumerate operation
-	// Because the use of the At operation on a sparse matrix is expensive
-	if SparseMatrix(s) {
+	target := func(r, c int, value float64) {
+		v := source.At(r, c)
+		if value == v {
+			matrix.Set(r, c, value)
+		}
+	}
+
+	// when the matrix is the same object of s or m we use the setSource func to self update
+	setSource := func(r, c int, value float64) {
+		source.Update(r, c, func(v float64) float64 {
+			if value != v {
+				return defaultFloat64
+			}
+			return v
+		})
+	}
+
+	if m == matrix {
+		target = setSource
+		iterator = s.Enumerate()
+		source = m
+	} else if s == matrix {
+		target = setSource
+		iterator = m.Enumerate()
+		source = s
+	} else if SparseMatrix(s) {
 		iterator = s.Enumerate()
 		source = m
 	} else {
@@ -95,16 +94,9 @@ func elementWiseMultiply(s, m, matrix Matrix) {
 		source = s
 	}
 
-	for {
-		if iterator.HasNext() {
-			sR, sC, sV := iterator.Next()
-			mV := source.At(sR, sC)
-			if sV == mV {
-				matrix.Set(sR, sC, sV)
-			}
-		} else {
-			break
-		}
+	for iterator.HasNext() {
+		r, c, value := iterator.Next()
+		target(r, c, value)
 	}
 }
 
@@ -152,17 +144,21 @@ func elementWiseAdd(s, m, matrix Matrix) {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
 	}
 
-	for iterator := s.Enumerate(); iterator.HasNext(); {
-		r, c, value := iterator.Next()
-		if value != defaultFloat64 {
-			matrix.Set(r, c, value)
+	if s != matrix {
+		for iterator := s.Enumerate(); iterator.HasNext(); {
+			r, c, value := iterator.Next()
+			if value != defaultFloat64 {
+				matrix.Set(r, c, value)
+			}
 		}
 	}
 
-	for iterator := m.Enumerate(); iterator.HasNext(); {
-		r, c, value := iterator.Next()
-		if value != defaultFloat64 {
-			matrix.Set(r, c, value)
+	if m != matrix {
+		for iterator := m.Enumerate(); iterator.HasNext(); {
+			r, c, value := iterator.Next()
+			if value != defaultFloat64 {
+				matrix.Set(r, c, value)
+			}
 		}
 	}
 }
@@ -275,44 +271,21 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	// Using two Enumerators is the fastest way to iterate over matrices for a
-	// equality checks of all values.
-	// However that only work's when they are of the same type as the order is
-	// not guaranteed and zero values are not returned for sparse matrices
-	if reflect.TypeOf(s) == reflect.TypeOf(m) {
-		// Because they are the same type they have the same storage method
-		// so should or should not have the same size
+	isSparseMatrixS := SparseMatrix(s)
+	isSparseMatrixM := SparseMatrix(m)
+
+	if (isSparseMatrixS && isSparseMatrixM) || (!isSparseMatrixS && !isSparseMatrixM) {
 		if s.Values() != m.Values() {
 			return false
 		}
-
-		sIterator := s.Enumerate()
-		mIterator := m.Enumerate()
-
-		for {
-			if sIterator.HasNext() && mIterator.HasNext() {
-				sR, sC, sV := sIterator.Next()
-				mR, mC, mV := mIterator.Next()
-
-				if sR != mR || sC != mC || sV != mV {
-					return false
-				}
-			} else {
-				break
-			}
-
-		}
-
-		return true
 	}
 
-	// If not the same type we can only enumerate over one matrix as order is not guaranteed
 	var iterator Enumerate
 	var matrix Matrix
 
 	// Check for a sparse matrix as we want to use its Enumerate operation
 	// Because the use of the At operation on a sparse matrix is expensive
-	if SparseMatrix(s) {
+	if isSparseMatrixS {
 		iterator = s.Enumerate()
 		matrix = m
 	} else {

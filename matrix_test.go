@@ -821,24 +821,41 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 	tests := []struct {
 		name string
 		s    GraphBLAS.Matrix
+		got  func(t GraphBLAS.Matrix) GraphBLAS.Matrix
 	}{
 		{
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return GraphBLAS.NewDenseMatrix(7, 7)
+			},
 		},
 		{
 			name: "CSCMatrix",
 			s:    GraphBLAS.NewCSCMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return GraphBLAS.NewDenseMatrix(7, 7)
+			},
 		},
 		{
 			name: "CSRMatrix",
 			s:    GraphBLAS.NewCSRMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return GraphBLAS.NewDenseMatrix(7, 7)
+			},
+		},
+		{
+			name: "Target is Source",
+			s:    GraphBLAS.NewCSRMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return t
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
-			got := GraphBLAS.NewDenseMatrix(tt.s.Rows(), matrix.Columns())
+			got := tt.got(tt.s)
 			GraphBLAS.ElementWiseMatrixMultiply(tt.s, matrix, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
@@ -916,24 +933,41 @@ func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
 	tests := []struct {
 		name string
 		s    GraphBLAS.Matrix
+		got  func(t GraphBLAS.Matrix) GraphBLAS.Matrix
 	}{
 		{
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return GraphBLAS.NewDenseMatrix(7, 7)
+			},
 		},
 		{
 			name: "CSCMatrix",
 			s:    GraphBLAS.NewCSCMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return GraphBLAS.NewDenseMatrix(7, 7)
+			},
 		},
 		{
 			name: "CSRMatrix",
 			s:    GraphBLAS.NewCSRMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return GraphBLAS.NewDenseMatrix(7, 7)
+			},
+		},
+		{
+			name: "Target is Source",
+			s:    GraphBLAS.NewDenseMatrix(7, 7),
+			got: func(t GraphBLAS.Matrix) GraphBLAS.Matrix {
+				return t
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
-			got := GraphBLAS.NewDenseMatrix(tt.s.Rows(), matrix.Columns())
+			got := tt.got(tt.s)
 			GraphBLAS.ElementWiseMatrixAdd(tt.s, matrix, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseMatrixAdd = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
