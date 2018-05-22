@@ -293,17 +293,12 @@ func Equal(s, m Matrix) bool {
 		matrix = s
 	}
 
-	for {
-		if iterator.HasNext() {
-			sR, sC, sV := iterator.Next()
-			mV := matrix.At(sR, sC)
-			if sV != mV {
-				return false
-			}
-		} else {
-			break
+	for iterator.HasNext() {
+		sR, sC, sV := iterator.Next()
+		mV := matrix.At(sR, sC)
+		if sV != mV {
+			return false
 		}
-
 	}
 
 	return true
