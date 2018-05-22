@@ -882,6 +882,49 @@ func TestMatrix_VectorMatrixMultiply(t *testing.T) {
 		name string
 		s    GraphBLAS.Matrix
 	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(7, 7),
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(7, 7),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(7, 7),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setupMatrix(tt.s)
+			got := GraphBLAS.NewDenseVector(matrix.Columns())
+			GraphBLAS.VectorMatrixMultiply(tt.s.ColumnsAt(6), matrix, got)
+			if !got.Equal(want) {
+				t.Errorf("%+v VectorMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
+			}
+		})
+	}
+}
+
+func TestMatrix_MatrixVectorMultiply(t *testing.T) {
+	vector := GraphBLAS.NewDenseVectorFromArray([]float64{0, 1, 0, 0, 0, 0, 0})
+
+	array2 := [][]float64{
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 1},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 0, 1, 0, 0},
+	}
+	want := GraphBLAS.NewDenseMatrixFromArray(array2)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
 		// {
 		// 	name: "DenseMatrix",
 		// 	s:    GraphBLAS.NewDenseMatrix(7, 7),
@@ -898,8 +941,8 @@ func TestMatrix_VectorMatrixMultiply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
-			got := GraphBLAS.NewDenseVector(matrix.Columns())
-			GraphBLAS.VectorMatrixMultiply(tt.s.ColumnsAt(6), matrix, got)
+			got := GraphBLAS.NewDenseVector(7)
+			GraphBLAS.MatrixVectorMultiply(tt.s, vector, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v VectorMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
 			}
