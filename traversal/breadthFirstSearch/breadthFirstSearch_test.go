@@ -13,30 +13,19 @@ import (
 )
 
 func TestBreadthFirstSearch(t *testing.T) {
-	set := float64(1)
-	g := GraphBLAS.NewDenseMatrix(7, 7)
-	g.Set(0, 0, set)
-	g.Set(0, 3, set)
-	g.Set(1, 0, set)
-	g.Set(1, 1, set)
-	g.Set(2, 2, set)
-	g.Set(2, 3, set)
-	g.Set(2, 5, set)
-	g.Set(2, 6, set)
-	g.Set(3, 0, set)
-	g.Set(3, 3, set)
-	g.Set(3, 6, set)
-	g.Set(4, 1, set)
-	g.Set(4, 4, set)
-	g.Set(4, 6, set)
-	g.Set(5, 2, set)
-	g.Set(5, 4, set)
-	g.Set(5, 5, set)
-	g.Set(6, 1, set)
-	g.Set(6, 6, set)
+	array := [][]float64{
+		[]float64{1, 0, 0, 1, 0, 0, 0},
+		[]float64{1, 1, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 1, 1, 0, 1, 1},
+		[]float64{1, 0, 0, 1, 0, 0, 1},
+		[]float64{0, 1, 0, 0, 1, 0, 1},
+		[]float64{0, 0, 1, 0, 1, 1, 0},
+		[]float64{0, 1, 0, 0, 0, 0, 1},
+	}
+	g := GraphBLAS.NewDenseMatrixFromArray(array)
 
 	v := GraphBLAS.NewDenseVector(7)
-	v.SetVec(4, set)
+	v.SetVec(4, float64(1))
 
 	breadthFirstSearch.BreadthFirstSearch(g, 4)
 

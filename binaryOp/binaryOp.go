@@ -6,11 +6,11 @@
 package binaryOp
 
 type BinaryOp interface {
-	operator()
-	binaryOp()
+	Operator()
+	BinaryOp()
 }
 
 type Semigroup interface {
 	BinaryOp
-	semigroup()
+	Semigroup()
 }

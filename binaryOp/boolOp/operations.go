@@ -3,10 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package binaryOp
+package boolOp
+
+import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
+
+//var _ binaryOpBool = (BinaryOpBool)(nil)
 
 type BinaryOpBool interface {
-	Semigroup
+	binaryOp.Semigroup
 	Apply(in1, in2 bool) bool
 }
 
@@ -14,9 +18,9 @@ type binaryOpBool struct {
 	apply func(bool, bool) bool
 }
 
-func (s *binaryOpBool) operator()  {}
-func (s *binaryOpBool) binaryOp()  {}
-func (s *binaryOpBool) semigroup() {}
+func (s *binaryOpBool) Operator()  {}
+func (s *binaryOpBool) BinaryOp()  {}
+func (s *binaryOpBool) Semigroup() {}
 
 func (s *binaryOpBool) Apply(in1, in2 bool) bool {
 	return s.apply(in1, in2)

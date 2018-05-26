@@ -3,24 +3,41 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package binaryOp
+package float64Op
+
+import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
 
 type BinaryOpFloat64ToBool interface {
+	binaryOp.BinaryOp
 	Apply(in1, in2 float64) bool
-	binaryOp()
-	operator()
 }
 
 type binaryOpFloat64ToBool struct {
 	apply func(float64, float64) bool
 }
 
-func (s *binaryOpFloat64ToBool) binaryOp() {}
-func (s *binaryOpFloat64ToBool) operator() {}
+func (s *binaryOpFloat64ToBool) BinaryOp() {}
+func (s *binaryOpFloat64ToBool) Operator() {}
 
 func (s *binaryOpFloat64ToBool) Apply(in1, in2 float64) bool {
 	return s.apply(in1, in2)
 }
+
+// // LOR logical OR f(x, y) = x ∨ y
+// var LOR = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+
+// 	return in1 || in2
+// }}
+
+// // LAND logical AND f(x, y) = x ∧ y
+// var LAND = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+// 	return in1 && in2
+// }}
+
+// // LXOR logical XOR f(x, y) = x ⊕ y
+// var LXOR = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
+// 	return in1 != in2
+// }}
 
 // Equal f(x, y) = (x == y)
 var Equal = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {

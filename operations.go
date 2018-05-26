@@ -49,9 +49,9 @@ func VectorMatrixMultiply(s Vector, m Matrix, vector Vector) {
 
 // MatrixVectorMultiply multiplies a matrix by a vector
 // mxv
-func MatrixVectorMultiply(s Matrix, m Vector, matrix Matrix) {
-	multiply(s, m, matrix)
-}
+// func MatrixVectorMultiply(s Matrix, m Vector, matrix Matrix) {
+// 	multiply(s, m, matrix)
+// }
 
 func elementWiseMultiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
@@ -337,7 +337,20 @@ func ReduceVectorToScalar(s Vector) int {
 
 // ReduceMatrixToVector perform's a reduction on the Matrix
 func ReduceMatrixToVector(s Matrix) Vector {
-	return NewDenseVector(0)
+	// monoid := boolOp.NewMonoIDBool(false, boolOp.LOR)
+	// done := make(chan struct{})
+	// slice := make(chan bool)
+
+	// out := monoid.Reduce(done, slice)
+	vector := NewDenseVector(s.Values())
+
+	// for iterator := s.Enumerate(); iterator.HasNext(); {
+	// 	r, c, value := iterator.Next()
+	// 	slice <- value
+	// 	m.Set(c, r, value)
+	// }
+
+	return vector
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix

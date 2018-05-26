@@ -3,10 +3,12 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package binaryOp
+package float64Op
+
+import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
 
 type BinaryOpFloat64 interface {
-	Semigroup
+	binaryOp.Semigroup
 	Apply(in1, in2 float64) float64
 }
 
@@ -14,9 +16,9 @@ type binaryOpFloat64 struct {
 	apply func(float64, float64) float64
 }
 
-func (s *binaryOpFloat64) operator()  {}
-func (s *binaryOpFloat64) binaryOp()  {}
-func (s *binaryOpFloat64) semigroup() {}
+func (s *binaryOpFloat64) Operator()  {}
+func (s *binaryOpFloat64) BinaryOp()  {}
+func (s *binaryOpFloat64) Semigroup() {}
 
 func (s *binaryOpFloat64) Apply(in1, in2 float64) float64 {
 	return s.apply(in1, in2)

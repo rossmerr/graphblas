@@ -3,163 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package binaryOp_test
+package float64Op_test
 
 import (
 	"testing"
 
 	"github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
+	"github.com/RossMerr/Caudex.GraphBLAS/binaryOp/float64Op"
 )
-
-func Test_LOR(t *testing.T) {
-	tests := []struct {
-		name   string
-		s      binaryOp.BinaryOp
-		in1    bool
-		in2    bool
-		result bool
-	}{
-		{
-			name:   "1",
-			s:      binaryOp.LOR,
-			in1:    true,
-			in2:    true,
-			result: true,
-		},
-		{
-			name:   "2",
-			s:      binaryOp.LOR,
-			in1:    false,
-			in2:    true,
-			result: true,
-		},
-		{
-			name:   "3",
-			s:      binaryOp.LOR,
-			in1:    true,
-			in2:    false,
-			result: true,
-		},
-		{
-			name:   "4",
-			s:      binaryOp.LOR,
-			in1:    false,
-			in2:    false,
-			result: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpBool); ok {
-				if tt.result != op.Apply(tt.in1, tt.in2) {
-					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
-				}
-			} else {
-				t.Errorf("%+v not a BinaryOpBool", tt.name)
-			}
-		})
-	}
-}
-
-func Test_LAND(t *testing.T) {
-	tests := []struct {
-		name   string
-		s      binaryOp.BinaryOp
-		in1    bool
-		in2    bool
-		result bool
-	}{
-		{
-			name:   "1",
-			s:      binaryOp.LAND,
-			in1:    true,
-			in2:    true,
-			result: true,
-		},
-		{
-			name:   "2",
-			s:      binaryOp.LAND,
-			in1:    false,
-			in2:    true,
-			result: false,
-		},
-		{
-			name:   "3",
-			s:      binaryOp.LAND,
-			in1:    true,
-			in2:    false,
-			result: false,
-		},
-		{
-			name:   "4",
-			s:      binaryOp.LAND,
-			in1:    false,
-			in2:    false,
-			result: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpBool); ok {
-				if tt.result != op.Apply(tt.in1, tt.in2) {
-					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
-				}
-			} else {
-				t.Errorf("%+v not a BinaryOpBool", tt.name)
-			}
-		})
-	}
-}
-
-func Test_LXOR(t *testing.T) {
-	tests := []struct {
-		name   string
-		s      binaryOp.BinaryOp
-		in1    bool
-		in2    bool
-		result bool
-	}{
-		{
-			name:   "1",
-			s:      binaryOp.LXOR,
-			in1:    true,
-			in2:    true,
-			result: false,
-		},
-		{
-			name:   "2",
-			s:      binaryOp.LXOR,
-			in1:    false,
-			in2:    true,
-			result: true,
-		},
-		{
-			name:   "3",
-			s:      binaryOp.LXOR,
-			in1:    true,
-			in2:    false,
-			result: true,
-		},
-		{
-			name:   "4",
-			s:      binaryOp.LXOR,
-			in1:    false,
-			in2:    false,
-			result: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpBool); ok {
-				if tt.result != op.Apply(tt.in1, tt.in2) {
-					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
-				}
-			} else {
-				t.Errorf("%+v not a BinaryOpBool", tt.name)
-			}
-		})
-	}
-}
 
 func Test_Equal(t *testing.T) {
 	tests := []struct {
@@ -171,21 +22,21 @@ func Test_Equal(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Equal,
+			s:      float64Op.Equal,
 			in1:    1,
 			in2:    1,
 			result: true,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.Equal,
+			s:      float64Op.Equal,
 			in1:    1,
 			in2:    2,
 			result: false,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.Equal,
+			s:      float64Op.Equal,
 			in1:    2,
 			in2:    1,
 			result: false,
@@ -193,7 +44,7 @@ func Test_Equal(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64ToBool); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
@@ -214,21 +65,21 @@ func Test_NotEqual(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.NotEqual,
+			s:      float64Op.NotEqual,
 			in1:    1,
 			in2:    1,
 			result: false,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.NotEqual,
+			s:      float64Op.NotEqual,
 			in1:    1,
 			in2:    2,
 			result: true,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.NotEqual,
+			s:      float64Op.NotEqual,
 			in1:    2,
 			in2:    1,
 			result: true,
@@ -236,7 +87,7 @@ func Test_NotEqual(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64ToBool); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
@@ -257,21 +108,21 @@ func Test_GreaterThan(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.GreaterThan,
+			s:      float64Op.GreaterThan,
 			in1:    1,
 			in2:    1,
 			result: false,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.GreaterThan,
+			s:      float64Op.GreaterThan,
 			in1:    1,
 			in2:    2,
 			result: false,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.GreaterThan,
+			s:      float64Op.GreaterThan,
 			in1:    2,
 			in2:    1,
 			result: true,
@@ -279,7 +130,7 @@ func Test_GreaterThan(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64ToBool); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
@@ -300,21 +151,21 @@ func Test_LessThan(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.LessThan,
+			s:      float64Op.LessThan,
 			in1:    1,
 			in2:    1,
 			result: false,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.LessThan,
+			s:      float64Op.LessThan,
 			in1:    1,
 			in2:    2,
 			result: true,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.LessThan,
+			s:      float64Op.LessThan,
 			in1:    2,
 			in2:    1,
 			result: false,
@@ -322,7 +173,7 @@ func Test_LessThan(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64ToBool); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
@@ -343,21 +194,21 @@ func Test_GreaterThanOrEqual(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.GreaterThanOrEqual,
+			s:      float64Op.GreaterThanOrEqual,
 			in1:    1,
 			in2:    1,
 			result: true,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.GreaterThanOrEqual,
+			s:      float64Op.GreaterThanOrEqual,
 			in1:    1,
 			in2:    2,
 			result: false,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.GreaterThanOrEqual,
+			s:      float64Op.GreaterThanOrEqual,
 			in1:    2,
 			in2:    1,
 			result: true,
@@ -365,7 +216,7 @@ func Test_GreaterThanOrEqual(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64ToBool); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
@@ -386,21 +237,21 @@ func Test_LessThanOrEqual(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.LessThanOrEqual,
+			s:      float64Op.LessThanOrEqual,
 			in1:    1,
 			in2:    1,
 			result: true,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.LessThanOrEqual,
+			s:      float64Op.LessThanOrEqual,
 			in1:    1,
 			in2:    2,
 			result: true,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.LessThanOrEqual,
+			s:      float64Op.LessThanOrEqual,
 			in1:    2,
 			in2:    1,
 			result: false,
@@ -408,7 +259,7 @@ func Test_LessThanOrEqual(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64ToBool); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64ToBool); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator = %+v, want %+v", tt.name, !tt.result, tt.result)
 				}
@@ -429,21 +280,21 @@ func Test_FirstArgument(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.FirstArgument,
+			s:      float64Op.FirstArgument,
 			in1:    1,
 			in2:    1,
 			result: 1,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.FirstArgument,
+			s:      float64Op.FirstArgument,
 			in1:    1,
 			in2:    2,
 			result: 1,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.FirstArgument,
+			s:      float64Op.FirstArgument,
 			in1:    2,
 			in2:    1,
 			result: 2,
@@ -451,7 +302,7 @@ func Test_FirstArgument(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.in1)
 				}
@@ -472,21 +323,21 @@ func Test_SecondArgument(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.SecondArgument,
+			s:      float64Op.SecondArgument,
 			in1:    1,
 			in2:    1,
 			result: 1,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.SecondArgument,
+			s:      float64Op.SecondArgument,
 			in1:    1,
 			in2:    2,
 			result: 2,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.SecondArgument,
+			s:      float64Op.SecondArgument,
 			in1:    2,
 			in2:    1,
 			result: 1,
@@ -494,7 +345,7 @@ func Test_SecondArgument(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.in2)
 				}
@@ -515,21 +366,21 @@ func Test_Minimum(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Minimum,
+			s:      float64Op.Minimum,
 			in1:    1,
 			in2:    1,
 			result: 1,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.Minimum,
+			s:      float64Op.Minimum,
 			in1:    1,
 			in2:    2,
 			result: 1,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.Minimum,
+			s:      float64Op.Minimum,
 			in1:    2,
 			in2:    1,
 			result: 1,
@@ -537,7 +388,7 @@ func Test_Minimum(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
@@ -558,21 +409,21 @@ func Test_Maximum(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Maximum,
+			s:      float64Op.Maximum,
 			in1:    1,
 			in2:    1,
 			result: 1,
 		},
 		{
 			name:   "2",
-			s:      binaryOp.Maximum,
+			s:      float64Op.Maximum,
 			in1:    1,
 			in2:    2,
 			result: 2,
 		},
 		{
 			name:   "3",
-			s:      binaryOp.Maximum,
+			s:      float64Op.Maximum,
 			in1:    2,
 			in2:    1,
 			result: 2,
@@ -580,7 +431,7 @@ func Test_Maximum(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
@@ -601,7 +452,7 @@ func Test_Addition(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Addition,
+			s:      float64Op.Addition,
 			in1:    2,
 			in2:    2,
 			result: 4,
@@ -609,7 +460,7 @@ func Test_Addition(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
@@ -630,7 +481,7 @@ func Test_Subtraction(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Subtraction,
+			s:      float64Op.Subtraction,
 			in1:    4,
 			in2:    3,
 			result: 1,
@@ -638,7 +489,7 @@ func Test_Subtraction(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
@@ -659,7 +510,7 @@ func Test_Multiplication(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Multiplication,
+			s:      float64Op.Multiplication,
 			in1:    2,
 			in2:    3,
 			result: 6,
@@ -667,7 +518,7 @@ func Test_Multiplication(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
@@ -688,7 +539,7 @@ func Test_Division(t *testing.T) {
 	}{
 		{
 			name:   "1",
-			s:      binaryOp.Division,
+			s:      float64Op.Division,
 			in1:    6,
 			in2:    2,
 			result: 3,
@@ -696,7 +547,7 @@ func Test_Division(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if op, ok := tt.s.(binaryOp.BinaryOpFloat64); ok {
+			if op, ok := tt.s.(float64Op.BinaryOpFloat64); ok {
 				if tt.result != op.Apply(tt.in1, tt.in2) {
 					t.Errorf("%+v Operator want %+v", tt.name, tt.result)
 				}
