@@ -7,10 +7,12 @@ package GraphBLAS
 
 import (
 	"log"
+	"sync"
 )
 
 // DenseMatrix a dense matrix
 type DenseMatrix struct {
+	sync.RWMutex
 	c    int // number of rows in the sparse matrix
 	r    int // number of columns in the sparse matrix
 	data [][]float64
@@ -64,6 +66,9 @@ func (s *DenseMatrix) Update(r, c int, f func(float64) float64) {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
+	s.Lock()
+	defer s.Unlock()
+
 	s.data[r][c] = f(s.data[r][c])
 
 	return
@@ -71,6 +76,13 @@ func (s *DenseMatrix) Update(r, c int, f func(float64) float64) {
 
 // At returns the value of a matrix element at r-th, c-th
 func (s *DenseMatrix) At(r, c int) float64 {
+	s.RLock()
+	defer s.RUnlock()
+
+	return s.at(r, c)
+}
+
+func (s *DenseMatrix) at(r, c int) float64 {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -84,6 +96,13 @@ func (s *DenseMatrix) At(r, c int) float64 {
 
 // Set sets the value at r-th, c-th of the matrix
 func (s *DenseMatrix) Set(r, c int, value float64) {
+	s.Lock()
+	defer s.Unlock()
+
+	s.set(r, c, value)
+}
+
+func (s *DenseMatrix) set(r, c int, value float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -103,6 +122,9 @@ func (s *DenseMatrix) ColumnsAt(c int) Vector {
 
 	columns := NewDenseVector(s.r)
 
+	s.RLock()
+	defer s.RUnlock()
+
 	for r := 0; r < s.r; r++ {
 		columns.SetVec(r, s.data[r][c])
 	}
@@ -117,6 +139,10 @@ func (s *DenseMatrix) RowsAt(r int) Vector {
 	}
 
 	rows := NewDenseVector(s.c)
+
+	s.RLock()
+	defer s.RUnlock()
+
 	for i := 0; i < s.c; i++ {
 		rows.SetVec(i, s.data[r][i])
 	}
@@ -131,6 +157,10 @@ func (s *DenseMatrix) RowsAtToArray(r int) []float64 {
 	}
 
 	rows := make([]float64, s.c)
+
+	s.RLock()
+	defer s.RUnlock()
+
 	for i := 0; i < s.c; i++ {
 		rows[i] = s.data[r][i]
 	}
@@ -141,6 +171,10 @@ func (s *DenseMatrix) RowsAtToArray(r int) []float64 {
 // Copy copies the matrix
 func (s *DenseMatrix) Copy() Matrix {
 	v := 0.0
+
+	s.RLock()
+	defer s.RUnlock()
+
 	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
 			v = s.data[r][c]
@@ -163,7 +197,6 @@ func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 // Multiply multiplies a matrix by another matrix
 func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(s.Rows(), m.Columns(), nil)
-
 	MatrixMatrixMultiply(s, m, matrix)
 	return matrix
 }
@@ -192,7 +225,6 @@ func (s *DenseMatrix) Negative() Matrix {
 // Transpose swaps the rows and columns
 func (s *DenseMatrix) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-
 	Transpose(s, matrix)
 	return matrix
 }
@@ -220,6 +252,9 @@ func (s *DenseMatrix) Values() int {
 // Apply modifies edge weights by the UnaryOperator
 // C ⊕= f(A)
 func (s *DenseMatrix) Apply(u UnaryOperator) {
+	s.Lock()
+	defer s.Unlock()
+
 	for iterator := s.Map(); iterator.HasNext(); {
 		iterator.Map(func(r, c int, v float64) (result float64) {
 			u(v, result)
@@ -280,7 +315,11 @@ func (s *denseMatrixIterator) next() {
 // Next moves the iterator and returns the row, column and value
 func (s *denseMatrixIterator) Next() (int, int, float64) {
 	s.next()
-	return s.r, s.cOld, s.matrix.At(s.r, s.cOld)
+
+	s.matrix.RLock()
+	defer s.matrix.RUnlock()
+
+	return s.r, s.cOld, s.matrix.at(s.r, s.cOld)
 }
 
 // Map replace each element with the result of applying a function to its value
@@ -302,5 +341,9 @@ func (s *denseMatrixMap) HasNext() bool {
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *denseMatrixMap) Map(f func(int, int, float64) float64) {
 	s.next()
-	s.matrix.Set(s.r, s.cOld, f(s.r, s.cOld, s.matrix.At(s.r, s.cOld)))
+
+	s.matrix.Lock()
+	defer s.matrix.Unlock()
+
+	s.matrix.set(s.r, s.cOld, f(s.r, s.cOld, s.matrix.at(s.r, s.cOld)))
 }

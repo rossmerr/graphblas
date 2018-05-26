@@ -8,6 +8,7 @@ package GraphBLAS
 import (
 	"log"
 	"reflect"
+	"sync"
 )
 
 func init() {
@@ -16,6 +17,7 @@ func init() {
 
 // CSCMatrix compressed storage by columns (CSC)
 type CSCMatrix struct {
+	sync.RWMutex
 	r        int // number of rows in the sparse matrix
 	c        int // number of columns in the sparse matrix
 	values   []float64
@@ -67,6 +69,13 @@ func (s *CSCMatrix) Rows() int {
 
 // Update does a At and Set on the matrix element at r-th, c-th
 func (s *CSCMatrix) Update(r, c int, f func(float64) float64) {
+	s.Lock()
+	defer s.Unlock()
+
+	s.update(r, c, f)
+}
+
+func (s *CSCMatrix) update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -91,7 +100,10 @@ func (s *CSCMatrix) Update(r, c int, f func(float64) float64) {
 
 // At returns the value of a matrix element at r-th, c-th
 func (s *CSCMatrix) At(r, c int) (value float64) {
-	s.Update(r, c, func(v float64) float64 {
+	s.RLock()
+	defer s.RUnlock()
+
+	s.update(r, c, func(v float64) float64 {
 		value = v
 		return v
 	})
@@ -101,7 +113,10 @@ func (s *CSCMatrix) At(r, c int) (value float64) {
 
 // Set sets the value at r-th, c-th of the matrix
 func (s *CSCMatrix) Set(r, c int, value float64) {
-	s.Update(r, c, func(v float64) float64 {
+	s.Lock()
+	defer s.Unlock()
+
+	s.update(r, c, func(v float64) float64 {
 		return value
 	})
 }
@@ -112,9 +127,13 @@ func (s *CSCMatrix) ColumnsAt(c int) Vector {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
+	columns := NewSparseVector(s.r)
+
+	s.RLock()
+	defer s.RUnlock()
+
 	start := s.colStart[c]
 	end := s.colStart[c+1]
-	columns := NewSparseVector(s.r)
 
 	for i := start; i < end; i++ {
 		columns.SetVec(s.rows[i], s.values[i])
@@ -130,6 +149,9 @@ func (s *CSCMatrix) RowsAt(r int) Vector {
 	}
 
 	rows := NewSparseVector(s.c)
+
+	s.RLock()
+	defer s.RUnlock()
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, pointerEnd := s.rowIndex(r, c)
@@ -148,6 +170,9 @@ func (s *CSCMatrix) RowsAtToArray(r int) []float64 {
 	}
 
 	rows := make([]float64, s.c)
+
+	s.RLock()
+	defer s.RUnlock()
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, pointerEnd := s.rowIndex(r, c)
@@ -212,6 +237,9 @@ func (s *CSCMatrix) rowIndex(r, c int) (int, int) {
 func (s *CSCMatrix) Copy() Matrix {
 	matrix := newCSCMatrix(s.r, s.c, len(s.values))
 
+	s.RLock()
+	defer s.RUnlock()
+
 	for i := range s.values {
 		matrix.values[i] = s.values[i]
 		matrix.rows[i] = s.rows[i]
@@ -232,7 +260,6 @@ func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 // Multiply multiplies a matrix by another matrix
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
-
 	MatrixMatrixMultiply(s, m, matrix)
 	return matrix
 }
@@ -355,6 +382,9 @@ func (s *cSCMatrixIterator) next() {
 
 // Next moves the iterator and returns the row, column and value
 func (s *cSCMatrixIterator) Next() (int, int, float64) {
+	s.matrix.RLock()
+	defer s.matrix.RUnlock()
+
 	s.next()
 	return s.r, s.c, s.matrix.values[s.index]
 }
@@ -377,6 +407,9 @@ func (s *cSCMatrixMap) HasNext() bool {
 
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *cSCMatrixMap) Map(f func(int, int, float64) float64) {
+	s.matrix.Lock()
+	defer s.matrix.Unlock()
+
 	s.next()
 	value := f(s.r, s.c, s.matrix.values[s.index])
 	if value != 0 {
