@@ -338,14 +338,13 @@ func ReduceVectorToScalar(s Vector) int {
 }
 
 // ReduceMatrixToVector perform's a reduction on the Matrix
-func ReduceMatrixToVector(s Matrix) Vector {
-	monoid := float64Op.NewMonoIDFloat64ToBool(0, float64Op.Equal)
+func ReduceMatrixToVector(s Matrix, monoID float64Op.MonoIDFloat64ToBool) Vector {
 	done := make(chan interface{})
 	slice := make(chan float64)
 	defer close(slice)
 	defer close(done)
 
-	out := monoid.Reduce(done, slice)
+	out := monoID.Reduce(done, slice)
 
 	go func() {
 		for iterator := s.Enumerate(); iterator.HasNext(); {

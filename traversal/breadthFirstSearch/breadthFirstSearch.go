@@ -14,7 +14,7 @@ func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 	v := make(map[int]GraphBLAS.Matrix)
 	// vertices visited in each level
 	visited := GraphBLAS.NewDenseVector(a.Rows())
-	visited.SetVec(s, float64(1))
+	visited.SetVec(s, 1)
 	var q GraphBLAS.Matrix = visited
 
 	// level in BFS traversal

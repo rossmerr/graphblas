@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
+	"github.com/RossMerr/Caudex.GraphBLAS/binaryOp/float64Op"
 )
 
 func setupMatrix(m GraphBLAS.Matrix) {
@@ -389,7 +390,7 @@ func TestMatrix_Transpose_To_CSC(t *testing.T) {
 }
 
 func TestMatrix_ReduceMatrixToVector(t *testing.T) {
-	want := GraphBLAS.NewDenseVectorFromArray([]float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1})
+	want := GraphBLAS.NewDenseVectorFromArray([]float64{1, 1, 1, 1, 1})
 
 	tests := []struct {
 		name string
@@ -399,23 +400,24 @@ func TestMatrix_ReduceMatrixToVector(t *testing.T) {
 			name: "DenseMatrix",
 			s:    GraphBLAS.NewDenseMatrix(7, 7),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    GraphBLAS.NewCSCMatrix(7, 7),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    GraphBLAS.NewCSRMatrix(7, 7),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(7, 7),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(7, 7),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 
-			got := GraphBLAS.ReduceMatrixToVector(tt.s)
+			monoID := float64Op.NewMonoIDFloat64ToBool(1, float64Op.Equal)
+			got := GraphBLAS.ReduceMatrixToVector(tt.s, monoID)
 
 			if !got.Equal(want) {
-				t.Errorf("%+v VectorMatrixMultiply = \n%+v, \nwant %+v", tt.name, got, want)
+				t.Errorf("%+v ReduceMatrixToVector = \nhave %+v, \nwant %+v", tt.name, got, want)
 			}
 		})
 	}
