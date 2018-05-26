@@ -8,7 +8,7 @@ package float64Op
 type MonoIDFloat64 interface {
 	BinaryOpFloat64
 	Zero() float64
-	Reduce(done <-chan struct{}, slice <-chan float64) <-chan float64
+	Reduce(done <-chan bool, slice <-chan float64) <-chan float64
 }
 
 type monoIDFloat64 struct {
@@ -25,7 +25,7 @@ func NewMonoIDFloat64(zero float64, operator BinaryOpFloat64) MonoIDFloat64 {
 	return &monoIDFloat64{unit: zero, BinaryOpFloat64: operator}
 }
 
-func (s *monoIDFloat64) Reduce(done <-chan struct{}, slice <-chan float64) <-chan float64 {
+func (s *monoIDFloat64) Reduce(done <-chan bool, slice <-chan float64) <-chan float64 {
 	out := make(chan float64)
 	go func() {
 		defer close(out)

@@ -22,7 +22,7 @@ func NewDenseVector(l int) *DenseVector {
 
 // NewDenseVectorFromArray returns a GraphBLAS.SparseVector
 func NewDenseVectorFromArray(data []float64) *DenseVector {
-	arr := make([]float64, len(data), len(data))
+	arr := make([]float64, 0)
 	arr = append(arr, data...)
 	return &DenseVector{l: len(data), values: arr}
 }

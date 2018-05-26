@@ -23,22 +23,6 @@ func (s *binaryOpFloat64ToBool) Apply(in1, in2 float64) bool {
 	return s.apply(in1, in2)
 }
 
-// // LOR logical OR f(x, y) = x ∨ y
-// var LOR = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-
-// 	return in1 || in2
-// }}
-
-// // LAND logical AND f(x, y) = x ∧ y
-// var LAND = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-// 	return in1 && in2
-// }}
-
-// // LXOR logical XOR f(x, y) = x ⊕ y
-// var LXOR = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
-// 	return in1 != in2
-// }}
-
 // Equal f(x, y) = (x == y)
 var Equal = &binaryOpFloat64ToBool{apply: func(in1, in2 float64) bool {
 	return in1 == in2

@@ -8,7 +8,7 @@ package boolOp
 type MonoIDBool interface {
 	BinaryOpBool
 	Zero() bool
-	Reduce(done <-chan struct{}, slice <-chan bool) <-chan bool
+	Reduce(done <-chan bool, slice <-chan bool) <-chan bool
 }
 
 type monoIDBool struct {
@@ -25,7 +25,7 @@ func NewMonoIDBool(zero bool, operator BinaryOpBool) MonoIDBool {
 	return &monoIDBool{unit: zero, BinaryOpBool: operator}
 }
 
-func (s *monoIDBool) Reduce(done <-chan struct{}, slice <-chan bool) <-chan bool {
+func (s *monoIDBool) Reduce(done <-chan bool, slice <-chan bool) <-chan bool {
 	out := make(chan bool)
 	go func() {
 		defer close(out)

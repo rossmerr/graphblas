@@ -7,6 +7,8 @@ package GraphBLAS
 
 import (
 	"log"
+
+	"github.com/RossMerr/Caudex.GraphBLAS/binaryOp/float64Op"
 )
 
 const defaultFloat64 = float64(0)
@@ -337,20 +339,30 @@ func ReduceVectorToScalar(s Vector) int {
 
 // ReduceMatrixToVector perform's a reduction on the Matrix
 func ReduceMatrixToVector(s Matrix) Vector {
-	// monoid := boolOp.NewMonoIDBool(false, boolOp.LOR)
-	// done := make(chan struct{})
-	// slice := make(chan bool)
+	monoid := float64Op.NewMonoIDFloat64ToBool(0, float64Op.Equal)
+	done := make(chan interface{})
+	slice := make(chan float64)
+	defer close(slice)
+	defer close(done)
 
-	// out := monoid.Reduce(done, slice)
-	vector := NewDenseVector(s.Values())
+	out := monoid.Reduce(done, slice)
 
-	// for iterator := s.Enumerate(); iterator.HasNext(); {
-	// 	r, c, value := iterator.Next()
-	// 	slice <- value
-	// 	m.Set(c, r, value)
-	// }
+	go func() {
+		for iterator := s.Enumerate(); iterator.HasNext(); {
+			_, _, value := iterator.Next()
+			slice <- value
+		}
+		done <- nil
+	}()
 
-	return vector
+	array := make([]float64, 0)
+	for i := range out {
+		if i {
+			array = append(array, 1)
+		}
+	}
+
+	return NewDenseVectorFromArray(array)
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix
