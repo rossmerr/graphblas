@@ -31,8 +31,7 @@ func (s *monoIDFloat64ToBool) Reduce(done <-chan interface{}, slice <-chan float
 		for {
 			select {
 			case value := <-slice:
-				t := s.BinaryOpFloat64ToBool.Apply(s.unit, value)
-				out <- t
+				out <- s.BinaryOpFloat64ToBool.Apply(s.unit, value)
 			case <-done:
 				close(out)
 				return

@@ -57,15 +57,20 @@ func MultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matr
 		}
 	}
 
-	m := [8]GraphBLAS.Matrix{
-		nil, // a nil value is used just to pad the beginning to get the algorithm better match the documentation as arrays start at zero
-		MultiplyCrossoverPoint(a11.Add(a22), b11.Add(b22), crossover),      // m1
-		MultiplyCrossoverPoint(a21.Add(a22), b11, crossover),               // m2
-		MultiplyCrossoverPoint(a11, b12.Subtract(b22), crossover),          // m3
-		MultiplyCrossoverPoint(a22, b21.Subtract(b11), crossover),          // m4
-		MultiplyCrossoverPoint(a11.Add(a12), b22, crossover),               // m5
-		MultiplyCrossoverPoint(a21.Subtract(a11), b11.Add(b12), crossover), // m6
-		MultiplyCrossoverPoint(a12.Subtract(a22), b21.Add(b22), crossover), // m7
+	out := make(chan *mPlace)
+
+	go subMatrixM(out, 1, a11.Add(a22), b11.Add(b22), crossover)
+	go subMatrixM(out, 2, a21.Add(a22), b11, crossover)
+	go subMatrixM(out, 3, a11, b12.Subtract(b22), crossover)
+	go subMatrixM(out, 4, a22, b21.Subtract(b11), crossover)
+	go subMatrixM(out, 5, a11.Add(a12), b22, crossover)
+	go subMatrixM(out, 6, a21.Subtract(a11), b11.Add(b12), crossover)
+	go subMatrixM(out, 7, a12.Subtract(a22), b21.Add(b22), crossover)
+
+	m := [8]GraphBLAS.Matrix{}
+	for i := 0; i < 7; i++ {
+		mtx := <-out
+		m[mtx.m] = mtx.matrix
 	}
 
 	c11 := m[1].Add(m[4]).Subtract(m[5]).Add(m[7])
@@ -87,4 +92,16 @@ func MultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matr
 	}
 
 	return matrix
+}
+
+func subMatrixM(out chan *mPlace, m int, a, b GraphBLAS.Matrix, crossover int) {
+	out <- &mPlace{
+		m:      m,
+		matrix: MultiplyCrossoverPoint(a, b, crossover),
+	}
+}
+
+type mPlace struct {
+	m      int
+	matrix GraphBLAS.Matrix
 }

@@ -422,3 +422,69 @@ func TestMatrix_ReduceMatrixToVector(t *testing.T) {
 		})
 	}
 }
+
+func TestMatrix_ReduceMatrixToScalar(t *testing.T) {
+	want := float64(5)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Matrix
+	}{
+		{
+			name: "DenseMatrix",
+			s:    GraphBLAS.NewDenseMatrix(7, 7),
+		},
+		{
+			name: "CSCMatrix",
+			s:    GraphBLAS.NewCSCMatrix(7, 7),
+		},
+		{
+			name: "CSRMatrix",
+			s:    GraphBLAS.NewCSRMatrix(7, 7),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setupMatrix(tt.s)
+
+			monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
+			got := GraphBLAS.ReduceMatrixToScalar(tt.s, monoID)
+
+			if got != want {
+				t.Errorf("%+v ReduceMatrixToScalar = \nhave %+v, \nwant %+v", tt.name, got, want)
+			}
+		})
+	}
+}
+
+func TestMatrix_ReduceVectorToScalar(t *testing.T) {
+	want := float64(1)
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Vector
+	}{
+		{
+			name: "DenseVector",
+			s:    GraphBLAS.NewDenseVector(7),
+		},
+		{
+			name: "SparseVector",
+			s:    GraphBLAS.NewSparseVector(7),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			matrix := GraphBLAS.NewDenseMatrix(7, 7)
+			setupMatrix(matrix)
+			tt.s = matrix.ColumnsAt(0)
+
+			monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
+			got := GraphBLAS.ReduceVectorToScalar(tt.s, monoID)
+
+			if got != want {
+				t.Errorf("%+v ReduceVectorToScalar = \nhave %+v, \nwant %+v", tt.name, got, want)
+			}
+		})
+	}
+}

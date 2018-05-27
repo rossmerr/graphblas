@@ -323,18 +323,8 @@ func Scalar(s Matrix, alpha float64) Matrix {
 }
 
 // ReduceVectorToScalar perform's a reduction on the Matrix
-func ReduceVectorToScalar(s Vector) int {
-	// https://people.eecs.berkeley.edu/~aydin/GraphBLAS_API_C.pdf
-	// TODO need to reduce computes the result of performing a reduction
-	// across each of the elements of an input matrix
-
-	// monoid := binaryOp.NewMonoIDBool(true, binaryOp.LXOR)
-
-	// monoid.Reduce()
-	// for i := 0; i < s.Values(); i++ {
-	// 	xor.Apply()
-	// }
-	return 0
+func ReduceVectorToScalar(s Vector, properties ...interface{}) float64 {
+	return ReduceMatrixToScalar(s, properties)
 }
 
 // ReduceMatrixToVector perform's a reduction on the Matrix
@@ -374,6 +364,35 @@ func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix
-func ReduceMatrixToScalar(s Matrix) int {
-	return 0
+func ReduceMatrixToScalar(s Matrix, properties ...interface{}) float64 {
+	done := make(chan interface{})
+	slice := make(chan float64)
+	defer close(slice)
+	defer close(done)
+
+	monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
+
+	for _, p := range properties {
+		switch v := p.(type) {
+		case float64Op.MonoIDFloat64ToBool:
+			monoID = v.(float64Op.MonoIDFloat64)
+		}
+	}
+
+	out := monoID.Reduce(done, slice)
+
+	go func() {
+		for iterator := s.Enumerate(); iterator.HasNext(); {
+			_, _, value := iterator.Next()
+			slice <- value
+		}
+		done <- nil
+	}()
+
+	scaler := float64(0)
+	for i := range out {
+		scaler += i
+	}
+
+	return scaler
 }
