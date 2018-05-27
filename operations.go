@@ -324,10 +324,22 @@ func Scalar(s Matrix, alpha float64) Matrix {
 
 // ReduceMatrixToVector perform's a reduction on the Matrix
 func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
+	foundMonoID := false
+	for _, p := range properties {
+		if _, ok := p.(float64Op.MonoIDFloat64); ok {
+			foundMonoID = true
+		}
+	}
+
+	if !foundMonoID {
+		monoID := float64Op.NewMonoIDFloat64(0, float64Op.Maximum)
+		properties = append(properties, monoID)
+	}
+
 	vector := NewDenseVector(s.Columns())
 	for c := 0; c < s.Columns(); c++ {
 		v := s.ColumnsAt(c)
-		scaler := ReduceVectorToScalar(v, properties)
+		scaler := ReduceVectorToScalar(v, properties...)
 		vector.SetVec(c, scaler)
 	}
 
@@ -336,7 +348,7 @@ func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
 
 // ReduceVectorToScalar perform's a reduction on the Matrix
 func ReduceVectorToScalar(s Vector, properties ...interface{}) float64 {
-	return ReduceMatrixToScalar(s, properties)
+	return ReduceMatrixToScalar(s, properties...)
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix
