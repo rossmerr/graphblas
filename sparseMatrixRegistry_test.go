@@ -11,7 +11,7 @@ import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
-func TestSparseMatrixRegistry_SparseMatrix(t *testing.T) {
+func TestSparseMatrixRegistry_IsSparseMatrix(t *testing.T) {
 
 	tests := []struct {
 		name     string
@@ -37,9 +37,9 @@ func TestSparseMatrixRegistry_SparseMatrix(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			v := GraphBLAS.SparseMatrix(tt.s)
+			v := GraphBLAS.IsSparseMatrix(tt.s)
 			if tt.isSparse != v {
-				t.Errorf("%+v SparseMatrix = %+v, want %+v", tt.name, v, tt.isSparse)
+				t.Errorf("%+v IsSparseMatrix = %+v, want %+v", tt.name, v, tt.isSparse)
 			}
 		})
 	}

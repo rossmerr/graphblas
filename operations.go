@@ -88,7 +88,7 @@ func elementWiseMultiply(s, m, matrix Matrix) {
 		target = setSource
 		iterator = m.Enumerate()
 		source = s
-	} else if SparseMatrix(s) {
+	} else if IsSparseMatrix(s) {
 		iterator = s.Enumerate()
 		source = m
 	} else {
@@ -126,7 +126,7 @@ func Add(s, m, matrix Matrix) {
 
 	var iterator Enumerate
 	var source Matrix
-	if SparseMatrix(s) {
+	if IsSparseMatrix(s) {
 		iterator = s.Enumerate()
 		source = m
 	} else {
@@ -273,8 +273,8 @@ func Equal(s, m Matrix) bool {
 		return false
 	}
 
-	isSparseMatrixS := SparseMatrix(s)
-	isSparseMatrixM := SparseMatrix(m)
+	isSparseMatrixS := IsSparseMatrix(s)
+	isSparseMatrixM := IsSparseMatrix(m)
 
 	if (isSparseMatrixS && isSparseMatrixM) || (!isSparseMatrixS && !isSparseMatrixM) {
 		if s.Values() != m.Values() {

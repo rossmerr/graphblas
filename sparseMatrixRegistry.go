@@ -21,8 +21,8 @@ func RegisterMatrix(matrix reflect.Type) {
 
 }
 
-// SparseMatrix is 's' a sparse matrix
-func SparseMatrix(s Matrix) bool {
+// IsSparseMatrix is 's' a sparse matrix
+func IsSparseMatrix(s Matrix) bool {
 	t := reflect.TypeOf(s).Elem()
 	_, found := sparseMatrixRegistry[t.Name()]
 	return found
