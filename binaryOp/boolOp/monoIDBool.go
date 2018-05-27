@@ -28,10 +28,12 @@ func NewMonoIDBool(zero bool, operator BinaryOpBool) MonoIDBool {
 func (s *monoIDBool) Reduce(done <-chan bool, slice <-chan bool) <-chan bool {
 	out := make(chan bool)
 	go func() {
+		result := s.unit
 		for {
 			select {
 			case value := <-slice:
-				out <- s.BinaryOpBool.Apply(s.unit, value)
+				result = s.BinaryOpBool.Apply(result, value)
+				out <- result
 			case <-done:
 				close(out)
 				return

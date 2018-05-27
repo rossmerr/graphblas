@@ -51,9 +51,9 @@ func VectorMatrixMultiply(s Vector, m Matrix, vector Vector) {
 
 // MatrixVectorMultiply multiplies a matrix by a vector
 // mxv
-// func MatrixVectorMultiply(s Matrix, m Vector, matrix Matrix) {
-// 	multiply(s, m, matrix)
-// }
+func MatrixVectorMultiply(s Matrix, m Vector, vector Vector) {
+	multiply(s, m, vector)
+}
 
 func elementWiseMultiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
@@ -110,8 +110,8 @@ func ElementWiseMatrixMultiply(s, m, matrix Matrix) {
 
 // ElementWiseVectorMultiply Element-wise multiplication on a vector
 // eWiseMult
-func ElementWiseVectorMultiply(s, m, matrix Matrix) {
-	elementWiseMultiply(s, m, matrix)
+func ElementWiseVectorMultiply(s, m, vector Vector) {
+	elementWiseMultiply(s, m, vector)
 }
 
 // Add addition of a matrix by another matrix
@@ -322,45 +322,21 @@ func Scalar(s Matrix, alpha float64) Matrix {
 	return matrix
 }
 
+// ReduceMatrixToVector perform's a reduction on the Matrix
+func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
+	vector := NewDenseVector(s.Columns())
+	for c := 0; c < s.Columns(); c++ {
+		v := s.ColumnsAt(c)
+		scaler := ReduceVectorToScalar(v, properties)
+		vector.SetVec(c, scaler)
+	}
+
+	return vector
+}
+
 // ReduceVectorToScalar perform's a reduction on the Matrix
 func ReduceVectorToScalar(s Vector, properties ...interface{}) float64 {
 	return ReduceMatrixToScalar(s, properties)
-}
-
-// ReduceMatrixToVector perform's a reduction on the Matrix
-func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
-	done := make(chan interface{})
-	slice := make(chan float64)
-	defer close(slice)
-	defer close(done)
-
-	monoID := float64Op.NewMonoIDFloat64ToBool(1, float64Op.Equal)
-
-	for _, p := range properties {
-		switch v := p.(type) {
-		case float64Op.MonoIDFloat64ToBool:
-			monoID = v.(float64Op.MonoIDFloat64ToBool)
-		}
-	}
-
-	out := monoID.Reduce(done, slice)
-
-	go func() {
-		for iterator := s.Enumerate(); iterator.HasNext(); {
-			_, _, value := iterator.Next()
-			slice <- value
-		}
-		done <- nil
-	}()
-
-	array := make([]float64, 0)
-	for i := range out {
-		if i {
-			array = append(array, 1)
-		}
-	}
-
-	return NewDenseVectorFromArray(array)
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix
@@ -374,7 +350,7 @@ func ReduceMatrixToScalar(s Matrix, properties ...interface{}) float64 {
 
 	for _, p := range properties {
 		switch v := p.(type) {
-		case float64Op.MonoIDFloat64ToBool:
+		case float64Op.MonoIDFloat64:
 			monoID = v.(float64Op.MonoIDFloat64)
 		}
 	}
@@ -389,10 +365,5 @@ func ReduceMatrixToScalar(s Matrix, properties ...interface{}) float64 {
 		done <- nil
 	}()
 
-	scaler := float64(0)
-	for i := range out {
-		scaler += i
-	}
-
-	return scaler
+	return <-out
 }

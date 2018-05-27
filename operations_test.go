@@ -390,7 +390,7 @@ func TestMatrix_Transpose_To_CSC(t *testing.T) {
 }
 
 func TestMatrix_ReduceMatrixToVector(t *testing.T) {
-	want := GraphBLAS.NewDenseVectorFromArray([]float64{1, 1, 1, 1, 1})
+	want := GraphBLAS.NewDenseVectorFromArray([]float64{1, 1, 0, 2, 0, 0, 1})
 
 	tests := []struct {
 		name string
@@ -413,7 +413,7 @@ func TestMatrix_ReduceMatrixToVector(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 
-			monoID := float64Op.NewMonoIDFloat64ToBool(1, float64Op.Equal)
+			monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
 			got := GraphBLAS.ReduceMatrixToVector(tt.s, monoID)
 
 			if !got.Equal(want) {

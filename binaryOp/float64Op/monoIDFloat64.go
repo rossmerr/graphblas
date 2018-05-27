@@ -28,11 +28,13 @@ func NewMonoIDFloat64(zero float64, operator BinaryOpFloat64) MonoIDFloat64 {
 func (s *monoIDFloat64) Reduce(done <-chan interface{}, slice <-chan float64) <-chan float64 {
 	out := make(chan float64)
 	go func() {
+		result := s.unit
 		for {
 			select {
 			case value := <-slice:
-				out <- s.BinaryOpFloat64.Apply(s.unit, value)
+				result = s.BinaryOpFloat64.Apply(result, value)
 			case <-done:
+				out <- result
 				close(out)
 				return
 			}
