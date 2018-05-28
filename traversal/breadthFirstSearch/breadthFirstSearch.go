@@ -28,6 +28,8 @@ func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 		GraphBLAS.ElementWiseMatrixMultiply(q, a, q)
 		if GraphBLAS.ReduceMatrixToScalar(q) == 1 {
 			succ = true
+		} else {
+			succ = false
 		}
 	}
 

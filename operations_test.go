@@ -521,8 +521,7 @@ func TestMatrix_ReduceMatrixToScalar(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 
-			monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
-			got := GraphBLAS.ReduceMatrixToScalar(tt.s, monoID)
+			got := GraphBLAS.ReduceMatrixToScalar(tt.s)
 
 			if got != want {
 				t.Errorf("%+v ReduceMatrixToScalar = \nhave %+v, \nwant %+v", tt.name, got, want)
@@ -553,8 +552,7 @@ func TestMatrix_ReduceVectorToScalar(t *testing.T) {
 			setupMatrix(matrix)
 			tt.s = matrix.ColumnsAt(0)
 
-			monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
-			got := GraphBLAS.ReduceVectorToScalar(tt.s, monoID)
+			got := GraphBLAS.ReduceVectorToScalar(tt.s)
 
 			if got != want {
 				t.Errorf("%+v ReduceVectorToScalar = \nhave %+v, \nwant %+v", tt.name, got, want)

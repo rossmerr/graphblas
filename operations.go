@@ -13,6 +13,9 @@ import (
 
 const defaultFloat64 = float64(0)
 
+var defaultMonoIDAddition = float64Op.NewMonoIDFloat64(0, float64Op.Addition)
+var defaultMonoIDMaximum = float64Op.NewMonoIDFloat64(0, float64Op.Maximum)
+
 func multiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
@@ -333,22 +336,17 @@ func Scalar(s Matrix, alpha float64) Matrix {
 
 // ReduceMatrixToVector perform's a reduction on the Matrix
 func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
-	foundMonoID := false
-	for _, p := range properties {
-		if _, ok := p.(float64Op.MonoIDFloat64); ok {
-			foundMonoID = true
-		}
-	}
+	return ReduceMatrixToVectorWithMonoID(s, defaultMonoIDMaximum)
+}
 
-	if !foundMonoID {
-		monoID := float64Op.NewMonoIDFloat64(0, float64Op.Maximum)
-		properties = append(properties, monoID)
-	}
+// ReduceMatrixToVectorWithMonoID perform's a reduction on the Matrix
+// monoid used in the element-wise reduction operation
+func ReduceMatrixToVectorWithMonoID(s Matrix, monoID float64Op.MonoIDFloat64) Vector {
 
 	vector := NewDenseVector(s.Columns())
 	for c := 0; c < s.Columns(); c++ {
 		v := s.ColumnsAt(c)
-		scaler := ReduceVectorToScalar(v, properties...)
+		scaler := ReduceVectorToScalarWithMonoID(v, monoID)
 		vector.SetVec(c, scaler)
 	}
 
@@ -356,25 +354,28 @@ func ReduceMatrixToVector(s Matrix, properties ...interface{}) Vector {
 }
 
 // ReduceVectorToScalar perform's a reduction on the Matrix
-func ReduceVectorToScalar(s Vector, properties ...interface{}) float64 {
-	return ReduceMatrixToScalar(s, properties...)
+func ReduceVectorToScalar(s Vector) float64 {
+	return ReduceMatrixToScalar(s)
+}
+
+// ReduceVectorToScalarWithMonoID perform's a reduction on the Matrix
+// monoid used in the element-wise reduction operation
+func ReduceVectorToScalarWithMonoID(s Vector, monoID float64Op.MonoIDFloat64) float64 {
+	return ReduceMatrixToScalarWithMonoID(s, monoID)
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix
-func ReduceMatrixToScalar(s Matrix, properties ...interface{}) float64 {
+func ReduceMatrixToScalar(s Matrix) float64 {
+	return ReduceMatrixToScalarWithMonoID(s, defaultMonoIDAddition)
+}
+
+// ReduceMatrixToScalarWithMonoID perform's a reduction on the Matrix
+// monoid used in the element-wise reduction operation
+func ReduceMatrixToScalarWithMonoID(s Matrix, monoID float64Op.MonoIDFloat64) float64 {
 	done := make(chan interface{})
 	slice := make(chan float64)
 	defer close(slice)
 	defer close(done)
-
-	monoID := float64Op.NewMonoIDFloat64(0, float64Op.Addition)
-
-	for _, p := range properties {
-		switch v := p.(type) {
-		case float64Op.MonoIDFloat64:
-			monoID = v.(float64Op.MonoIDFloat64)
-		}
-	}
 
 	out := monoID.Reduce(done, slice)
 
@@ -387,4 +388,5 @@ func ReduceMatrixToScalar(s Matrix, properties ...interface{}) float64 {
 	}()
 
 	return <-out
+
 }
