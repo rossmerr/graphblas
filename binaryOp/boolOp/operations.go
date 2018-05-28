@@ -7,8 +7,6 @@ package boolOp
 
 import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
 
-//var _ binaryOpBool = (BinaryOpBool)(nil)
-
 type BinaryOpBool interface {
 	binaryOp.Semigroup
 	Apply(in1, in2 bool) bool

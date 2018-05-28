@@ -6,7 +6,6 @@
 package float64Op
 
 type MonoIDFloat64 interface {
-	BinaryOpFloat64
 	Zero() float64
 	Reduce(done <-chan interface{}, slice <-chan float64) <-chan float64
 }
