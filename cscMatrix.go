@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"sync"
@@ -23,6 +24,10 @@ type CSCMatrix struct {
 	values   []float64
 	rows     []int
 	colStart []int
+}
+
+func (s CSCMatrix) String() string {
+	return fmt.Sprintf("{c:%+v, r:%+v, values:%+v, rows:%+v, colStart:%+v}", s.c, s.r, s.values, s.rows, s.colStart)
 }
 
 // NewCSCMatrix returns a GraphBLAS.CSCMatrix

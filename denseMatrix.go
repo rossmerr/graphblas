@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"fmt"
 	"log"
 	"sync"
 )
@@ -16,6 +17,10 @@ type DenseMatrix struct {
 	c    int // number of rows in the sparse matrix
 	r    int // number of columns in the sparse matrix
 	data [][]float64
+}
+
+func (s DenseMatrix) String() string {
+	return fmt.Sprintf("{c:%+v, r:%+v, data:%+v}", s.c, s.r, s.data)
 }
 
 // NewDenseMatrix returns a GraphBLAS.DenseMatrix

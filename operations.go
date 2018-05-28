@@ -56,10 +56,6 @@ func MatrixVectorMultiply(s Matrix, m Vector, vector Vector) {
 }
 
 func elementWiseMultiply(s, m, matrix Matrix) {
-	if m.Rows() != s.Columns() {
-		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
-	}
-
 	var iterator Enumerate
 	var source Matrix
 
@@ -105,12 +101,20 @@ func elementWiseMultiply(s, m, matrix Matrix) {
 // ElementWiseMatrixMultiply Element-wise multiplication on a matrix
 // eWiseMult
 func ElementWiseMatrixMultiply(s, m, matrix Matrix) {
+	if m.Rows() != s.Columns() {
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
+	}
+
 	elementWiseMultiply(s, m, matrix)
 }
 
 // ElementWiseVectorMultiply Element-wise multiplication on a vector
 // eWiseMult
 func ElementWiseVectorMultiply(s, m, vector Vector) {
+	if m.Rows() != s.Rows() {
+		log.Panicf("Can not multiply vectors found length miss match %+v, %+v", m.Rows(), s.Rows())
+	}
+
 	elementWiseMultiply(s, m, vector)
 }
 

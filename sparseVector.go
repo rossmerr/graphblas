@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"sync"
@@ -23,9 +24,25 @@ type SparseVector struct {
 	indices []int
 }
 
+func (s SparseVector) String() string {
+	return fmt.Sprintf("{l:%+v, values:%+v, indices:%+v}", s.l, s.values, s.indices)
+}
+
 // NewSparseVector returns a GraphBLAS.SparseVector
 func NewSparseVector(l int) *SparseVector {
 	return newSparseVector(l, 0)
+}
+
+// NewSparseVectorFromArray returns a GraphBLAS.SparseVector
+func NewSparseVectorFromArray(data []float64) *SparseVector {
+	l := len(data)
+	s := newSparseVector(l, 0)
+
+	for i := 0; i < l; i++ {
+		s.SetVec(i, data[i])
+	}
+
+	return s
 }
 
 func newSparseVector(l, s int) *SparseVector {

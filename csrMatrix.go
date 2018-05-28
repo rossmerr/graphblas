@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"sync"
@@ -23,6 +24,10 @@ type CSRMatrix struct {
 	values   []float64
 	cols     []int
 	rowStart []int
+}
+
+func (s CSRMatrix) String() string {
+	return fmt.Sprintf("{c:%+v, r:%+v, values:%+v, cols:%+v, rowStart:%+v}", s.c, s.r, s.values, s.cols, s.rowStart)
 }
 
 // NewCSRMatrix returns a GraphBLAS.CSRMatrix

@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"fmt"
 	"log"
 	"sync"
 )
@@ -15,6 +16,10 @@ type DenseVector struct {
 	sync.RWMutex
 	l      int // length of the sparse vector
 	values []float64
+}
+
+func (s DenseVector) String() string {
+	return fmt.Sprintf("{l:%+v, values:%+v}", s.l, s.values)
 }
 
 // NewDenseVector returns a GraphBLAS.DenseVector
