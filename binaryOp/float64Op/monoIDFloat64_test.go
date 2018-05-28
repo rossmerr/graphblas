@@ -28,5 +28,4 @@ func Test_Reduce(t *testing.T) {
 			t.Errorf("MonoIDBool = %+v, want %+v", out, 2)
 		}
 	}
-
 }
