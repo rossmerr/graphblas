@@ -5,14 +5,6 @@
 
 package GraphBLAS
 
-// UnaryOperator is defined by two domains
-type UnaryOperator func(in, out float64)
-
-// Operator base interface for Binary and Unary
-// type Operator interface {
-// 	operator()
-// }
-
 // Type user-defined scalar type
 type Type uint
 
