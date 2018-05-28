@@ -20,6 +20,9 @@ type DenseMatrix struct {
 }
 
 func (s DenseMatrix) String() string {
+	s.RLock()
+	defer s.RUnlock()
+
 	return fmt.Sprintf("{c:%+v, r:%+v, data:%+v}", s.c, s.r, s.data)
 }
 

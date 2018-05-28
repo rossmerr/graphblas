@@ -19,6 +19,9 @@ type DenseVector struct {
 }
 
 func (s DenseVector) String() string {
+	s.RLock()
+	defer s.RUnlock()
+
 	return fmt.Sprintf("{l:%+v, values:%+v}", s.l, s.values)
 }
 

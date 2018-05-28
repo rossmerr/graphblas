@@ -5,6 +5,7 @@
 
 package float64Op
 
+// MonoIDFloat64 is a set of float64's that closed under an associative binary operation
 type MonoIDFloat64 interface {
 	Zero() float64
 	Reduce(done <-chan interface{}, slice <-chan float64) <-chan float64
@@ -15,15 +16,17 @@ type monoIDFloat64 struct {
 	unit float64
 }
 
+// Zero the identity element
 func (s *monoIDFloat64) Zero() float64 {
 	return s.unit
 }
 
-// NewMonoIDFloat64 retuns a MonoIDFloat64
+// NewMonoIDFloat64 retun a MonoIDFloat64
 func NewMonoIDFloat64(zero float64, operator BinaryOpFloat64) MonoIDFloat64 {
 	return &monoIDFloat64{unit: zero, BinaryOpFloat64: operator}
 }
 
+// Reduce left folding over the monoID
 func (s *monoIDFloat64) Reduce(done <-chan interface{}, slice <-chan float64) <-chan float64 {
 	out := make(chan float64)
 	go func() {

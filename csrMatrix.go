@@ -27,6 +27,9 @@ type CSRMatrix struct {
 }
 
 func (s CSRMatrix) String() string {
+	s.RLock()
+	defer s.RUnlock()
+
 	return fmt.Sprintf("{c:%+v, r:%+v, values:%+v, cols:%+v, rowStart:%+v}", s.c, s.r, s.values, s.cols, s.rowStart)
 }
 

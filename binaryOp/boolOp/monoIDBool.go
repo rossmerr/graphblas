@@ -5,6 +5,7 @@
 
 package boolOp
 
+// MonoIDBool is a set of bool's that closed under an associative binary operation
 type MonoIDBool interface {
 	Zero() bool
 	Reduce(done <-chan interface{}, slice <-chan bool) <-chan bool
@@ -15,11 +16,12 @@ type monoIDBool struct {
 	unit bool
 }
 
+// Zero the identity element
 func (s *monoIDBool) Zero() bool {
 	return s.unit
 }
 
-// NewMonoIDBool retuns a MonoIDBool
+// NewMonoIDBool retun a MonoIDBool
 func NewMonoIDBool(zero bool, operator BinaryOpBool) MonoIDBool {
 	return &monoIDBool{unit: zero, BinaryOpBool: operator}
 }

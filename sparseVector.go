@@ -25,6 +25,9 @@ type SparseVector struct {
 }
 
 func (s SparseVector) String() string {
+	s.RLock()
+	defer s.RUnlock()
+
 	return fmt.Sprintf("{l:%+v, values:%+v, indices:%+v}", s.l, s.values, s.indices)
 }
 

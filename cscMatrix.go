@@ -27,6 +27,9 @@ type CSCMatrix struct {
 }
 
 func (s CSCMatrix) String() string {
+	s.RLock()
+	defer s.RUnlock()
+
 	return fmt.Sprintf("{c:%+v, r:%+v, values:%+v, rows:%+v, colStart:%+v}", s.c, s.r, s.values, s.rows, s.colStart)
 }
 
