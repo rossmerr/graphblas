@@ -71,8 +71,4 @@ type Matrix interface {
 
 	// The number of elements in the matrix (non-zero counted for dense matrices)
 	Values() int
-
-	// Apply modifies edge weights by the UnaryOperator
-	// C ⊕= f(A)
-	Apply(u UnaryOperator)
 }

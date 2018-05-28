@@ -7,6 +7,7 @@ package boolOp
 
 import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
 
+// BinaryOpBool is a function that maps two input value to one output value
 type BinaryOpBool interface {
 	binaryOp.Semigroup
 	Apply(in1, in2 bool) bool

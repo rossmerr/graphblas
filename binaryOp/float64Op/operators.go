@@ -7,6 +7,7 @@ package float64Op
 
 import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
 
+// BinaryOpFloat64 is a function that maps two input value to one output value
 type BinaryOpFloat64 interface {
 	binaryOp.Semigroup
 	Apply(in1, in2 float64) float64

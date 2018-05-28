@@ -9,6 +9,7 @@ import (
 	"log"
 
 	"github.com/RossMerr/Caudex.GraphBLAS/binaryOp/float64Op"
+	float64UnaryOp "github.com/RossMerr/Caudex.GraphBLAS/unaryOp/float64Op"
 )
 
 const defaultFloat64 = float64(0)
@@ -209,12 +210,11 @@ func Subtract(s, m, matrix Matrix) {
 
 // Apply modifies edge weights by the UnaryOperator
 // C ⊕= f(A)
-func Apply(in, out Matrix, u UnaryOperator) {
+func Apply(in, out Matrix, u float64UnaryOp.UnaryOpFloat64) {
 	if in == out {
 		for iterator := in.Map(); iterator.HasNext(); {
-			iterator.Map(func(r, c int, value float64) (result float64) {
-				u(value, result)
-				return
+			iterator.Map(func(r, c int, value float64) float64 {
+				return u.Apply(value)
 			})
 		}
 
@@ -223,9 +223,7 @@ func Apply(in, out Matrix, u UnaryOperator) {
 
 	for iterator := in.Enumerate(); iterator.HasNext(); {
 		r, c, value := iterator.Next()
-		var result float64
-		u(value, result)
-		out.Set(c, r, result)
+		out.Set(c, r, u.Apply(value))
 	}
 }
 

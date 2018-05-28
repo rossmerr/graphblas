@@ -254,20 +254,6 @@ func (s *DenseMatrix) Values() int {
 	return s.r * s.c
 }
 
-// Apply modifies edge weights by the UnaryOperator
-// C ⊕= f(A)
-func (s *DenseMatrix) Apply(u UnaryOperator) {
-	s.Lock()
-	defer s.Unlock()
-
-	for iterator := s.Map(); iterator.HasNext(); {
-		iterator.Map(func(r, c int, v float64) (result float64) {
-			u(v, result)
-			return
-		})
-	}
-}
-
 // RawMatrix returns the raw matrix
 func (s *DenseMatrix) RawMatrix() [][]float64 {
 	return s.data

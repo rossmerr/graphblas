@@ -5,11 +5,12 @@
 
 package binaryOp
 
+// BinaryOp binaray operator
 type BinaryOp interface {
-	Operator()
 	BinaryOp()
 }
 
+// Semigroup is a set together with an associative binary operation.
 type Semigroup interface {
 	BinaryOp
 	Semigroup()

@@ -256,17 +256,6 @@ func (s *DenseVector) Values() int {
 	return s.l
 }
 
-// Apply modifies edge weights by the UnaryOperator
-// C ⊕= f(A)
-func (s *DenseVector) Apply(u UnaryOperator) {
-	Apply(s, s, u)
-}
-
-// ReduceToScalar perform's a reduction on the Vector
-func (s *DenseVector) ReduceToScalar() int {
-	return 0
-}
-
 // Enumerate iterates through all non-zero elements, order is not guaranteed
 func (s *DenseVector) Enumerate() Enumerate {
 	return s.iterator()
