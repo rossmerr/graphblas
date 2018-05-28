@@ -26,6 +26,7 @@ func NewMonoIDBool(zero bool, operator BinaryOpBool) MonoIDBool {
 	return &monoIDBool{unit: zero, BinaryOpBool: operator}
 }
 
+// Reduce left folding over the monoID
 func (s *monoIDBool) Reduce(done <-chan interface{}, slice <-chan bool) <-chan bool {
 	out := make(chan bool)
 	go func() {
