@@ -26,6 +26,13 @@ func (s DenseMatrix) String() string {
 	return fmt.Sprintf("{c:%+v, r:%+v, data:%+v}", s.c, s.r, s.data)
 }
 
+// Use DenseMatrix with the NewDenseMatrix func
+func ExampleDenseMatrix() {
+	matrix := NewDenseMatrix(5, 5)
+	matrix.Set(0, 0, 1)
+	matrix.At(0, 0)
+}
+
 // NewDenseMatrix returns a GraphBLAS.DenseMatrix
 func NewDenseMatrix(r, c int) *DenseMatrix {
 	return newMatrix(r, c, nil)

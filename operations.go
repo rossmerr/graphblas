@@ -12,11 +12,6 @@ import (
 	float64UnaryOp "github.com/RossMerr/Caudex.GraphBLAS/unaryOp/float64Op"
 )
 
-const defaultFloat64 = float64(0)
-
-var defaultMonoIDAddition = float64Op.NewMonoIDFloat64(0, float64Op.Addition)
-var defaultMonoIDMaximum = float64Op.NewMonoIDFloat64(0, float64Op.Maximum)
-
 func multiply(s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
