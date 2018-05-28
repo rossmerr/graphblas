@@ -146,9 +146,6 @@ func Add(s, m, matrix Matrix) {
 }
 
 func elementWiseAdd(s, m, matrix Matrix) {
-	if m.Rows() != s.Columns() {
-		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
-	}
 
 	if s != matrix {
 		for iterator := s.Enumerate(); iterator.HasNext(); {
@@ -172,13 +169,21 @@ func elementWiseAdd(s, m, matrix Matrix) {
 // ElementWiseMatrixAdd Element-wise addition on a matrix
 // eWiseMult
 func ElementWiseMatrixAdd(s, m, matrix Matrix) {
+	if m.Rows() != s.Columns() {
+		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", m.Rows(), s.Columns())
+	}
+
 	elementWiseAdd(s, m, matrix)
 }
 
 // ElementWiseVectorAdd Element-wise addition on a vector
 // eWiseMult
-func ElementWiseVectorAdd(s, m, matrix Matrix) {
-	elementWiseAdd(s, m, matrix)
+func ElementWiseVectorAdd(s, m, vector Vector) {
+	if m.Rows() != s.Rows() {
+		log.Panicf("Can not multiply vectors found length miss match %+v, %+v", m.Rows(), s.Rows())
+	}
+
+	elementWiseAdd(s, m, vector)
 }
 
 // Subtract subtracts one matrix from another matrix

@@ -338,6 +338,37 @@ func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
 	}
 }
 
+func TestMatrix_ElementWiseVectorAdd(t *testing.T) {
+	vector := GraphBLAS.NewDenseVectorFromArray([]float64{0, 1, 0, 0, 0, 1, 0})
+
+	want := GraphBLAS.NewDenseVectorFromArray([]float64{0, 1, 0, 0, 0, 1, 1})
+
+	setup := []float64{0, 1, 0, 0, 0, 0, 1}
+
+	tests := []struct {
+		name string
+		s    GraphBLAS.Vector
+	}{
+		{
+			name: "DenseVector",
+			s:    GraphBLAS.NewDenseVectorFromArray(setup),
+		},
+		{
+			name: "SparseVector",
+			s:    GraphBLAS.NewSparseVectorFromArray(setup),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := GraphBLAS.NewDenseVector(7)
+			GraphBLAS.ElementWiseVectorAdd(tt.s, vector, got)
+			if !got.Equal(want) {
+				t.Errorf("%+v ElementWiseVectorAdd = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
+			}
+		})
+	}
+}
+
 func TestMatrix_Transpose_To_CSR(t *testing.T) {
 
 	setup := func(m GraphBLAS.Matrix) {
