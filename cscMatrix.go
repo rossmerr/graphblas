@@ -10,6 +10,8 @@ import (
 	"log"
 	"reflect"
 	"sync"
+
+	"golang.org/x/net/context"
 )
 
 func init() {
@@ -262,13 +264,13 @@ func (s *CSCMatrix) Copy() Matrix {
 
 // Scalar multiplication of a matrix by alpha
 func (s *CSCMatrix) Scalar(alpha float64) Matrix {
-	return Scalar(s, alpha)
+	return Scalar(context.Background(), s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
-	MatrixMatrixMultiply(s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, matrix)
 	return matrix
 }
 
@@ -282,14 +284,14 @@ func (s *CSCMatrix) Add(m Matrix) Matrix {
 // Subtract subtracts one matrix from another matrix
 func (s *CSCMatrix) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(s, m, matrix)
+	Subtract(context.Background(), s, m, matrix)
 	return matrix
 }
 
 // Negative the negative of a matrix
 func (s *CSCMatrix) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(s, matrix)
+	Negative(context.Background(), s, matrix)
 	return matrix
 }
 
@@ -297,18 +299,18 @@ func (s *CSCMatrix) Negative() Matrix {
 func (s *CSCMatrix) Transpose() Matrix {
 	matrix := newCSCMatrix(s.c, s.r, 0)
 
-	Transpose(s, matrix)
+	Transpose(context.Background(), s, matrix)
 	return matrix
 }
 
 // Equal the two matrices are equal
 func (s *CSCMatrix) Equal(m Matrix) bool {
-	return Equal(s, m)
+	return Equal(context.Background(), s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *CSCMatrix) NotEqual(m Matrix) bool {
-	return NotEqual(s, m)
+	return NotEqual(context.Background(), s, m)
 }
 
 // Size of the matrix

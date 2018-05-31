@@ -8,7 +8,7 @@ package boolOp
 // MonoIDBool is a set of bool's that closed under an associative binary operation
 type MonoIDBool interface {
 	Zero() bool
-	Reduce(done <-chan interface{}, slice <-chan bool) <-chan bool
+	Reduce(done <-chan struct{}, slice <-chan bool) <-chan bool
 }
 
 type monoIDBool struct {
@@ -27,7 +27,7 @@ func NewMonoIDBool(zero bool, operator BinaryOpBool) MonoIDBool {
 }
 
 // Reduce left folding over the monoID
-func (s *monoIDBool) Reduce(done <-chan interface{}, slice <-chan bool) <-chan bool {
+func (s *monoIDBool) Reduce(done <-chan struct{}, slice <-chan bool) <-chan bool {
 	out := make(chan bool)
 	go func() {
 		result := s.unit

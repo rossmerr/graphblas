@@ -8,6 +8,8 @@ package strassen_test
 import (
 	"testing"
 
+	"golang.org/x/net/context"
+
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 	"github.com/RossMerr/Caudex.GraphBLAS/math/strassen"
 )
@@ -88,7 +90,7 @@ func TestMatrix_Multiply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			if got := strassen.MultiplyCrossoverPoint(tt.s, matrix, 2); !got.Equal(want) {
+			if got := strassen.MultiplyCrossoverPoint(context.Background(), tt.s, matrix, 2); !got.Equal(want) {
 				t.Errorf("%+v Multiply = got %+v, want %+v", tt.name, got, want)
 			}
 		})

@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"reflect"
@@ -266,13 +267,13 @@ func (s *SparseVector) Copy() Matrix {
 
 // Scalar multiplication of a vector by alpha
 func (s *SparseVector) Scalar(alpha float64) Matrix {
-	return Scalar(s, alpha)
+	return Scalar(context.Background(), s, alpha)
 }
 
 // Multiply multiplies a vector by another vector
 func (s *SparseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
-	MatrixMatrixMultiply(s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, matrix)
 	return matrix
 }
 
@@ -286,32 +287,32 @@ func (s *SparseVector) Add(m Matrix) Matrix {
 // Subtract subtracts one metrix from another metrix
 func (s *SparseVector) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(s, m, matrix)
+	Subtract(context.Background(), s, m, matrix)
 	return matrix
 }
 
 // Negative the negative of a metrix
 func (s *SparseVector) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(s, matrix)
+	Negative(context.Background(), s, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *SparseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-	Transpose(s, matrix)
+	Transpose(context.Background(), s, matrix)
 	return matrix
 }
 
 // Equal the two metrics are equal
 func (s *SparseVector) Equal(m Matrix) bool {
-	return Equal(s, m)
+	return Equal(context.Background(), s, m)
 }
 
 // NotEqual the two metrix are not equal
 func (s *SparseVector) NotEqual(m Matrix) bool {
-	return NotEqual(s, m)
+	return NotEqual(context.Background(), s, m)
 }
 
 // Size of the vector

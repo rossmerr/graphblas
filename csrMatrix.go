@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"reflect"
@@ -260,13 +261,13 @@ func (s *CSRMatrix) Copy() Matrix {
 
 // Scalar multiplication of a matrix by alpha
 func (s *CSRMatrix) Scalar(alpha float64) Matrix {
-	return Scalar(s, alpha)
+	return Scalar(context.Background(), s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
 func (s *CSRMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), 0)
-	MatrixMatrixMultiply(s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, matrix)
 	return matrix
 }
 
@@ -280,32 +281,32 @@ func (s *CSRMatrix) Add(m Matrix) Matrix {
 // Subtract subtracts one matrix from another matrix
 func (s *CSRMatrix) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(s, m, matrix)
+	Subtract(context.Background(), s, m, matrix)
 	return matrix
 }
 
 // Negative the negative of a matrix
 func (s *CSRMatrix) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(s, matrix)
+	Negative(context.Background(), s, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *CSRMatrix) Transpose() Matrix {
 	matrix := newCSRMatrix(s.c, s.r, 0)
-	Transpose(s, matrix)
+	Transpose(context.Background(), s, matrix)
 	return matrix
 }
 
 // Equal the two matrices are equal
 func (s *CSRMatrix) Equal(m Matrix) bool {
-	return Equal(s, m)
+	return Equal(context.Background(), s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *CSRMatrix) NotEqual(m Matrix) bool {
-	return NotEqual(s, m)
+	return NotEqual(context.Background(), s, m)
 }
 
 // Size of the matrix

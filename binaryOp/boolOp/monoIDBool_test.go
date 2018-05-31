@@ -12,7 +12,7 @@ import (
 )
 
 func Test_Reduce(t *testing.T) {
-	done := make(chan interface{})
+	done := make(chan struct{})
 	slice := make(chan bool)
 	defer close(slice)
 	defer close(done)
@@ -22,7 +22,7 @@ func Test_Reduce(t *testing.T) {
 	result := monoID.Reduce(done, slice)
 
 	slice <- true
-	done <- nil
+	done <- struct{}{}
 	for out := range result {
 		if !out {
 			t.Errorf("MonoIDBool = %+v, want %+v", false, true)

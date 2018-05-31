@@ -6,19 +6,20 @@
 package strassen
 
 import (
+	"context"
 	"log"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 )
 
 // Multiply multiplies a matrix by another matrix using the Strassen algorithm
-func Multiply(a, b GraphBLAS.Matrix) GraphBLAS.Matrix {
-	return MultiplyCrossoverPoint(a, b, 64)
+func Multiply(ctx context.Context, a, b GraphBLAS.Matrix) GraphBLAS.Matrix {
+	return MultiplyCrossoverPoint(ctx, a, b, 64)
 }
 
 // MultiplyCrossoverPoint multiplies a matrix by another matrix using the Strassen algorithm
 // the crossover point is when to switch standard methods of matrix multiplication for more efficiency
-func MultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matrix {
+func MultiplyCrossoverPoint(ctx context.Context, a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matrix {
 	if a.Columns() != b.Rows() {
 		log.Panicf("Can not multiply matrices found length miss match %+v, %+v", a.Columns(), b.Rows())
 	}
@@ -26,7 +27,7 @@ func MultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matr
 	n := b.Rows()
 	if n <= crossover {
 		matrix := GraphBLAS.NewDenseMatrix(a.Rows(), b.Columns())
-		GraphBLAS.MatrixMatrixMultiply(a, b, matrix)
+		GraphBLAS.MatrixMatrixMultiply(ctx, a, b, matrix)
 		return matrix
 	}
 
@@ -45,27 +46,32 @@ func MultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matr
 	// dividing the matrices in 4 sub-matrices:
 	for r := 0; r < size; r++ {
 		for c := 0; c < size; c++ {
-			a11.Set(r, c, a.At(r, c))           // top left
-			a12.Set(r, c, a.At(r, c+size))      // top right
-			a21.Set(r, c, a.At(r+size, c))      // bottom left
-			a22.Set(r, c, a.At(r+size, c+size)) // bottom right
+			select {
+			case <-ctx.Done():
+				break
+			default:
+				a11.Set(r, c, a.At(r, c))           // top left
+				a12.Set(r, c, a.At(r, c+size))      // top right
+				a21.Set(r, c, a.At(r+size, c))      // bottom left
+				a22.Set(r, c, a.At(r+size, c+size)) // bottom right
 
-			b11.Set(r, c, b.At(r, c))           // top left
-			b12.Set(r, c, b.At(r, c+size))      // top right
-			b21.Set(r, c, b.At(r+size, c))      // bottom left
-			b22.Set(r, c, b.At(r+size, c+size)) // bottom right
+				b11.Set(r, c, b.At(r, c))           // top left
+				b12.Set(r, c, b.At(r, c+size))      // top right
+				b21.Set(r, c, b.At(r+size, c))      // bottom left
+				b22.Set(r, c, b.At(r+size, c+size)) // bottom right
+			}
 		}
 	}
 
 	out := make(chan *mPlace)
 
-	go subMatrixM(out, 1, a11.Add(a22), b11.Add(b22), crossover)
-	go subMatrixM(out, 2, a21.Add(a22), b11, crossover)
-	go subMatrixM(out, 3, a11, b12.Subtract(b22), crossover)
-	go subMatrixM(out, 4, a22, b21.Subtract(b11), crossover)
-	go subMatrixM(out, 5, a11.Add(a12), b22, crossover)
-	go subMatrixM(out, 6, a21.Subtract(a11), b11.Add(b12), crossover)
-	go subMatrixM(out, 7, a12.Subtract(a22), b21.Add(b22), crossover)
+	go subMatrixM(ctx, out, 1, a11.Add(a22), b11.Add(b22), crossover)
+	go subMatrixM(ctx, out, 2, a21.Add(a22), b11, crossover)
+	go subMatrixM(ctx, out, 3, a11, b12.Subtract(b22), crossover)
+	go subMatrixM(ctx, out, 4, a22, b21.Subtract(b11), crossover)
+	go subMatrixM(ctx, out, 5, a11.Add(a12), b22, crossover)
+	go subMatrixM(ctx, out, 6, a21.Subtract(a11), b11.Add(b12), crossover)
+	go subMatrixM(ctx, out, 7, a12.Subtract(a22), b21.Add(b22), crossover)
 
 	m := [8]GraphBLAS.Matrix{}
 	for i := 0; i < 7; i++ {
@@ -84,20 +90,25 @@ func MultiplyCrossoverPoint(a, b GraphBLAS.Matrix, crossover int) GraphBLAS.Matr
 	// Combine the results
 	for r := 0; r < c11.Rows(); r++ {
 		for c := 0; c < c11.Columns(); c++ {
-			matrix.Set(r, c, c11.At(r, c))
-			matrix.Set(r, c+shift, c12.At(r, c))
-			matrix.Set(r+shift, c, c21.At(r, c))
-			matrix.Set(r+shift, c+shift, c22.At(r, c))
+			select {
+			case <-ctx.Done():
+				break
+			default:
+				matrix.Set(r, c, c11.At(r, c))
+				matrix.Set(r, c+shift, c12.At(r, c))
+				matrix.Set(r+shift, c, c21.At(r, c))
+				matrix.Set(r+shift, c+shift, c22.At(r, c))
+			}
 		}
 	}
 
 	return matrix
 }
 
-func subMatrixM(out chan *mPlace, m int, a, b GraphBLAS.Matrix, crossover int) {
+func subMatrixM(ctx context.Context, out chan *mPlace, m int, a, b GraphBLAS.Matrix, crossover int) {
 	out <- &mPlace{
 		m:      m,
-		matrix: MultiplyCrossoverPoint(a, b, crossover),
+		matrix: MultiplyCrossoverPoint(ctx, a, b, crossover),
 	}
 }
 

@@ -4,6 +4,8 @@ import (
 	"math/rand"
 	"testing"
 
+	"golang.org/x/net/context"
+
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 	"github.com/RossMerr/Caudex.GraphBLAS/math/strassen"
 )
@@ -20,24 +22,25 @@ func init() {
 
 func BenchmarkMatrixDenseMultiplyStrassen(b *testing.B) {
 	b.ReportAllocs()
+	ctx := context.Background()
 	for i := 0; i < b.N; i++ {
-		strassen.Multiply(denseMatrix, denseMatrix)
+		strassen.Multiply(ctx, denseMatrix, denseMatrix)
 	}
 }
 
 func BenchmarkMatrixCSRMultiplyStrassen(b *testing.B) {
 	b.ReportAllocs()
+	ctx := context.Background()
 	for i := 0; i < b.N; i++ {
-		strassen.Multiply(csrMatrix, denseMatrix)
-
+		strassen.Multiply(ctx, csrMatrix, denseMatrix)
 	}
 }
 
 func BenchmarkMatrixCSCMultiplyStrassen(b *testing.B) {
 	b.ReportAllocs()
+	ctx := context.Background()
 	for i := 0; i < b.N; i++ {
-		strassen.Multiply(cscMatrix, denseMatrix)
-
+		strassen.Multiply(ctx, cscMatrix, denseMatrix)
 	}
 }
 

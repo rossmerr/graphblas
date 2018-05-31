@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"sync"
@@ -24,13 +25,6 @@ func (s DenseMatrix) String() string {
 	defer s.RUnlock()
 
 	return fmt.Sprintf("{c:%+v, r:%+v, data:%+v}", s.c, s.r, s.data)
-}
-
-// Use DenseMatrix with the NewDenseMatrix func
-func ExampleDenseMatrix() {
-	matrix := NewDenseMatrix(5, 5)
-	matrix.Set(0, 0, 1)
-	matrix.At(0, 0)
 }
 
 // NewDenseMatrix returns a GraphBLAS.DenseMatrix
@@ -206,13 +200,13 @@ func (s *DenseMatrix) Copy() Matrix {
 
 // Scalar multiplication of a matrix by alpha
 func (s *DenseMatrix) Scalar(alpha float64) Matrix {
-	return Scalar(s, alpha)
+	return Scalar(context.Background(), s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
 func (s *DenseMatrix) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(s.Rows(), m.Columns(), nil)
-	MatrixMatrixMultiply(s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, matrix)
 	return matrix
 }
 
@@ -226,32 +220,32 @@ func (s *DenseMatrix) Add(m Matrix) Matrix {
 // Subtract subtracts one matrix from another matrix
 func (s *DenseMatrix) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(s, m, matrix)
+	Subtract(context.Background(), s, m, matrix)
 	return matrix
 }
 
 // Negative the negative of a matrix
 func (s *DenseMatrix) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(s, matrix)
+	Negative(context.Background(), s, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseMatrix) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-	Transpose(s, matrix)
+	Transpose(context.Background(), s, matrix)
 	return matrix
 }
 
 // Equal the two matrices are equal
 func (s *DenseMatrix) Equal(m Matrix) bool {
-	return Equal(s, m)
+	return Equal(context.Background(), s, m)
 }
 
 // NotEqual the two matrices are not equal
 func (s *DenseMatrix) NotEqual(m Matrix) bool {
-	return NotEqual(s, m)
+	return NotEqual(context.Background(), s, m)
 }
 
 // Size of the matrix

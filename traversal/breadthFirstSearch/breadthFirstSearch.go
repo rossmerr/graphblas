@@ -7,10 +7,11 @@ package breadthFirstSearch
 
 import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
+	"golang.org/x/net/context"
 )
 
 // BreadthFirstSearch a breadth-first search v is the source
-func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
+func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 	v := make(map[int]GraphBLAS.Matrix)
 	// vertices visited in each level
 	visited := GraphBLAS.NewDenseVector(a.Rows())
@@ -25,8 +26,8 @@ func BreadthFirstSearch(a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
 	for succ {
 		d++
 		v[d] = q.Copy()
-		GraphBLAS.ElementWiseMatrixMultiply(q, a, q)
-		if GraphBLAS.ReduceMatrixToScalar(q) == 1 {
+		GraphBLAS.ElementWiseMatrixMultiply(ctx, q, a, q)
+		if GraphBLAS.ReduceMatrixToScalar(ctx, q) == 1 {
 			succ = true
 		} else {
 			succ = false

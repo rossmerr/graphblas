@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-// Package GraphBLAS A sparse linear algebra library that defines a set of matrix and vector operations
+// A sparse linear algebra library that defines a set of matrix and vector operations
 package GraphBLAS
 
 import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp/float64Op"

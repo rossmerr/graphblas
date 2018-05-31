@@ -6,6 +6,7 @@
 package GraphBLAS
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"sync"
@@ -206,13 +207,13 @@ func (s *DenseVector) Copy() Matrix {
 
 // Scalar multiplication of a vector by alpha
 func (s *DenseVector) Scalar(alpha float64) Matrix {
-	return Scalar(s, alpha)
+	return Scalar(context.Background(), s, alpha)
 }
 
 // Multiply multiplies a vector by another vector
 func (s *DenseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
-	MatrixMatrixMultiply(s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, matrix)
 	return matrix
 }
 
@@ -226,32 +227,32 @@ func (s *DenseVector) Add(m Matrix) Matrix {
 // Subtract subtracts one vector from another vector
 func (s *DenseVector) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(s, m, matrix)
+	Subtract(context.Background(), s, m, matrix)
 	return matrix
 }
 
 // Negative the negative of a metrix
 func (s *DenseVector) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(s, matrix)
+	Negative(context.Background(), s, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-	Transpose(s, matrix)
+	Transpose(context.Background(), s, matrix)
 	return matrix
 }
 
 // Equal the two vectors are equal
 func (s *DenseVector) Equal(m Matrix) bool {
-	return Equal(s, m)
+	return Equal(context.Background(), s, m)
 }
 
 // NotEqual the two vectors are not equal
 func (s *DenseVector) NotEqual(m Matrix) bool {
-	return NotEqual(s, m)
+	return NotEqual(context.Background(), s, m)
 }
 
 // Values the number of elements in the Vector

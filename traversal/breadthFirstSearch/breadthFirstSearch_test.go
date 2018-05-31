@@ -6,6 +6,7 @@
 package breadthFirstSearch_test
 
 import (
+	"context"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
@@ -27,7 +28,7 @@ func TestBreadthFirstSearch(t *testing.T) {
 	v := GraphBLAS.NewDenseVector(7)
 	v.SetVec(4, float64(1))
 
-	breadthFirstSearch.BreadthFirstSearch(g, 4)
+	breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 4)
 
 	//atx := breadthFirstSearch.BreadthFirstSearch(g, v)
 
