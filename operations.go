@@ -28,7 +28,7 @@ func multiply(ctx context.Context, s, m, matrix Matrix) {
 			for l := 0; l < rows.Length(); l++ {
 				select {
 				case <-ctx.Done():
-					break
+					return
 				default:
 					vC := column.AtVec(l)
 					vR := rows.AtVec(l)
@@ -100,7 +100,7 @@ func elementWiseMultiply(ctx context.Context, s, m, matrix Matrix) {
 	for iterator.HasNext() {
 		select {
 		case <-ctx.Done():
-			break
+			return
 		default:
 			r, c, value := iterator.Next()
 			target(r, c, value)
@@ -161,7 +161,7 @@ func elementWiseAdd(ctx context.Context, s, m, matrix Matrix) {
 		for iterator := s.Enumerate(); iterator.HasNext(); {
 			select {
 			case <-ctx.Done():
-				break
+				return
 			default:
 				r, c, value := iterator.Next()
 				if value != defaultFloat64 {
@@ -175,7 +175,7 @@ func elementWiseAdd(ctx context.Context, s, m, matrix Matrix) {
 		for iterator := m.Enumerate(); iterator.HasNext(); {
 			select {
 			case <-ctx.Done():
-				break
+				return
 			default:
 				r, c, value := iterator.Next()
 				if value != defaultFloat64 {
@@ -219,7 +219,7 @@ func Subtract(ctx context.Context, s, m, matrix Matrix) {
 	for iterator := s.Enumerate(); iterator.HasNext(); {
 		select {
 		case <-ctx.Done():
-			break
+			return
 		default:
 			r, c, value := iterator.Next()
 			matrix.Update(r, c, func(v float64) float64 {
@@ -236,7 +236,7 @@ func Apply(ctx context.Context, in, out Matrix, u float64UnaryOp.UnaryOpFloat64)
 		for iterator := in.Map(); iterator.HasNext(); {
 			select {
 			case <-ctx.Done():
-				break
+				return
 			default:
 				iterator.Map(func(r, c int, value float64) float64 {
 					return u.Apply(value)
@@ -250,7 +250,7 @@ func Apply(ctx context.Context, in, out Matrix, u float64UnaryOp.UnaryOpFloat64)
 	for iterator := in.Enumerate(); iterator.HasNext(); {
 		select {
 		case <-ctx.Done():
-			break
+			return
 		default:
 			r, c, value := iterator.Next()
 			out.Set(c, r, u.Apply(value))
@@ -263,7 +263,7 @@ func Negative(ctx context.Context, s, matrix Matrix) {
 	for iterator := matrix.Map(); iterator.HasNext(); {
 		select {
 		case <-ctx.Done():
-			break
+			return
 		default:
 			iterator.Map(func(r, c int, v float64) float64 {
 				return -v
@@ -278,7 +278,7 @@ func Transpose(ctx context.Context, s, m Matrix) {
 	for iterator := s.Enumerate(); iterator.HasNext(); {
 		select {
 		case <-ctx.Done():
-			break
+			return
 		default:
 			r, c, value := iterator.Next()
 			m.Set(c, r, value)
@@ -349,7 +349,7 @@ func Equal(ctx context.Context, s, m Matrix) bool {
 	for iterator.HasNext() {
 		select {
 		case <-ctx.Done():
-			break
+			return false
 		default:
 			sR, sC, sV := iterator.Next()
 			mV := matrix.At(sR, sC)
@@ -432,7 +432,7 @@ func ReduceMatrixToScalarWithMonoID(ctx context.Context, s Matrix, monoID float6
 		for iterator := s.Enumerate(); iterator.HasNext(); {
 			select {
 			case <-ctx.Done():
-				break
+				return
 			default:
 				_, _, value := iterator.Next()
 				slice <- value
