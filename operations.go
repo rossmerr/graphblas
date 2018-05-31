@@ -43,18 +43,21 @@ func multiply(ctx context.Context, s, m, matrix Matrix) {
 }
 
 // MatrixMatrixMultiply multiplies a matrix by another matrix
+//
 // mxm
 func MatrixMatrixMultiply(ctx context.Context, s, m, matrix Matrix) {
 	multiply(ctx, s, m, matrix)
 }
 
 // VectorMatrixMultiply multiplies a vector by a matrix
+//
 // vxm
 func VectorMatrixMultiply(ctx context.Context, s Vector, m Matrix, vector Vector) {
 	multiply(ctx, m, s, vector)
 }
 
 // MatrixVectorMultiply multiplies a matrix by a vector
+//
 // mxv
 func MatrixVectorMultiply(ctx context.Context, s Matrix, m Vector, vector Vector) {
 	multiply(ctx, s, m, vector)
@@ -109,6 +112,7 @@ func elementWiseMultiply(ctx context.Context, s, m, matrix Matrix) {
 }
 
 // ElementWiseMatrixMultiply Element-wise multiplication on a matrix
+//
 // eWiseMult
 func ElementWiseMatrixMultiply(ctx context.Context, s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
@@ -119,6 +123,7 @@ func ElementWiseMatrixMultiply(ctx context.Context, s, m, matrix Matrix) {
 }
 
 // ElementWiseVectorMultiply Element-wise multiplication on a vector
+//
 // eWiseMult
 func ElementWiseVectorMultiply(ctx context.Context, s, m, vector Vector) {
 	if m.Rows() != s.Rows() {
@@ -187,6 +192,7 @@ func elementWiseAdd(ctx context.Context, s, m, matrix Matrix) {
 }
 
 // ElementWiseMatrixAdd Element-wise addition on a matrix
+//
 // eWiseMult
 func ElementWiseMatrixAdd(ctx context.Context, s, m, matrix Matrix) {
 	if m.Rows() != s.Columns() {
@@ -197,6 +203,7 @@ func ElementWiseMatrixAdd(ctx context.Context, s, m, matrix Matrix) {
 }
 
 // ElementWiseVectorAdd Element-wise addition on a vector
+//
 // eWiseMult
 func ElementWiseVectorAdd(ctx context.Context, s, m, vector Vector) {
 	if m.Rows() != s.Rows() {
@@ -230,7 +237,7 @@ func Subtract(ctx context.Context, s, m, matrix Matrix) {
 }
 
 // Apply modifies edge weights by the UnaryOperator
-// C ⊕= f(A)
+//  C ⊕= f(A)
 func Apply(ctx context.Context, in, out Matrix, u float64UnaryOp.UnaryOpFloat64) {
 	if in == out {
 		for iterator := in.Map(); iterator.HasNext(); {
@@ -273,7 +280,7 @@ func Negative(ctx context.Context, s, matrix Matrix) {
 }
 
 // Transpose swaps the rows and columns
-// C ⊕= Aᵀ
+//  C ⊕= Aᵀ
 func Transpose(ctx context.Context, s, m Matrix) {
 	for iterator := s.Enumerate(); iterator.HasNext(); {
 		select {
