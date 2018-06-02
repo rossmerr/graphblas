@@ -15,25 +15,22 @@ import (
 
 func TestBreadthFirstSearch(t *testing.T) {
 	array := [][]float64{
-		[]float64{1, 0, 0, 1, 0, 0, 0},
-		[]float64{1, 1, 0, 0, 0, 0, 0},
-		[]float64{0, 0, 1, 1, 0, 1, 1},
-		[]float64{1, 0, 0, 1, 0, 0, 1},
-		[]float64{0, 1, 0, 0, 1, 0, 1},
-		[]float64{0, 0, 1, 0, 1, 1, 0},
+		[]float64{0, 0, 0, 1, 0, 0, 0},
+		[]float64{1, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 1, 0, 1, 1},
+		[]float64{1, 0, 0, 0, 0, 0, 1},
 		[]float64{0, 1, 0, 0, 0, 0, 1},
+		[]float64{0, 0, 1, 0, 1, 0, 0},
+		[]float64{0, 1, 0, 0, 0, 0, 0},
 	}
 	g := GraphBLAS.NewDenseMatrixFromArray(array)
 
-	v := GraphBLAS.NewDenseVector(7)
-	v.SetVec(4, float64(1))
+	breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 3)
 
-	breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 4)
+	// atx := breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 3)
 
-	//atx := breadthFirstSearch.BreadthFirstSearch(g, v)
-
-	// if atx.At(0, 0) != set {
-	// 	t.Errorf("At(%+v, %+v) wanted = %+v", 0, 0, set)
+	// if atx.At(0, 0) != 1 {
+	// 	t.Errorf("At(%+v, %+v) wanted = %+v", 0, 0, 1)
 	// }
 
 	// if atx.At(0, 2) != set {

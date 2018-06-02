@@ -11,28 +11,30 @@ import (
 )
 
 // BreadthFirstSearch a breadth-first search v is the source
-func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int) map[int]GraphBLAS.Matrix {
-	v := make(map[int]GraphBLAS.Matrix)
+func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int) GraphBLAS.Matrix {
+	n := a.Rows()
 	// vertices visited in each level
-	visited := GraphBLAS.NewDenseVector(a.Rows())
-	visited.SetVec(s, 1)
-	var q GraphBLAS.Matrix = visited
+	var q GraphBLAS.Vector = GraphBLAS.NewDenseVector(n)
+	q.SetVec(s, 1)
 
-	// level in BFS traversal
-	d := 0
-	// true when some successor found
-	succ := false
+	// result
+	v := GraphBLAS.NewDenseVector(n)
 
-	for succ {
-		d++
-		v[d] = q.Copy()
-		GraphBLAS.ElementWiseMatrixMultiply(ctx, q, a, q)
-		if GraphBLAS.ReduceMatrixToScalar(ctx, q) == 1 {
-			succ = true
-		} else {
-			succ = false
-		}
-	}
+	// // level in BFS traversal
+	// d := float64(0)
+
+	GraphBLAS.ElementWiseMatrixMultiply(ctx, a, q, v)
+
+	// // when some successor found
+	// for {
+	// 	d++
+	// 	GraphBLAS.ElementWiseMatrixMultiply(ctx, a, q, v)
+	// 	GraphBLAS.AssignConstantVector(v, q, d, n)
+	// 	GraphBLAS.VectorMatrixMultiply(ctx, q, a, q)
+	// 	if GraphBLAS.ReduceVectorToScalar(ctx, q) != 1 {
+	// 		break
+	// 	}
+	// }
 
 	return v
 }

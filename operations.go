@@ -451,3 +451,22 @@ func ReduceMatrixToScalarWithMonoID(ctx context.Context, s Matrix, monoID float6
 	return <-out
 
 }
+
+// AssignConstantVector the contents of a subset of a vector
+func AssignConstantVector(w, mask Vector, val float64, nindices int) {
+
+	// if u.Length() != nindices {
+	// 	log.Panicf("The number of values in indices array. Must be equal to Length of u %+v", u.Length())
+	// }
+
+	for iterator := mask.Enumerate(); iterator.HasNext(); {
+		r, _, _ := iterator.Next()
+		if r < nindices {
+			w.SetVec(r, val)
+		} else {
+			break
+		}
+
+	}
+
+}
