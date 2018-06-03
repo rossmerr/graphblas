@@ -258,6 +258,14 @@ func (s *DenseMatrix) Values() int {
 	return s.r * s.c
 }
 
+// Clear removes all elements from a matrix
+func (s *DenseMatrix) Clear() {
+	s.data = make([][]float64, s.r)
+	for i := 0; i < s.r; i++ {
+		s.data[i] = make([]float64, s.c)
+	}
+}
+
 // RawMatrix returns the raw matrix
 func (s *DenseMatrix) RawMatrix() [][]float64 {
 	return s.data

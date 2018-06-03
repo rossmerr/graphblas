@@ -325,6 +325,13 @@ func (s *SparseVector) Values() int {
 	return len(s.values)
 }
 
+// Clear removes all elements from a vector
+func (s *SparseVector) Clear() {
+	s.values = make([]float64, 0)
+	s.indices = make([]int, 0)
+
+}
+
 // Enumerate iterates through all non-zero elements, order is not guaranteed
 func (s *SparseVector) Enumerate() Enumerate {
 	return s.iterator()

@@ -323,6 +323,13 @@ func (s *CSCMatrix) Values() int {
 	return len(s.values)
 }
 
+// Clear removes all elements from a matrix
+func (s *CSCMatrix) Clear() {
+	s.values = make([]float64, 0)
+	s.rows = make([]int, 0)
+	s.colStart = make([]int, s.c+1)
+}
+
 // Enumerate iterates through all non-zero elements, order is not guaranteed
 func (s *CSCMatrix) Enumerate() Enumerate {
 	return s.iterator()

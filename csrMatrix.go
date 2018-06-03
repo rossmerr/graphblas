@@ -319,6 +319,13 @@ func (s *CSRMatrix) Values() int {
 	return len(s.values)
 }
 
+// Clear removes all elements from a matrix
+func (s *CSRMatrix) Clear() {
+	s.values = make([]float64, 0)
+	s.cols = make([]int, 0)
+	s.rowStart = make([]int, s.r+1)
+}
+
 // Enumerate iterates through all non-zero elements, order is not guaranteed
 func (s *CSRMatrix) Enumerate() Enumerate {
 	return s.iterator()

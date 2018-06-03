@@ -67,4 +67,7 @@ type Matrix interface {
 
 	// The number of elements in the matrix (non-zero counted for dense matrices)
 	Values() int
+
+	// Clear removes all elements from a matrix
+	Clear()
 }

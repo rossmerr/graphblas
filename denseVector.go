@@ -255,9 +255,14 @@ func (s *DenseVector) NotEqual(m Matrix) bool {
 	return NotEqual(context.Background(), s, m)
 }
 
-// Values the number of elements in the Vector
+// Values the number of elements in the vector
 func (s *DenseVector) Values() int {
 	return s.l
+}
+
+// Clear removes all elements from a vector
+func (s *DenseVector) Clear() {
+	s.values = make([]float64, s.l)
 }
 
 // Enumerate iterates through all non-zero elements, order is not guaranteed

@@ -47,7 +47,7 @@ func multiply(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 			}
 
 			if mask != nil {
-				if mask.Element(r, c) {
+				if !mask.Element(r, c) {
 					matrix.Set(r, c, sum)
 				}
 			} else {

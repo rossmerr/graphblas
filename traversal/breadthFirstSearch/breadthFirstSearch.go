@@ -11,7 +11,7 @@ import (
 )
 
 // BreadthFirstSearch a breadth-first search v is the source
-func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(GraphBLAS.Vector) bool) GraphBLAS.Matrix {
+func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(GraphBLAS.Vector) bool) GraphBLAS.Vector {
 	n := a.Rows()
 	// vertices visited in each level
 	var frontier GraphBLAS.Vector = GraphBLAS.NewDenseVector(n)
@@ -22,8 +22,6 @@ func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(G
 	// result
 	result := GraphBLAS.NewDenseVector(n)
 
-	//GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, nil, v)
-
 	// level in BFS traversal
 	d := 0
 
@@ -31,14 +29,15 @@ func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(G
 	for d < n {
 		d++
 
-		GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, nil, result)
+		GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, visited, result)
 
 		if c(result) {
 			break
 		}
 
 		GraphBLAS.ElementWiseVectorAdd(ctx, visited, result, nil, visited)
-		frontier = result
+		frontier = result.Copy().(GraphBLAS.Vector)
+		result.Clear()
 	}
 
 	return result
