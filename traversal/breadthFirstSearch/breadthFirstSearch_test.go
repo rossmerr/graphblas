@@ -25,19 +25,15 @@ func TestBreadthFirstSearch(t *testing.T) {
 	}
 	g := GraphBLAS.NewDenseMatrixFromArray(array)
 
-	breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 3)
+	atx := breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 3, func(i GraphBLAS.Vector) bool {
+		return i.AtVec(5) == 1
+	})
 
-	// atx := breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 3)
+	if atx.At(0, 0) != 1 {
+		t.Errorf("At(%+v, %+v) wanted = %+v", 0, 0, 1)
+	}
 
-	// if atx.At(0, 0) != 1 {
-	// 	t.Errorf("At(%+v, %+v) wanted = %+v", 0, 0, 1)
-	// }
-
-	// if atx.At(0, 2) != set {
-	// 	t.Errorf("At(%+v, %+v) wanted = %+v", 0, 2, set)
-	// }
-
-	// if atx.At(0, 3) != set {
-	// 	t.Errorf("At(%+v, %+v) wanted = %+v", 0, 3, set)
-	// }
+	if atx.At(0, 2) != 1 {
+		t.Errorf("At(%+v, %+v) wanted = %+v", 0, 2, 1)
+	}
 }
