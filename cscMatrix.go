@@ -417,3 +417,45 @@ func (s *cSCMatrixMap) Map(f func(int, int, float64) float64) {
 		s.matrix.remove(s.index, s.c)
 	}
 }
+
+// Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
+func (s *CSCMatrix) Element(r, c int) bool {
+	s.RLock()
+	defer s.RUnlock()
+
+	return s.element(r, c)
+}
+
+func (s *CSCMatrix) element(r, c int) (b bool) {
+	s.update(r, c, func(v float64) float64 {
+		b = v > 0
+		return v
+	})
+
+	return
+}
+
+// EnumerateMask iterates through all non-zero elements, order is not guaranteed
+func (s *CSCMatrix) EnumerateMask() EnumerateMask {
+	return s.enumerateMask()
+}
+
+func (s *CSCMatrix) enumerateMask() *cSCMatrixMask {
+	t := s.iterator()
+	i := &cSCMatrixMask{t}
+	return i
+}
+
+type cSCMatrixMask struct {
+	*cSCMatrixIterator
+}
+
+// Next moves the iterator and returns the row, column and value
+func (s *cSCMatrixMask) Next() (int, int, bool) {
+	s.matrix.RLock()
+	defer s.matrix.RUnlock()
+
+	s.next()
+	v := s.matrix.values[s.index]
+	return s.r, s.c, v > 0
+}

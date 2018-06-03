@@ -338,3 +338,40 @@ func (s *denseVectorMap) Map(f func(int, int, float64) float64) {
 
 	s.matrix.setVec(s.rOld, f(s.rOld, 0, s.matrix.atVec(s.rOld)))
 }
+
+// Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
+func (s *DenseVector) Element(r, c int) bool {
+	s.RLock()
+	defer s.RUnlock()
+
+	return s.element(r, c)
+}
+
+func (s *DenseVector) element(r, c int) bool {
+	return s.atVec(r) > 0
+}
+
+// EnumerateMask iterates through all non-zero elements, order is not guaranteed
+func (s *DenseVector) EnumerateMask() EnumerateMask {
+	return s.enumerateMask()
+}
+
+func (s *DenseVector) enumerateMask() *denseVectorMask {
+	t := s.iterator()
+	i := &denseVectorMask{t}
+	return i
+}
+
+type denseVectorMask struct {
+	*denseVectorIterator
+}
+
+// Next moves the iterator and returns the row, column and value
+func (s *denseVectorMask) Next() (int, int, bool) {
+	s.next()
+
+	s.matrix.RLock()
+	defer s.matrix.RUnlock()
+	v := s.matrix.atVec(s.rOld)
+	return s.rOld, 0, v > 0
+}

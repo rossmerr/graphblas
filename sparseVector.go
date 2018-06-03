@@ -399,3 +399,41 @@ func (s *sparseVectorMap) Map(f func(int, int, float64) float64) {
 		s.matrix.remove(s.old)
 	}
 }
+
+// Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
+func (s *SparseVector) Element(r, c int) bool {
+	s.RLock()
+	defer s.RUnlock()
+
+	return s.element(r, c)
+}
+
+func (s *SparseVector) element(r, c int) bool {
+	return s.atVec(r) > 0
+}
+
+// EnumerateMask iterates through all non-zero elements, order is not guaranteed
+func (s *SparseVector) EnumerateMask() EnumerateMask {
+	return s.enumerateMask()
+}
+
+func (s *SparseVector) enumerateMask() *sparseVectorMask {
+	t := s.iterator()
+	i := &sparseVectorMask{t}
+	return i
+}
+
+type sparseVectorMask struct {
+	*sparseVectorIterator
+}
+
+// Next moves the iterator and returns the row, column and value
+func (s *sparseVectorMask) Next() (int, int, bool) {
+	s.next()
+
+	s.matrix.RLock()
+	defer s.matrix.RUnlock()
+
+	v := s.matrix.values[s.old]
+	return s.matrix.indices[s.old], 0, v > 0
+}
