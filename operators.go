@@ -497,18 +497,18 @@ func Transpose(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
 }
 
 // TransposeToCSR swaps the rows and columns and returns a compressed storage by rows (CSR) matrix
-func TransposeToCSR(ctx context.Context, s Matrix, mask Mask) Matrix {
+func TransposeToCSR(ctx context.Context, s Matrix) Matrix {
 	matrix := NewCSRMatrix(s.Columns(), s.Rows())
 
-	Transpose(ctx, s, mask, matrix)
+	Transpose(ctx, s, nil, matrix)
 	return matrix
 }
 
 // TransposeToCSC swaps the rows and columns and returns a compressed storage by columns (CSC) matrix
-func TransposeToCSC(ctx context.Context, s Matrix, mask Mask) Matrix {
+func TransposeToCSC(ctx context.Context, s Matrix) Matrix {
 	matrix := NewCSCMatrix(s.Columns(), s.Rows())
 
-	Transpose(ctx, s, mask, matrix)
+	Transpose(ctx, s, nil, matrix)
 	return matrix
 }
 

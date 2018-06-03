@@ -410,7 +410,7 @@ func TestMatrix_Transpose_To_CSR(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			got := GraphBLAS.TransposeToCSR(context.Background(), tt.s, nil)
+			got := GraphBLAS.TransposeToCSR(context.Background(), tt.s)
 			if !got.Equal(want) {
 				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
 			}
@@ -457,7 +457,7 @@ func TestMatrix_Transpose_To_CSC(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			got := GraphBLAS.TransposeToCSC(context.Background(), tt.s, nil)
+			got := GraphBLAS.TransposeToCSC(context.Background(), tt.s)
 			if !got.Equal(want) {
 				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
 			}
