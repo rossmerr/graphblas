@@ -7,6 +7,8 @@ package GraphBLAS
 
 // Matrix interface
 type Matrix interface {
+	Mask
+
 	// At returns the value of a matrix element at r-th, c-th
 	At(r, c int) float64
 
@@ -24,12 +26,6 @@ type Matrix interface {
 
 	// RowsAtToArray return the rows at r-th
 	RowsAtToArray(r int) []float64
-
-	// Columns the number of columns of the matrix
-	Columns() int
-
-	// Rows the number of rows of the matrix
-	Rows() int
 
 	// Copy copies the matrix
 	Copy() Matrix

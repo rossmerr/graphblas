@@ -17,30 +17,29 @@ func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(G
 	var frontier GraphBLAS.Vector = GraphBLAS.NewDenseVector(n)
 	frontier.SetVec(s, 1)
 
-	//visited := frontier.Copy().(GraphBLAS.Vector)
+	visited := frontier.Copy().(GraphBLAS.Vector)
 
 	// result
-	v := GraphBLAS.NewDenseVector(n)
+	result := GraphBLAS.NewDenseVector(n)
 
-	GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, nil, v)
+	//GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, nil, v)
 
-	// // level in BFS traversal
-	// d := 0
+	// level in BFS traversal
+	d := 0
 
-	// // when some successor found
-	// for {
-	// 	d++
+	// when some successor found
+	for d < n {
+		d++
 
-	// 	GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, v)
+		GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, nil, result)
 
-	// 	if c(v) {
-	// 		break
-	// 	}
+		if c(result) {
+			break
+		}
 
-	// 	GraphBLAS.ElementWiseVectorAdd(ctx, visited, v, visited)
-	// 	frontier = v
-	// 	//todo need to skip the visited edges
-	// }
+		GraphBLAS.ElementWiseVectorAdd(ctx, visited, result, nil, visited)
+		frontier = result
+	}
 
-	return v
+	return result
 }
