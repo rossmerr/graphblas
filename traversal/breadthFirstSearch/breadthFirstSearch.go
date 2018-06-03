@@ -22,7 +22,7 @@ func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(G
 	// result
 	v := GraphBLAS.NewDenseVector(n)
 
-	GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, v)
+	GraphBLAS.MatrixVectorMultiply(ctx, a, frontier, nil, v)
 
 	// // level in BFS traversal
 	// d := 0

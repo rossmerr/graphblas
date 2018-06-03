@@ -7,6 +7,12 @@ package GraphBLAS
 
 // Mask is used to control how computed values are stored in the output from a method
 type Mask interface {
+	// Columns the number of columns of the mask
+	Columns() int
+
+	// Rows the number of rows of the mask
+	Rows() int
+
 	// Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
 	Element(r, c int) bool
 

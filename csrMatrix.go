@@ -267,35 +267,35 @@ func (s *CSRMatrix) Scalar(alpha float64) Matrix {
 // Multiply multiplies a matrix by another matrix
 func (s *CSRMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSRMatrix(s.Rows(), m.Columns(), 0)
-	MatrixMatrixMultiply(context.Background(), s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Add addition of a matrix by another matrix
 func (s *CSRMatrix) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	Add(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Subtract subtracts one matrix from another matrix
 func (s *CSRMatrix) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(context.Background(), s, m, matrix)
+	Subtract(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Negative the negative of a matrix
 func (s *CSRMatrix) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(context.Background(), s, matrix)
+	Negative(context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *CSRMatrix) Transpose() Matrix {
 	matrix := newCSRMatrix(s.c, s.r, 0)
-	Transpose(context.Background(), s, matrix)
+	Transpose(context.Background(), s, nil, matrix)
 	return matrix
 }
 

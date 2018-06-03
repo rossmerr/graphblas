@@ -270,28 +270,28 @@ func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 // Multiply multiplies a matrix by another matrix
 func (s *CSCMatrix) Multiply(m Matrix) Matrix {
 	matrix := newCSCMatrix(s.Rows(), m.Columns(), 0)
-	MatrixMatrixMultiply(context.Background(), s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Add addition of a matrix by another matrix
 func (s *CSCMatrix) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	Add(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Subtract subtracts one matrix from another matrix
 func (s *CSCMatrix) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(context.Background(), s, m, matrix)
+	Subtract(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Negative the negative of a matrix
 func (s *CSCMatrix) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(context.Background(), s, matrix)
+	Negative(context.Background(), s, nil, matrix)
 	return matrix
 }
 
@@ -299,7 +299,7 @@ func (s *CSCMatrix) Negative() Matrix {
 func (s *CSCMatrix) Transpose() Matrix {
 	matrix := newCSCMatrix(s.c, s.r, 0)
 
-	Transpose(context.Background(), s, matrix)
+	Transpose(context.Background(), s, nil, matrix)
 	return matrix
 }
 

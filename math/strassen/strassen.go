@@ -27,7 +27,7 @@ func MultiplyCrossoverPoint(ctx context.Context, a, b GraphBLAS.Matrix, crossove
 	n := b.Rows()
 	if n <= crossover {
 		matrix := GraphBLAS.NewDenseMatrix(a.Rows(), b.Columns())
-		GraphBLAS.MatrixMatrixMultiply(ctx, a, b, matrix)
+		GraphBLAS.MatrixMatrixMultiply(ctx, a, b, nil, matrix)
 		return matrix
 	}
 

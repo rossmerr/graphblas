@@ -213,35 +213,35 @@ func (s *DenseVector) Scalar(alpha float64) Matrix {
 // Multiply multiplies a vector by another vector
 func (s *DenseVector) Multiply(m Matrix) Matrix {
 	matrix := newMatrix(m.Rows(), s.Columns(), nil)
-	MatrixMatrixMultiply(context.Background(), s, m, matrix)
+	MatrixMatrixMultiply(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Add addition of a vector by another vector
 func (s *DenseVector) Add(m Matrix) Matrix {
 	matrix := s.Copy()
-	Add(s, m, matrix)
+	Add(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Subtract subtracts one vector from another vector
 func (s *DenseVector) Subtract(m Matrix) Matrix {
 	matrix := m.Copy()
-	Subtract(context.Background(), s, m, matrix)
+	Subtract(context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Negative the negative of a metrix
 func (s *DenseVector) Negative() Matrix {
 	matrix := s.Copy()
-	Negative(context.Background(), s, matrix)
+	Negative(context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
 func (s *DenseVector) Transpose() Matrix {
 	matrix := newMatrix(s.Columns(), s.Rows(), nil)
-	Transpose(context.Background(), s, matrix)
+	Transpose(context.Background(), s, nil, matrix)
 	return matrix
 }
 

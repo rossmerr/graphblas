@@ -11,7 +11,6 @@ import (
 	"golang.org/x/net/context"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
-	"github.com/RossMerr/Caudex.GraphBLAS/binaryOp/float64Op"
 )
 
 func setupMatrix(m GraphBLAS.Matrix) {
@@ -114,7 +113,7 @@ func TestMatrix_VectorMatrixMultiply(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
 			got := GraphBLAS.NewDenseVector(3)
-			GraphBLAS.VectorMatrixMultiply(context.Background(), vector, tt.s, got)
+			GraphBLAS.VectorMatrixMultiply(context.Background(), vector, tt.s, nil, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v VectorMatrixMultiply = %+v, want %+v", tt.name, got, want)
 			}
@@ -159,11 +158,12 @@ func TestMatrix_MatrixVectorMultiply(t *testing.T) {
 			s:    GraphBLAS.NewCSRMatrix(3, 2),
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
 			got := GraphBLAS.NewDenseVector(3)
-			GraphBLAS.MatrixVectorMultiply(context.Background(), tt.s, vector, got)
+			GraphBLAS.MatrixVectorMultiply(context.Background(), tt.s, vector, nil, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v MatrixVectorMultiply = %+v, want %+v", tt.name, got, want)
 			}
@@ -232,7 +232,7 @@ func TestMatrix_ElementWiseMatrixMultiply(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 			got := tt.got(tt.s)
-			GraphBLAS.ElementWiseMatrixMultiply(context.Background(), tt.s, matrix, got)
+			GraphBLAS.ElementWiseMatrixMultiply(context.Background(), tt.s, matrix, nil, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseMatrixMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
 			}
@@ -263,7 +263,7 @@ func TestMatrix_ElementWiseVectorMultiply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := GraphBLAS.NewDenseVector(7)
-			GraphBLAS.ElementWiseVectorMultiply(context.Background(), tt.s, vector, got)
+			GraphBLAS.ElementWiseVectorMultiply(context.Background(), tt.s, vector, nil, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseVectorMultiply = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
 			}
@@ -332,7 +332,7 @@ func TestMatrix_ElementWiseMatrixAdd(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 			got := tt.got(tt.s)
-			GraphBLAS.ElementWiseMatrixAdd(context.Background(), tt.s, matrix, got)
+			GraphBLAS.ElementWiseMatrixAdd(context.Background(), tt.s, matrix, nil, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseMatrixAdd = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
 			}
@@ -363,7 +363,7 @@ func TestMatrix_ElementWiseVectorAdd(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := GraphBLAS.NewDenseVector(7)
-			GraphBLAS.ElementWiseVectorAdd(context.Background(), tt.s, vector, got)
+			GraphBLAS.ElementWiseVectorAdd(context.Background(), tt.s, vector, nil, got)
 			if !got.Equal(want) {
 				t.Errorf("%+v ElementWiseVectorAdd = \n%+v, \nwant %+v, \nhave %+v", tt.name, got, want, tt.s)
 			}
@@ -410,7 +410,7 @@ func TestMatrix_Transpose_To_CSR(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			got := GraphBLAS.TransposeToCSR(context.Background(), tt.s)
+			got := GraphBLAS.TransposeToCSR(context.Background(), tt.s, nil)
 			if !got.Equal(want) {
 				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
 			}
@@ -457,7 +457,7 @@ func TestMatrix_Transpose_To_CSC(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setup(tt.s)
-			got := GraphBLAS.TransposeToCSC(context.Background(), tt.s)
+			got := GraphBLAS.TransposeToCSC(context.Background(), tt.s, nil)
 			if !got.Equal(want) {
 				t.Errorf("%+v Transpose = %+v, want %+v", tt.name, got, want)
 			}
@@ -489,8 +489,7 @@ func TestMatrix_ReduceMatrixToVector(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 
-			monoID := float64Op.NewMonoIDFloat64(0, float64Op.Maximum)
-			got := GraphBLAS.ReduceMatrixToVector(context.Background(), tt.s, monoID)
+			got := GraphBLAS.ReduceMatrixToVector(context.Background(), tt.s)
 
 			if !got.Equal(want) {
 				t.Errorf("%+v ReduceMatrixToVector = \nhave %+v, \nwant %+v", tt.name, got, want)
@@ -523,7 +522,7 @@ func TestMatrix_ReduceMatrixToScalar(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			setupMatrix(tt.s)
 
-			got := GraphBLAS.ReduceMatrixToScalar(context.Background(), tt.s)
+			got := GraphBLAS.ReduceMatrixToScalar(context.Background(), tt.s, nil)
 
 			if got != want {
 				t.Errorf("%+v ReduceMatrixToScalar = \nhave %+v, \nwant %+v", tt.name, got, want)
@@ -554,7 +553,7 @@ func TestMatrix_ReduceVectorToScalar(t *testing.T) {
 			setupMatrix(matrix)
 			tt.s = matrix.ColumnsAt(0)
 
-			got := GraphBLAS.ReduceVectorToScalar(context.Background(), tt.s)
+			got := GraphBLAS.ReduceVectorToScalar(context.Background(), tt.s, nil)
 
 			if got != want {
 				t.Errorf("%+v ReduceVectorToScalar = \nhave %+v, \nwant %+v", tt.name, got, want)
