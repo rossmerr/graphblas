@@ -99,7 +99,7 @@ func elementWiseMultiply(ctx context.Context, s, m Matrix, mask Mask, matrix Mat
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				matrix.Set(r, c, value)
 			}
 		}
@@ -124,7 +124,7 @@ func elementWiseMultiply(ctx context.Context, s, m Matrix, mask Mask, matrix Mat
 
 	if mask != nil {
 		setSource = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				source.Update(r, c, func(v float64) float64 {
 					if value != v {
 						return defaultFloat64
@@ -220,7 +220,7 @@ func Add(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				matrix.Set(r, c, value)
 			}
 		}
@@ -256,7 +256,7 @@ func elementWiseAdd(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) 
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				matrix.Set(r, c, value)
 			}
 		}
@@ -341,7 +341,7 @@ func Subtract(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				matrix.Update(r, c, func(v float64) float64 {
 					return value - v
 				})
@@ -379,7 +379,7 @@ func Apply(ctx context.Context, in Matrix, mask Mask, u float64UnaryOp.UnaryOpFl
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				matrix.Set(c, r, u.Apply(value))
 			}
 		}
@@ -442,7 +442,7 @@ func Negative(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) float64 {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				return -value
 			}
 
@@ -479,7 +479,7 @@ func Transpose(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				matrix.Set(c, r, value)
 			}
 		}
@@ -654,7 +654,7 @@ func ReduceMatrixToScalarWithMonoID(ctx context.Context, s Matrix, monoID float6
 
 	if mask != nil {
 		setMatrix = func(r, c int, value float64) {
-			if mask.Element(r, c) {
+			if !mask.Element(r, c) {
 				slice <- value
 			}
 		}
@@ -678,20 +678,18 @@ func ReduceMatrixToScalarWithMonoID(ctx context.Context, s Matrix, monoID float6
 }
 
 // AssignConstantVector the contents of a subset of a vector
-func AssignConstantVector(w, mask Vector, val float64, nindices int) {
+// func AssignConstantVector(w, mask Vector, val float64, nindices int) {
 
-	// if u.Length() != nindices {
-	// 	log.Panicf("The number of values in indices array. Must be equal to Length of u %+v", u.Length())
-	// }
+// 	// if u.Length() != nindices {
+// 	// 	log.Panicf("The number of values in indices array. Must be equal to Length of u %+v", u.Length())
+// 	// }
 
-	for iterator := mask.Enumerate(); iterator.HasNext(); {
-		r, _, _ := iterator.Next()
-		if r < nindices {
-			w.SetVec(r, val)
-		} else {
-			break
-		}
-
-	}
-
-}
+// 	for iterator := mask.Enumerate(); iterator.HasNext(); {
+// 		r, _, _ := iterator.Next()
+// 		if r < nindices {
+// 			w.SetVec(r, val)
+// 		} else {
+// 			break
+// 		}
+// 	}
+// }
