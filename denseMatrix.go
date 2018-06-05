@@ -362,28 +362,3 @@ func (s *DenseMatrix) Element(r, c int) bool {
 func (s *DenseMatrix) element(r, c int) bool {
 	return s.at(r, c) > 0
 }
-
-// EnumerateMask iterates through all non-zero elements, order is not guaranteed
-func (s *DenseMatrix) EnumerateMask() EnumerateMask {
-	return s.enumerateMask()
-}
-
-func (s *DenseMatrix) enumerateMask() *denseMatrixMask {
-	t := s.iterator()
-	i := &denseMatrixMask{t}
-	return i
-}
-
-type denseMatrixMask struct {
-	*denseMatrixIterator
-}
-
-// Next moves the iterator and returns the row, column and value
-func (s *denseMatrixMask) Next() (int, int, bool) {
-	s.next()
-
-	s.matrix.RLock()
-	defer s.matrix.RUnlock()
-
-	return s.r, s.cOld, s.matrix.element(s.r, s.cOld)
-}

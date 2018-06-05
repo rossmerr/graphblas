@@ -15,18 +15,6 @@ type Mask interface {
 
 	// Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
 	Element(r, c int) bool
-
-	// EnumerateMask iterates through all non-zero elements, order is not guaranteed
-	EnumerateMask() EnumerateMask
-}
-
-// EnumerateMask iterates over the mask
-type EnumerateMask interface {
-	// HasNext checks for the next element in the matrix
-	HasNext() bool
-
-	// Next move the iterator over the matrix
-	Next() (r, c int, v bool)
 }
 
 // EmptyMask is a mask with no elements but will always returns false
@@ -53,9 +41,4 @@ func (s *EmptyMask) Rows() int {
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
 func (s *EmptyMask) Element(r, c int) bool {
 	return false
-}
-
-// EnumerateMask iterates through all non-zero elements, order is not guaranteed
-func (s *EmptyMask) EnumerateMask() EnumerateMask {
-	return nil
 }

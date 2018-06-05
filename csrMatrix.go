@@ -437,28 +437,3 @@ func (s *CSRMatrix) element(r, c int) (b bool) {
 
 	return
 }
-
-// EnumerateMask iterates through all non-zero elements, order is not guaranteed
-func (s *CSRMatrix) EnumerateMask() EnumerateMask {
-	return s.enumerateMask()
-}
-
-func (s *CSRMatrix) enumerateMask() *cSRMatrixMask {
-	t := s.iterator()
-	i := &cSRMatrixMask{t}
-	return i
-}
-
-type cSRMatrixMask struct {
-	*cSRMatrixIterator
-}
-
-// Next moves the iterator and returns the row, column and value
-func (s *cSRMatrixMask) Next() (int, int, bool) {
-	s.matrix.RLock()
-	defer s.matrix.RUnlock()
-
-	s.next()
-	v := s.matrix.values[s.index]
-	return s.r, s.c, v > 0
-}

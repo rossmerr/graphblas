@@ -355,28 +355,3 @@ func (s *DenseVector) Element(r, c int) bool {
 func (s *DenseVector) element(r, c int) bool {
 	return s.atVec(r) > 0
 }
-
-// EnumerateMask iterates through all non-zero elements, order is not guaranteed
-func (s *DenseVector) EnumerateMask() EnumerateMask {
-	return s.enumerateMask()
-}
-
-func (s *DenseVector) enumerateMask() *denseVectorMask {
-	t := s.iterator()
-	i := &denseVectorMask{t}
-	return i
-}
-
-type denseVectorMask struct {
-	*denseVectorIterator
-}
-
-// Next moves the iterator and returns the row, column and value
-func (s *denseVectorMask) Next() (int, int, bool) {
-	s.next()
-
-	s.matrix.RLock()
-	defer s.matrix.RUnlock()
-	v := s.matrix.atVec(s.rOld)
-	return s.rOld, 0, v > 0
-}
