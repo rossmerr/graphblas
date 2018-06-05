@@ -18,14 +18,16 @@ func multiply(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 		log.Panicf("Can not multiply matrices found length mismatch %+v, %+v", m.Rows(), s.Columns())
 	}
 
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
+	}
 
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
+	}
+
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	for r := 0; r < s.Rows(); r++ {
@@ -46,11 +48,7 @@ func multiply(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 				}
 			}
 
-			if mask != nil {
-				if !mask.Element(r, c) {
-					matrix.Set(r, c, sum)
-				}
-			} else {
+			if !mask.Element(r, c) {
 				matrix.Set(r, c, sum)
 			}
 		}
@@ -83,55 +81,36 @@ func elementWiseMultiply(ctx context.Context, s, m Matrix, mask Mask, matrix Mat
 	var iterator Enumerate
 	var source Matrix
 
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
-
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		matrix.Set(r, c, value)
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
+	}
+
+	target := func(r, c int, value float64) {
+		v := source.At(r, c)
+		if value == v {
 			if !mask.Element(r, c) {
 				matrix.Set(r, c, value)
 			}
 		}
 	}
 
-	target := func(r, c int, value float64) {
-		v := source.At(r, c)
-		if value == v {
-			setMatrix(r, c, value)
-		}
-	}
-
 	// when the matrix is the same object of s or m we use the setSource func to self update
 	setSource := func(r, c int, value float64) {
-		source.Update(r, c, func(v float64) float64 {
-			if value != v {
-				return defaultFloat64
-			}
-			return v
-		})
-	}
-
-	if mask != nil {
-		setSource = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				source.Update(r, c, func(v float64) float64 {
-					if value != v {
-						return defaultFloat64
-					}
-					return v
-				})
-			}
+		if !mask.Element(r, c) {
+			source.Update(r, c, func(v float64) float64 {
+				if value != v {
+					return defaultFloat64
+				}
+				return v
+			})
 		}
 	}
 
@@ -194,14 +173,16 @@ func Add(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 		log.Panicf("Row mismatch %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
+	}
 
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
+	}
+
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	var iterator Enumerate
@@ -214,18 +195,6 @@ func Add(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 		source = s
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		matrix.Set(r, c, value)
-	}
-
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				matrix.Set(r, c, value)
-			}
-		}
-	}
-
 	for iterator.HasNext() {
 		select {
 		case <-ctx.Done():
@@ -233,33 +202,24 @@ func Add(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 		default:
 			r, c, v := iterator.Next()
 			value := source.At(r, c)
-			setMatrix(r, c, value+v)
+			if !mask.Element(r, c) {
+				matrix.Set(r, c, value+v)
+			}
 		}
 	}
 }
 
 func elementWiseAdd(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
-
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
-
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		matrix.Set(r, c, value)
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				matrix.Set(r, c, value)
-			}
-		}
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	if s != matrix {
@@ -270,7 +230,9 @@ func elementWiseAdd(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) 
 			default:
 				r, c, value := iterator.Next()
 				if value != defaultFloat64 {
-					setMatrix(r, c, value)
+					if !mask.Element(r, c) {
+						matrix.Set(r, c, value)
+					}
 				}
 			}
 		}
@@ -284,7 +246,9 @@ func elementWiseAdd(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) 
 			default:
 				r, c, value := iterator.Next()
 				if value != defaultFloat64 {
-					setMatrix(r, c, value)
+					if !mask.Element(r, c) {
+						matrix.Set(r, c, value)
+					}
 				}
 			}
 		}
@@ -323,30 +287,16 @@ func Subtract(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 		log.Panicf("Row mismatch %+v, %+v", s.Rows(), m.Rows())
 	}
 
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
-
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		matrix.Update(r, c, func(v float64) float64 {
-			return value - v
-		})
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				matrix.Update(r, c, func(v float64) float64 {
-					return value - v
-				})
-			}
-		}
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	for iterator := s.Enumerate(); iterator.HasNext(); {
@@ -355,7 +305,11 @@ func Subtract(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 			return
 		default:
 			r, c, value := iterator.Next()
-			setMatrix(r, c, value)
+			if !mask.Element(r, c) {
+				matrix.Update(r, c, func(v float64) float64 {
+					return value - v
+				})
+			}
 		}
 	}
 }
@@ -363,40 +317,16 @@ func Subtract(ctx context.Context, s, m Matrix, mask Mask, matrix Matrix) {
 // Apply modifies edge weights by the UnaryOperator
 //  C ⊕= f(A)
 func Apply(ctx context.Context, in Matrix, mask Mask, u float64UnaryOp.UnaryOpFloat64, matrix Matrix) {
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
-
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		matrix.Set(c, r, u.Apply(value))
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				matrix.Set(c, r, u.Apply(value))
-			}
-		}
-	}
-
-	setMap := func(r, c int, value float64) float64 {
-		return u.Apply(value)
-	}
-
-	if mask != nil {
-		setMap = func(r, c int, value float64) float64 {
-			if mask.Element(r, c) {
-				return u.Apply(value)
-			}
-
-			return value
-		}
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	if in == matrix {
@@ -405,7 +335,13 @@ func Apply(ctx context.Context, in Matrix, mask Mask, u float64UnaryOp.UnaryOpFl
 			case <-ctx.Done():
 				return
 			default:
-				iterator.Map(setMap)
+				iterator.Map(func(r, c int, value float64) float64 {
+					if mask.Element(r, c) {
+						return u.Apply(value)
+					}
+
+					return value
+				})
 			}
 		}
 
@@ -418,36 +354,25 @@ func Apply(ctx context.Context, in Matrix, mask Mask, u float64UnaryOp.UnaryOpFl
 			return
 		default:
 			r, c, value := iterator.Next()
-			setMatrix(c, r, value)
+			if !mask.Element(r, c) {
+				matrix.Set(c, r, u.Apply(value))
+			}
 		}
 	}
 }
 
 // Negative the negative of a matrix
 func Negative(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
-
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
-
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) float64 {
-		return -value
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) float64 {
-			if !mask.Element(r, c) {
-				return -value
-			}
-
-			return value
-		}
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	for iterator := matrix.Map(); iterator.HasNext(); {
@@ -455,7 +380,13 @@ func Negative(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
 		case <-ctx.Done():
 			return
 		default:
-			iterator.Map(setMatrix)
+			iterator.Map(func(r, c int, value float64) float64 {
+				if !mask.Element(r, c) {
+					return -value
+				}
+
+				return value
+			})
 		}
 	}
 }
@@ -463,26 +394,16 @@ func Negative(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
 // Transpose swaps the rows and columns
 //  C ⊕= Aᵀ
 func Transpose(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
-	if mask != nil {
-		if mask.Rows() != matrix.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
-		}
-
-		if mask.Columns() != matrix.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		matrix.Set(c, r, value)
+	if mask.Rows() != matrix.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), matrix.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				matrix.Set(c, r, value)
-			}
-		}
+	if mask.Columns() != matrix.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), matrix.Columns())
 	}
 
 	for iterator := s.Enumerate(); iterator.HasNext(); {
@@ -491,7 +412,10 @@ func Transpose(ctx context.Context, s Matrix, mask Mask, matrix Matrix) {
 			return
 		default:
 			r, c, value := iterator.Next()
-			setMatrix(r, c, value)
+
+			if !mask.Element(r, c) {
+				matrix.Set(c, r, value)
+			}
 		}
 	}
 }
@@ -638,26 +562,16 @@ func ReduceMatrixToScalarWithMonoID(ctx context.Context, s Matrix, monoID float6
 
 	out := monoID.Reduce(done, slice)
 
-	if mask != nil {
-		if mask.Rows() != s.Rows() {
-			log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), s.Rows())
-		}
-
-		if mask.Columns() != s.Columns() {
-			log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), s.Columns())
-		}
+	if mask == nil {
+		mask = NewEmptyMask(s.Rows(), s.Columns())
 	}
 
-	setMatrix := func(r, c int, value float64) {
-		slice <- value
+	if mask.Rows() != s.Rows() {
+		log.Panicf("Can not apply mask found rows mismatch %+v, %+v", mask.Rows(), s.Rows())
 	}
 
-	if mask != nil {
-		setMatrix = func(r, c int, value float64) {
-			if !mask.Element(r, c) {
-				slice <- value
-			}
-		}
+	if mask.Columns() != s.Columns() {
+		log.Panicf("Can not apply mask found columns mismatch %+v, %+v", mask.Columns(), s.Columns())
 	}
 
 	go func() {
@@ -667,7 +581,9 @@ func ReduceMatrixToScalarWithMonoID(ctx context.Context, s Matrix, monoID float6
 				return
 			default:
 				r, c, value := iterator.Next()
-				setMatrix(r, c, value)
+				if !mask.Element(r, c) {
+					slice <- value
+				}
 			}
 		}
 		done <- struct{}{}
