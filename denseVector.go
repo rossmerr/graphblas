@@ -7,23 +7,13 @@ package GraphBLAS
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"sync"
 )
 
 // DenseVector a vector
 type DenseVector struct {
-	sync.RWMutex
 	l      int // length of the sparse vector
 	values []float64
-}
-
-func (s DenseVector) String() string {
-	s.RLock()
-	defer s.RUnlock()
-
-	return fmt.Sprintf("{l:%+v, values:%+v}", s.l, s.values)
 }
 
 // NewDenseVector returns a GraphBLAS.DenseVector
@@ -40,13 +30,6 @@ func NewDenseVectorFromArray(data []float64) *DenseVector {
 
 // AtVec returns the value of a vector element at i-th
 func (s *DenseVector) AtVec(i int) float64 {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.atVec(i)
-}
-
-func (s *DenseVector) atVec(i int) float64 {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -56,13 +39,6 @@ func (s *DenseVector) atVec(i int) float64 {
 
 // SetVec sets the value at i-th of the vector
 func (s *DenseVector) SetVec(i int, value float64) {
-	s.Lock()
-	defer s.Unlock()
-
-	s.setVec(i, value)
-}
-
-func (s *DenseVector) setVec(i int, value float64) {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -100,19 +76,13 @@ func (s *DenseVector) Update(r, c int, f func(float64) float64) {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	s.Lock()
-	defer s.Unlock()
-
-	v := s.atVec(r)
-	s.setVec(r, f(v))
+	v := s.AtVec(r)
+	s.SetVec(r, f(v))
 }
 
 // At returns the value of a vector element at r-th, c-th
 func (s *DenseVector) At(r, c int) (value float64) {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.atVec(r)
+	return s.AtVec(r)
 }
 
 // Set sets the value at r-th, c-th of the vector
@@ -125,10 +95,7 @@ func (s *DenseVector) Set(r, c int, value float64) {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	s.Lock()
-	defer s.Unlock()
-
-	s.setVec(r, value)
+	s.SetVec(r, value)
 }
 
 // ColumnsAt return the columns at c-th
@@ -136,9 +103,6 @@ func (s *DenseVector) ColumnsAt(c int) Vector {
 	if c < 0 || c >= s.Columns() {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
-
-	s.RLock()
-	defer s.RUnlock()
 
 	return s.copy()
 }
@@ -151,11 +115,8 @@ func (s *DenseVector) RowsAt(r int) Vector {
 
 	rows := NewDenseVector(1)
 
-	s.RLock()
-	defer s.RUnlock()
-
-	v := s.atVec(r)
-	rows.setVec(0, v)
+	v := s.AtVec(r)
+	rows.SetVec(0, v)
 
 	return rows
 }
@@ -168,10 +129,7 @@ func (s *DenseVector) RowsAtToArray(r int) []float64 {
 
 	rows := make([]float64, 1)
 
-	s.RLock()
-	defer s.RUnlock()
-
-	v := s.atVec(r)
+	v := s.AtVec(r)
 	rows[0] = v
 
 	return rows
@@ -181,7 +139,7 @@ func (s *DenseVector) copy() *DenseVector {
 	vector := NewDenseVector(s.l)
 
 	for i, v := range s.values {
-		vector.setVec(i, v)
+		vector.SetVec(i, v)
 	}
 
 	return vector
@@ -191,14 +149,11 @@ func (s *DenseVector) copy() *DenseVector {
 func (s *DenseVector) Copy() Matrix {
 	vector := NewDenseVector(s.l)
 
-	s.RLock()
-	defer s.RUnlock()
-
 	for i, v := range s.values {
 		if v != 0.0 {
-			vector.setVec(i, v)
+			vector.SetVec(i, v)
 		} else {
-			vector.setVec(i, v)
+			vector.SetVec(i, v)
 		}
 	}
 
@@ -312,10 +267,7 @@ func (s *denseVectorIterator) next() {
 func (s *denseVectorIterator) Next() (int, int, float64) {
 	s.next()
 
-	s.matrix.RLock()
-	defer s.matrix.RUnlock()
-
-	return s.rOld, 0, s.matrix.atVec(s.rOld)
+	return s.rOld, 0, s.matrix.AtVec(s.rOld)
 }
 
 // Map replace each element with the result of applying a function to its value
@@ -338,20 +290,10 @@ func (s *denseVectorMap) HasNext() bool {
 func (s *denseVectorMap) Map(f func(int, int, float64) float64) {
 	s.next()
 
-	s.matrix.Lock()
-	defer s.matrix.Unlock()
-
-	s.matrix.setVec(s.rOld, f(s.rOld, 0, s.matrix.atVec(s.rOld)))
+	s.matrix.SetVec(s.rOld, f(s.rOld, 0, s.matrix.AtVec(s.rOld)))
 }
 
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
 func (s *DenseVector) Element(r, c int) bool {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.element(r, c)
-}
-
-func (s *DenseVector) element(r, c int) bool {
-	return s.atVec(r) > 0
+	return s.AtVec(r) > 0
 }

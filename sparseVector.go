@@ -7,10 +7,8 @@ package GraphBLAS
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"reflect"
-	"sync"
 )
 
 func init() {
@@ -19,17 +17,9 @@ func init() {
 
 // SparseVector compressed storage by indices
 type SparseVector struct {
-	sync.RWMutex
 	l       int // length of the sparse vector
 	values  []float64
 	indices []int
-}
-
-func (s SparseVector) String() string {
-	s.RLock()
-	defer s.RUnlock()
-
-	return fmt.Sprintf("{l:%+v, values:%+v, indices:%+v}", s.l, s.values, s.indices)
 }
 
 // NewSparseVector returns a GraphBLAS.SparseVector
@@ -60,13 +50,6 @@ func (s *SparseVector) Length() int {
 
 // AtVec returns the value of a vector element at i-th
 func (s *SparseVector) AtVec(i int) float64 {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.atVec(i)
-}
-
-func (s *SparseVector) atVec(i int) float64 {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -82,13 +65,6 @@ func (s *SparseVector) atVec(i int) float64 {
 
 // SetVec sets the value at i-th of the vector
 func (s *SparseVector) SetVec(i int, value float64) {
-	s.Lock()
-	defer s.Unlock()
-
-	s.setVec(i, value)
-}
-
-func (s *SparseVector) setVec(i int, value float64) {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -118,13 +94,6 @@ func (s *SparseVector) Rows() int {
 
 // Update does a At and Set on the vector element at r-th, c-th
 func (s *SparseVector) Update(r, c int, f func(float64) float64) {
-	s.Lock()
-	defer s.Unlock()
-
-	s.update(r, c, f)
-}
-
-func (s *SparseVector) update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -133,16 +102,13 @@ func (s *SparseVector) update(r, c int, f func(float64) float64) {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	v := s.atVec(r)
-	s.setVec(r, f(v))
+	v := s.AtVec(r)
+	s.SetVec(r, f(v))
 }
 
 // At returns the value of a vector element at r-th, c-th
 func (s *SparseVector) At(r, c int) (value float64) {
-	s.RLock()
-	defer s.RUnlock()
-
-	s.update(r, c, func(v float64) float64 {
+	s.Update(r, c, func(v float64) float64 {
 		value = v
 		return v
 	})
@@ -160,7 +126,7 @@ func (s *SparseVector) Set(r, c int, value float64) {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
 
-	s.setVec(r, value)
+	s.SetVec(r, value)
 }
 
 // ColumnsAt return the columns at c-th
@@ -168,9 +134,6 @@ func (s *SparseVector) ColumnsAt(c int) Vector {
 	if c < 0 || c >= s.Columns() {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
-
-	s.RLock()
-	defer s.RUnlock()
 
 	return s.copy()
 }
@@ -183,11 +146,8 @@ func (s *SparseVector) RowsAt(r int) Vector {
 
 	rows := NewSparseVector(1)
 
-	s.RLock()
-	defer s.RUnlock()
-
-	v := s.atVec(r)
-	rows.setVec(0, v)
+	v := s.AtVec(r)
+	rows.SetVec(0, v)
 
 	return rows
 }
@@ -200,10 +160,7 @@ func (s *SparseVector) RowsAtToArray(r int) []float64 {
 
 	rows := make([]float64, 1)
 
-	s.RLock()
-	defer s.RUnlock()
-
-	v := s.atVec(r)
+	v := s.AtVec(r)
 	rows[0] = v
 
 	return rows
@@ -259,9 +216,6 @@ func (s *SparseVector) copy() *SparseVector {
 
 // Copy copies the vector
 func (s *SparseVector) Copy() Matrix {
-	s.RLock()
-	defer s.RUnlock()
-
 	return s.copy()
 }
 
@@ -370,9 +324,6 @@ func (s *sparseVectorIterator) next() {
 func (s *sparseVectorIterator) Next() (int, int, float64) {
 	s.next()
 
-	s.matrix.RLock()
-	defer s.matrix.RUnlock()
-
 	return s.matrix.indices[s.old], 0, s.matrix.values[s.old]
 }
 
@@ -396,9 +347,6 @@ func (s *sparseVectorMap) HasNext() bool {
 func (s *sparseVectorMap) Map(f func(int, int, float64) float64) {
 	s.next()
 
-	s.matrix.Lock()
-	defer s.matrix.Unlock()
-
 	value := f(s.matrix.indices[s.old], 0, s.matrix.values[s.old])
 	if value != 0 {
 		s.matrix.values[s.old] = value
@@ -409,12 +357,5 @@ func (s *sparseVectorMap) Map(f func(int, int, float64) float64) {
 
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
 func (s *SparseVector) Element(r, c int) bool {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.element(r, c)
-}
-
-func (s *SparseVector) element(r, c int) bool {
-	return s.atVec(r) > 0
+	return s.AtVec(r) > 0
 }

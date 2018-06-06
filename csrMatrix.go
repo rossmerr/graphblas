@@ -7,10 +7,8 @@ package GraphBLAS
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"reflect"
-	"sync"
 )
 
 func init() {
@@ -19,19 +17,11 @@ func init() {
 
 // CSRMatrix compressed storage by rows (CSR)
 type CSRMatrix struct {
-	sync.RWMutex
 	r        int // number of rows in the sparse matrix
 	c        int // number of columns in the sparse matrix
 	values   []float64
 	cols     []int
 	rowStart []int
-}
-
-func (s CSRMatrix) String() string {
-	s.RLock()
-	defer s.RUnlock()
-
-	return fmt.Sprintf("{c:%+v, r:%+v, values:%+v, cols:%+v, rowStart:%+v}", s.c, s.r, s.values, s.cols, s.rowStart)
 }
 
 // NewCSRMatrix returns a GraphBLAS.CSRMatrix
@@ -75,13 +65,6 @@ func (s *CSRMatrix) Rows() int {
 
 // Update does a At and Set on the matrix element at r-th, c-th
 func (s *CSRMatrix) Update(r, c int, f func(float64) float64) {
-	s.Lock()
-	defer s.Unlock()
-
-	s.update(r, c, f)
-}
-
-func (s *CSRMatrix) update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -106,10 +89,7 @@ func (s *CSRMatrix) update(r, c int, f func(float64) float64) {
 
 // At returns the value of a matrix element at r-th, c-th
 func (s *CSRMatrix) At(r, c int) (value float64) {
-	s.RLock()
-	defer s.RUnlock()
-
-	s.update(r, c, func(v float64) float64 {
+	s.Update(r, c, func(v float64) float64 {
 		value = v
 		return v
 	})
@@ -119,10 +99,7 @@ func (s *CSRMatrix) At(r, c int) (value float64) {
 
 // Set sets the value at r-th, c-th of the matrix
 func (s *CSRMatrix) Set(r, c int, value float64) {
-	s.Lock()
-	defer s.Unlock()
-
-	s.update(r, c, func(v float64) float64 {
+	s.Update(r, c, func(v float64) float64 {
 		return value
 	})
 }
@@ -134,9 +111,6 @@ func (s *CSRMatrix) ColumnsAt(c int) Vector {
 	}
 
 	columns := NewSparseVector(s.r)
-
-	s.RLock()
-	defer s.RUnlock()
 
 	for r := range s.rowStart[:s.r] {
 		pointerStart, pointerEnd := s.columnIndex(r, c)
@@ -157,9 +131,6 @@ func (s *CSRMatrix) RowsAt(r int) Vector {
 
 	rows := NewSparseVector(s.c)
 
-	s.RLock()
-	defer s.RUnlock()
-
 	start := s.rowStart[r]
 	end := s.rowStart[r+1]
 
@@ -177,9 +148,6 @@ func (s *CSRMatrix) RowsAtToArray(r int) []float64 {
 	}
 
 	rows := make([]float64, s.c)
-
-	s.RLock()
-	defer s.RUnlock()
 
 	start := s.rowStart[r]
 	end := s.rowStart[r+1]
@@ -243,9 +211,6 @@ func (s *CSRMatrix) columnIndex(r, c int) (int, int) {
 // Copy copies the matrix
 func (s *CSRMatrix) Copy() Matrix {
 	matrix := newCSRMatrix(s.r, s.c, len(s.values))
-
-	s.RLock()
-	defer s.RUnlock()
 
 	for i := range s.values {
 		matrix.values[i] = s.values[i]
@@ -384,9 +349,6 @@ func (s *cSRMatrixIterator) HasNext() bool {
 
 // Next moves the iterator and returns the row, column and value
 func (s *cSRMatrixIterator) Next() (int, int, float64) {
-	s.matrix.RLock()
-	defer s.matrix.RUnlock()
-
 	s.next()
 	return s.r, s.c, s.matrix.values[s.index]
 }
@@ -409,9 +371,6 @@ func (s *cSRMatrixMap) HasNext() bool {
 
 // Map move the iterator and uses a higher order function to changes the elements current value
 func (s *cSRMatrixMap) Map(f func(int, int, float64) float64) {
-	s.matrix.Lock()
-	defer s.matrix.Unlock()
-
 	s.next()
 	value := f(s.r, s.c, s.matrix.values[s.index])
 	if value != 0 {
@@ -422,15 +381,8 @@ func (s *cSRMatrixMap) Map(f func(int, int, float64) float64) {
 }
 
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
-func (s *CSRMatrix) Element(r, c int) bool {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.element(r, c)
-}
-
-func (s *CSRMatrix) element(r, c int) (b bool) {
-	s.update(r, c, func(v float64) float64 {
+func (s *CSRMatrix) Element(r, c int) (b bool) {
+	s.Update(r, c, func(v float64) float64 {
 		b = v > 0
 		return v
 	})
