@@ -44,3 +44,11 @@ func Test_LogicalInverse(t *testing.T) {
 		})
 	}
 }
+
+func Test_Operator(t *testing.T) {
+	boolOp.LogicalInverse.Operator()
+}
+
+func Test_BinaryOp(t *testing.T) {
+	boolOp.LogicalInverse.UnaryOp()
+}

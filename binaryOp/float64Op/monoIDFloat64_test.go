@@ -21,6 +21,12 @@ func Test_Reduce(t *testing.T) {
 
 	result := monoID.Reduce(done, slice)
 
+	zero := monoID.Zero()
+
+	if zero != 1 {
+		t.Errorf("Zero = %+v want %+v", zero, 1)
+	}
+
 	slice <- 1
 	done <- struct{}{}
 	for out := range result {

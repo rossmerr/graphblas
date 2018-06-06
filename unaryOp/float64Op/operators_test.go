@@ -94,3 +94,11 @@ func Test_MultiplicativeInverse(t *testing.T) {
 		})
 	}
 }
+
+func Test_Operator(t *testing.T) {
+	float64Op.Identity.Operator()
+}
+
+func Test_BinaryOp(t *testing.T) {
+	float64Op.Identity.UnaryOp()
+}

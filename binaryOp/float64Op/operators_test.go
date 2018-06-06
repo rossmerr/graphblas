@@ -557,3 +557,17 @@ func Test_Division(t *testing.T) {
 		})
 	}
 }
+
+func Test_Operator(t *testing.T) {
+	float64Op.Equal.Operator()
+	float64Op.FirstArgument.Operator()
+}
+
+func Test_BinaryOp(t *testing.T) {
+	float64Op.Equal.BinaryOp()
+	float64Op.FirstArgument.BinaryOp()
+}
+
+func Test_Semigroup(t *testing.T) {
+	float64Op.FirstArgument.Semigroup()
+}

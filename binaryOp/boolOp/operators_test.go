@@ -270,3 +270,15 @@ func Test_Commutative(t *testing.T) {
 		})
 	}
 }
+
+func Test_Operator(t *testing.T) {
+	boolOp.LOR.Operator()
+}
+
+func Test_BinaryOp(t *testing.T) {
+	boolOp.LOR.BinaryOp()
+}
+
+func Test_Semigroup(t *testing.T) {
+	boolOp.LOR.Semigroup()
+}
