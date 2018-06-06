@@ -18,7 +18,7 @@ type unaryOpFloat64 struct {
 }
 
 func (s *unaryOpFloat64) Operator() {}
-func (s *unaryOpFloat64) BinaryOp() {}
+func (s *unaryOpFloat64) UnaryOp()  {}
 
 func (s *unaryOpFloat64) Apply(in float64) float64 {
 	return s.apply(in)

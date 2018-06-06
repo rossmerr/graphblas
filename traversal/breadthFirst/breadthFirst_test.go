@@ -3,14 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package breadthFirstSearch_test
+package breadthFirst_test
 
 import (
 	"context"
 	"testing"
 
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
-	"github.com/RossMerr/Caudex.GraphBLAS/traversal/breadthFirstSearch"
+	"github.com/RossMerr/Caudex.GraphBLAS/traversal/breadthFirst"
 )
 
 func TestBreadthFirstSearch(t *testing.T) {
@@ -25,7 +25,7 @@ func TestBreadthFirstSearch(t *testing.T) {
 	}
 	g := GraphBLAS.NewDenseMatrixFromArray(array)
 
-	atx := breadthFirstSearch.BreadthFirstSearch(context.Background(), g, 3, func(i GraphBLAS.Vector) bool {
+	atx := breadthFirst.Search(context.Background(), g, 3, func(i GraphBLAS.Vector) bool {
 		return i.AtVec(5) == 1
 	})
 

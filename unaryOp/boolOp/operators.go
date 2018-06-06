@@ -18,7 +18,7 @@ type unaryOpBool struct {
 }
 
 func (s *unaryOpBool) Operator() {}
-func (s *unaryOpBool) BinaryOp() {}
+func (s *unaryOpBool) UnaryOp()  {}
 
 func (s *unaryOpBool) Apply(in bool) bool {
 	return s.apply(in)

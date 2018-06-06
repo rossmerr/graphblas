@@ -3,15 +3,15 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package breadthFirstSearch
+package breadthFirst
 
 import (
 	GraphBLAS "github.com/RossMerr/Caudex.GraphBLAS"
 	"golang.org/x/net/context"
 )
 
-// BreadthFirstSearch a breadth-first search v is the source
-func BreadthFirstSearch(ctx context.Context, a GraphBLAS.Matrix, s int, c func(GraphBLAS.Vector) bool) GraphBLAS.Vector {
+// Search a breadth-first search v is the source
+func Search(ctx context.Context, a GraphBLAS.Matrix, s int, c func(GraphBLAS.Vector) bool) GraphBLAS.Vector {
 	n := a.Rows()
 	// vertices visited in each level
 	var frontier GraphBLAS.Vector = GraphBLAS.NewDenseVector(n)
