@@ -7,6 +7,7 @@ package float64Op
 
 import "github.com/RossMerr/Caudex.GraphBLAS/binaryOp"
 
+// BinaryOpFloat64ToBool is a function that maps two input value to one output value
 type BinaryOpFloat64ToBool interface {
 	binaryOp.BinaryOp
 	Apply(in1, in2 float64) bool
