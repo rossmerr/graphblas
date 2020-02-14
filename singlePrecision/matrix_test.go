@@ -32,31 +32,31 @@ func TestMatrix_Update(t *testing.T) {
 			want:  2,
 			value: 2,
 		},
-		// {
-		// 	name:  "CSCMatrix",
-		// 	s:     singlePrecision.NewCSCMatrix(2, 2),
-		// 	want:  2,
-		// 	value: 2,
-		// },
-		// {
-		// 	name:  "CSRMatrix",
-		// 	s:     singlePrecision.NewCSRMatrix(2, 2),
-		// 	want:  2,
-		// 	value: 2,
-		// },
-		// // Checks values get removed for sparse matrix
-		// {
-		// 	name:  "CSCMatrix",
-		// 	s:     GraphBLAS.NewCSCMatrix(2, 2),
-		// 	want:  0,
-		// 	value: 0,
-		// },
-		// {
-		// 	name:  "CSRMatrix",
-		// 	s:     GraphBLAS.NewCSRMatrix(2, 2),
-		// 	want:  0,
-		// 	value: 0,
-		// },
+		{
+			name:  "CSCMatrix",
+			s:     singlePrecision.NewCSCMatrix(2, 2),
+			want:  2,
+			value: 2,
+		},
+		{
+			name:  "CSRMatrix",
+			s:     singlePrecision.NewCSRMatrix(2, 2),
+			want:  2,
+			value: 2,
+		},
+		// Checks values get removed for sparse matrix
+		{
+			name:  "CSCMatrix",
+			s:     singlePrecision.NewCSCMatrix(2, 2),
+			want:  0,
+			value: 0,
+		},
+		{
+			name:  "CSRMatrix",
+			s:     singlePrecision.NewCSRMatrix(2, 2),
+			want:  0,
+			value: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -99,14 +99,14 @@ func TestMatrix_SparseEnumerate(t *testing.T) {
 		name string
 		s    singlePrecision.Matrix
 	}{
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(3, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(3, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(3, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(3, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -155,14 +155,14 @@ func TestMatrix_SparseMap(t *testing.T) {
 		name string
 		s    singlePrecision.Matrix
 	}{
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(3, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(3, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(3, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(3, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -208,14 +208,14 @@ func TestMatrix_ColumnsAt(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 2),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -249,14 +249,14 @@ func TestMatrix_RowAt(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 2),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -293,16 +293,16 @@ func TestMatrix_Scalar(t *testing.T) {
 			s:     singlePrecision.NewDenseMatrix(2, 2),
 			alpha: 2,
 		},
-		// {
-		// 	name:  "CSCMatrix",
-		// 	s:     singlePrecision.NewCSCMatrix(2, 2),
-		// 	alpha: 2,
-		// },
-		// {
-		// 	name:  "CSRMatrix",
-		// 	s:     singlePrecision.NewCSRMatrix(2, 2),
-		// 	alpha: 2,
-		// },
+		{
+			name:  "CSCMatrix",
+			s:     singlePrecision.NewCSCMatrix(2, 2),
+			alpha: 2,
+		},
+		{
+			name:  "CSRMatrix",
+			s:     singlePrecision.NewCSRMatrix(2, 2),
+			alpha: 2,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -338,14 +338,14 @@ func TestMatrix_Negative(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 2),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -385,14 +385,14 @@ func TestMatrix_Transpose(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 3),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -432,14 +432,14 @@ func TestMatrix_Equal(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 3),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -478,14 +478,14 @@ func TestMatrix_NotEqual(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 3),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -514,26 +514,26 @@ func TestMatrix_NotEqual_Size(t *testing.T) {
 			s:    singlePrecision.NewDenseMatrix(2, 2),
 			want: singlePrecision.NewDenseMatrix(2, 3),
 		},
-		// {
-		// 	name: "CSCMatrix Row",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// 	want: singlePrecision.NewDenseMatrix(3, 2),
-		// },
-		// {
-		// 	name: "CSCMatrix Column",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// 	want: singlePrecision.NewDenseMatrix(2, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix Row",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// 	want: singlePrecision.NewDenseMatrix(3, 2),
-		// },
-		// {
-		// 	name: "CSRMatrix Column",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// 	want: singlePrecision.NewDenseMatrix(2, 3),
-		// },
+		{
+			name: "CSCMatrix Row",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+			want: singlePrecision.NewDenseMatrix(3, 2),
+		},
+		{
+			name: "CSCMatrix Column",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+			want: singlePrecision.NewDenseMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix Row",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+			want: singlePrecision.NewDenseMatrix(3, 2),
+		},
+		{
+			name: "CSRMatrix Column",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+			want: singlePrecision.NewDenseMatrix(2, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -571,14 +571,14 @@ func TestMatrix_Copy(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 3),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -623,14 +623,14 @@ func TestMatrix_Multiply(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 3),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 3),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 3),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 3),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 3),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -670,14 +670,14 @@ func TestMatrix_Add(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 2),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -718,14 +718,14 @@ func TestMatrix_Subtract(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrix(2, 2),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 2),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 2),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 2),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -758,16 +758,16 @@ func TestMatrix_Size(t *testing.T) {
 			s:    singlePrecision.NewDenseMatrix(2, 3),
 			size: 6,
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrix(2, 3),
-		// 	size: 5,
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrix(2, 3),
-		// 	size: 5,
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrix(2, 3),
+			size: 5,
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrix(2, 3),
+			size: 5,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -800,14 +800,14 @@ func TestMatrix_FromArray(t *testing.T) {
 			name: "DenseMatrix",
 			s:    singlePrecision.NewDenseMatrixFromArray(setup),
 		},
-		// {
-		// 	name: "CSCMatrix",
-		// 	s:    singlePrecision.NewCSCMatrixFromArray(setup),
-		// },
-		// {
-		// 	name: "CSRMatrix",
-		// 	s:    singlePrecision.NewCSRMatrixFromArray(setup),
-		// },
+		{
+			name: "CSCMatrix",
+			s:    singlePrecision.NewCSCMatrixFromArray(setup),
+		},
+		{
+			name: "CSRMatrix",
+			s:    singlePrecision.NewCSRMatrixFromArray(setup),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
