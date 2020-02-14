@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package singlePrecision
+package doublePrecision
 
 import (
 	"log"
@@ -20,7 +20,7 @@ func init() {
 type CSCMatrix struct {
 	r        int // number of rows in the sparse matrix
 	c        int // number of columns in the sparse matrix
-	values   []float32
+	values   []float64
 	rows     []int
 	colStart []int
 }
@@ -31,7 +31,7 @@ func NewCSCMatrix(r, c int) *CSCMatrix {
 }
 
 // NewCSCMatrixFromArray returns a CSCMatrix
-func NewCSCMatrixFromArray(data [][]float32) *CSCMatrix {
+func NewCSCMatrixFromArray(data [][]float64) *CSCMatrix {
 	r := len(data)
 	c := len(data[0])
 	s := newCSCMatrix(r, c, 0)
@@ -49,7 +49,7 @@ func newCSCMatrix(r, c int, l int) *CSCMatrix {
 	s := &CSCMatrix{
 		r:        r,
 		c:        c,
-		values:   make([]float32, l),
+		values:   make([]float64, l),
 		rows:     make([]int, l),
 		colStart: make([]int, c+1),
 	}
@@ -68,7 +68,7 @@ func (s *CSCMatrix) Rows() int {
 }
 
 // Update does a At and Set on the matrix element at r-th, c-th
-func (s *CSCMatrix) Update(r, c int, f func(float32) float32) {
+func (s *CSCMatrix) Update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -92,8 +92,8 @@ func (s *CSCMatrix) Update(r, c int, f func(float32) float32) {
 }
 
 // At returns the value of a matrix element at r-th, c-th
-func (s *CSCMatrix) At(r, c int) (value float32) {
-	s.Update(r, c, func(v float32) float32 {
+func (s *CSCMatrix) At(r, c int) (value float64) {
+	s.Update(r, c, func(v float64) float64 {
 		value = v
 		return v
 	})
@@ -102,8 +102,8 @@ func (s *CSCMatrix) At(r, c int) (value float32) {
 }
 
 // Set sets the value at r-th, c-th of the matrix
-func (s *CSCMatrix) Set(r, c int, value float32) {
-	s.Update(r, c, func(v float32) float32 {
+func (s *CSCMatrix) Set(r, c int, value float64) {
+	s.Update(r, c, func(v float64) float64 {
 		return value
 	})
 }
@@ -145,12 +145,12 @@ func (s *CSCMatrix) RowsAt(r int) Vector {
 }
 
 // RowsAtToArray return the rows at r-th
-func (s *CSCMatrix) RowsAtToArray(r int) []float32 {
+func (s *CSCMatrix) RowsAtToArray(r int) []float64 {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]float32, s.c)
+	rows := make([]float64, s.c)
 
 	for c := range s.colStart[:s.c] {
 		pointerStart, pointerEnd := s.rowIndex(r, c)
@@ -162,13 +162,13 @@ func (s *CSCMatrix) RowsAtToArray(r int) []float32 {
 	return rows
 }
 
-func (s *CSCMatrix) insert(pointer, r, c int, value float32) {
+func (s *CSCMatrix) insert(pointer, r, c int, value float64) {
 	if value == 0 {
 		return
 	}
 
 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
-	s.values = append(s.values[:pointer], append([]float32{value}, s.values[pointer:]...)...)
+	s.values = append(s.values[:pointer], append([]float64{value}, s.values[pointer:]...)...)
 
 	for i := c + 1; i <= s.c; i++ {
 		s.colStart[i]++
@@ -228,7 +228,7 @@ func (s *CSCMatrix) Copy() Matrix {
 }
 
 // Scalar multiplication of a matrix by alpha
-func (s *CSCMatrix) Scalar(alpha float32) Matrix {
+func (s *CSCMatrix) Scalar(alpha float64) Matrix {
 	return Scalar(context.Background(), s, alpha)
 }
 
@@ -290,7 +290,7 @@ func (s *CSCMatrix) Values() int {
 
 // Clear removes all elements from a matrix
 func (s *CSCMatrix) Clear() {
-	s.values = make([]float32, 0)
+	s.values = make([]float64, 0)
 	s.rows = make([]int, 0)
 	s.colStart = make([]int, s.c+1)
 }
@@ -352,7 +352,7 @@ func (s *cSCMatrixIterator) next() {
 }
 
 // Next moves the iterator and returns the row, column and value
-func (s *cSCMatrixIterator) Next() (int, int, float32) {
+func (s *cSCMatrixIterator) Next() (int, int, float64) {
 	s.next()
 	return s.r, s.c, s.matrix.values[s.index]
 }
@@ -374,7 +374,7 @@ func (s *cSCMatrixMap) HasNext() bool {
 }
 
 // Map move the iterator and uses a higher order function to changes the elements current value
-func (s *cSCMatrixMap) Map(f func(int, int, float32) float32) {
+func (s *cSCMatrixMap) Map(f func(int, int, float64) float64) {
 	s.next()
 	value := f(s.r, s.c, s.matrix.values[s.index])
 	if value != 0 {
@@ -386,7 +386,7 @@ func (s *cSCMatrixMap) Map(f func(int, int, float32) float32) {
 
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
 func (s *CSCMatrix) Element(r, c int) (b bool) {
-	s.Update(r, c, func(v float32) float32 {
+	s.Update(r, c, func(v float64) float64 {
 		b = v > 0
 		return v
 	})

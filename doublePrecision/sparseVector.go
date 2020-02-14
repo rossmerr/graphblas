@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package singlePrecision
+package doublePrecision
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func init() {
 // SparseVector compressed storage by indices
 type SparseVector struct {
 	l       int // length of the sparse vector
-	values  []float32
+	values  []float64
 	indices []int
 }
 
@@ -28,7 +28,7 @@ func NewSparseVector(l int) *SparseVector {
 }
 
 // NewSparseVectorFromArray returns a SparseVector
-func NewSparseVectorFromArray(data []float32) *SparseVector {
+func NewSparseVectorFromArray(data []float64) *SparseVector {
 	l := len(data)
 	s := newSparseVector(l, 0)
 
@@ -40,7 +40,7 @@ func NewSparseVectorFromArray(data []float32) *SparseVector {
 }
 
 func newSparseVector(l, s int) *SparseVector {
-	return &SparseVector{l: l, values: make([]float32, s), indices: make([]int, s)}
+	return &SparseVector{l: l, values: make([]float64, s), indices: make([]int, s)}
 }
 
 // Length of the vector
@@ -49,7 +49,7 @@ func (s *SparseVector) Length() int {
 }
 
 // AtVec returns the value of a vector element at i-th
-func (s *SparseVector) AtVec(i int) float32 {
+func (s *SparseVector) AtVec(i int) float64 {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -64,7 +64,7 @@ func (s *SparseVector) AtVec(i int) float32 {
 }
 
 // SetVec sets the value at i-th of the vector
-func (s *SparseVector) SetVec(i int, value float32) {
+func (s *SparseVector) SetVec(i int, value float64) {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -93,7 +93,7 @@ func (s *SparseVector) Rows() int {
 }
 
 // Update does a At and Set on the vector element at r-th, c-th
-func (s *SparseVector) Update(r, c int, f func(float32) float32) {
+func (s *SparseVector) Update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -107,8 +107,8 @@ func (s *SparseVector) Update(r, c int, f func(float32) float32) {
 }
 
 // At returns the value of a vector element at r-th, c-th
-func (s *SparseVector) At(r, c int) (value float32) {
-	s.Update(r, c, func(v float32) float32 {
+func (s *SparseVector) At(r, c int) (value float64) {
+	s.Update(r, c, func(v float64) float64 {
 		value = v
 		return v
 	})
@@ -117,7 +117,7 @@ func (s *SparseVector) At(r, c int) (value float32) {
 }
 
 // Set sets the value at r-th, c-th of the vector
-func (s *SparseVector) Set(r, c int, value float32) {
+func (s *SparseVector) Set(r, c int, value float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -153,12 +153,12 @@ func (s *SparseVector) RowsAt(r int) Vector {
 }
 
 // RowsAtToArray return the rows at r-th
-func (s *SparseVector) RowsAtToArray(r int) []float32 {
+func (s *SparseVector) RowsAtToArray(r int) []float64 {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]float32, 1)
+	rows := make([]float64, 1)
 
 	v := s.AtVec(r)
 	rows[0] = v
@@ -166,13 +166,13 @@ func (s *SparseVector) RowsAtToArray(r int) []float32 {
 	return rows
 }
 
-func (s *SparseVector) insert(pointer, i int, value float32) {
+func (s *SparseVector) insert(pointer, i int, value float64) {
 	if value == 0 {
 		return
 	}
 
 	s.indices = append(s.indices[:pointer], append([]int{i}, s.indices[pointer:]...)...)
-	s.values = append(s.values[:pointer], append([]float32{value}, s.values[pointer:]...)...)
+	s.values = append(s.values[:pointer], append([]float64{value}, s.values[pointer:]...)...)
 }
 
 func (s *SparseVector) remove(pointer int) {
@@ -220,7 +220,7 @@ func (s *SparseVector) Copy() Matrix {
 }
 
 // Scalar multiplication of a vector by alpha
-func (s *SparseVector) Scalar(alpha float32) Matrix {
+func (s *SparseVector) Scalar(alpha float64) Matrix {
 	return Scalar(context.Background(), s, alpha)
 }
 
@@ -281,7 +281,7 @@ func (s *SparseVector) Values() int {
 
 // Clear removes all elements from a vector
 func (s *SparseVector) Clear() {
-	s.values = make([]float32, 0)
+	s.values = make([]float64, 0)
 	s.indices = make([]int, 0)
 
 }
@@ -321,7 +321,7 @@ func (s *sparseVectorIterator) next() {
 }
 
 // Next moves the iterator and returns the row, column and value
-func (s *sparseVectorIterator) Next() (int, int, float32) {
+func (s *sparseVectorIterator) Next() (int, int, float64) {
 	s.next()
 
 	return s.matrix.indices[s.old], 0, s.matrix.values[s.old]
@@ -344,7 +344,7 @@ func (s *sparseVectorMap) HasNext() bool {
 }
 
 // Map move the iterator and uses a higher order function to changes the elements current value
-func (s *sparseVectorMap) Map(f func(int, int, float32) float32) {
+func (s *sparseVectorMap) Map(f func(int, int, float64) float64) {
 	s.next()
 
 	value := f(s.matrix.indices[s.old], 0, s.matrix.values[s.old])

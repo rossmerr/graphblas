@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package singlePrecision
+package doublePrecision
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 type DenseMatrix struct {
 	c    int // number of rows in the sparse matrix
 	r    int // number of columns in the sparse matrix
-	data [][]float32
+	data [][]float64
 }
 
 // NewDenseMatrix returns a DenseMatrix
@@ -23,7 +23,7 @@ func NewDenseMatrix(r, c int) *DenseMatrix {
 }
 
 // NewDenseMatrixFromArray returns a DenseMatrix
-func NewDenseMatrixFromArray(data [][]float32) *DenseMatrix {
+func NewDenseMatrixFromArray(data [][]float64) *DenseMatrix {
 	r := len(data)
 	c := len(data[0])
 	s := &DenseMatrix{data: data, r: r, c: c}
@@ -31,11 +31,11 @@ func NewDenseMatrixFromArray(data [][]float32) *DenseMatrix {
 	return s
 }
 
-func newMatrix(r, c int, initialise func([]float32, int)) *DenseMatrix {
-	s := &DenseMatrix{data: make([][]float32, r), r: r, c: c}
+func newMatrix(r, c int, initialise func([]float64, int)) *DenseMatrix {
+	s := &DenseMatrix{data: make([][]float64, r), r: r, c: c}
 
 	for i := 0; i < r; i++ {
-		s.data[i] = make([]float32, c)
+		s.data[i] = make([]float64, c)
 
 		if initialise != nil {
 			initialise(s.data[i], i)
@@ -56,7 +56,7 @@ func (s *DenseMatrix) Rows() int {
 }
 
 // Update does a At and Set on the matrix element at r-th, c-th
-func (s *DenseMatrix) Update(r, c int, f func(float32) float32) {
+func (s *DenseMatrix) Update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -71,7 +71,7 @@ func (s *DenseMatrix) Update(r, c int, f func(float32) float32) {
 }
 
 // At returns the value of a matrix element at r-th, c-th
-func (s *DenseMatrix) At(r, c int) float32 {
+func (s *DenseMatrix) At(r, c int) float64 {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -84,7 +84,7 @@ func (s *DenseMatrix) At(r, c int) float32 {
 }
 
 // Set sets the value at r-th, c-th of the matrix
-func (s *DenseMatrix) Set(r, c int, value float32) {
+func (s *DenseMatrix) Set(r, c int, value float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -127,12 +127,12 @@ func (s *DenseMatrix) RowsAt(r int) Vector {
 }
 
 // RowsAtToArray return the rows at r-th
-func (s *DenseMatrix) RowsAtToArray(r int) []float32 {
+func (s *DenseMatrix) RowsAtToArray(r int) []float64 {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]float32, s.c)
+	rows := make([]float64, s.c)
 
 	for i := 0; i < s.c; i++ {
 		rows[i] = s.data[r][i]
@@ -143,9 +143,9 @@ func (s *DenseMatrix) RowsAtToArray(r int) []float32 {
 
 // Copy copies the matrix
 func (s *DenseMatrix) Copy() Matrix {
-	v := float32(0.0)
+	v := 0.0
 
-	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float32, r int) {
+	matrix := newMatrix(s.Rows(), s.Columns(), func(row []float64, r int) {
 		for c := 0; c < s.Columns(); c++ {
 			v = s.data[r][c]
 			if v != 0.0 {
@@ -160,7 +160,7 @@ func (s *DenseMatrix) Copy() Matrix {
 }
 
 // Scalar multiplication of a matrix by alpha
-func (s *DenseMatrix) Scalar(alpha float32) Matrix {
+func (s *DenseMatrix) Scalar(alpha float64) Matrix {
 	return Scalar(context.Background(), s, alpha)
 }
 
@@ -221,14 +221,14 @@ func (s *DenseMatrix) Values() int {
 
 // Clear removes all elements from a matrix
 func (s *DenseMatrix) Clear() {
-	s.data = make([][]float32, s.r)
+	s.data = make([][]float64, s.r)
 	for i := 0; i < s.r; i++ {
-		s.data[i] = make([]float32, s.c)
+		s.data[i] = make([]float64, s.c)
 	}
 }
 
 // RawMatrix returns the raw matrix
-func (s *DenseMatrix) RawMatrix() [][]float32 {
+func (s *DenseMatrix) RawMatrix() [][]float64 {
 	return s.data
 }
 
@@ -277,7 +277,7 @@ func (s *denseMatrixIterator) next() {
 }
 
 // Next moves the iterator and returns the row, column and value
-func (s *denseMatrixIterator) Next() (int, int, float32) {
+func (s *denseMatrixIterator) Next() (int, int, float64) {
 	s.next()
 
 	return s.r, s.cOld, s.matrix.At(s.r, s.cOld)
@@ -300,7 +300,7 @@ func (s *denseMatrixMap) HasNext() bool {
 }
 
 // Map move the iterator and uses a higher order function to changes the elements current value
-func (s *denseMatrixMap) Map(f func(int, int, float32) float32) {
+func (s *denseMatrixMap) Map(f func(int, int, float64) float64) {
 	s.next()
 
 	s.matrix.Set(s.r, s.cOld, f(s.r, s.cOld, s.matrix.At(s.r, s.cOld)))

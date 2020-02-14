@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package singlePrecision
+package doublePrecision
 
 import (
 	"context"
@@ -13,23 +13,23 @@ import (
 // DenseVector a vector
 type DenseVector struct {
 	l      int // length of the sparse vector
-	values []float32
+	values []float64
 }
 
 // NewDenseVector returns a DenseVector
 func NewDenseVector(l int) *DenseVector {
-	return &DenseVector{l: l, values: make([]float32, l)}
+	return &DenseVector{l: l, values: make([]float64, l)}
 }
 
 // NewDenseVectorFromArray returns a SparseVector
-func NewDenseVectorFromArray(data []float32) *DenseVector {
-	arr := make([]float32, 0)
+func NewDenseVectorFromArray(data []float64) *DenseVector {
+	arr := make([]float64, 0)
 	arr = append(arr, data...)
 	return &DenseVector{l: len(data), values: arr}
 }
 
 // AtVec returns the value of a vector element at i-th
-func (s *DenseVector) AtVec(i int) float32 {
+func (s *DenseVector) AtVec(i int) float64 {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -38,7 +38,7 @@ func (s *DenseVector) AtVec(i int) float32 {
 }
 
 // SetVec sets the value at i-th of the vector
-func (s *DenseVector) SetVec(i int, value float32) {
+func (s *DenseVector) SetVec(i int, value float64) {
 	if i < 0 || i >= s.Length() {
 		log.Panicf("Length '%+v' is invalid", i)
 	}
@@ -67,7 +67,7 @@ func (s *DenseVector) Rows() int {
 }
 
 // Update does a At and Set on the vector element at r-th, c-th
-func (s *DenseVector) Update(r, c int, f func(float32) float32) {
+func (s *DenseVector) Update(r, c int, f func(float64) float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -81,12 +81,12 @@ func (s *DenseVector) Update(r, c int, f func(float32) float32) {
 }
 
 // At returns the value of a vector element at r-th, c-th
-func (s *DenseVector) At(r, c int) (value float32) {
+func (s *DenseVector) At(r, c int) (value float64) {
 	return s.AtVec(r)
 }
 
 // Set sets the value at r-th, c-th of the vector
-func (s *DenseVector) Set(r, c int, value float32) {
+func (s *DenseVector) Set(r, c int, value float64) {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -122,12 +122,12 @@ func (s *DenseVector) RowsAt(r int) Vector {
 }
 
 // RowsAtToArray return the rows at r-th
-func (s *DenseVector) RowsAtToArray(r int) []float32 {
+func (s *DenseVector) RowsAtToArray(r int) []float64 {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
 
-	rows := make([]float32, 1)
+	rows := make([]float64, 1)
 
 	v := s.AtVec(r)
 	rows[0] = v
@@ -161,7 +161,7 @@ func (s *DenseVector) Copy() Matrix {
 }
 
 // Scalar multiplication of a vector by alpha
-func (s *DenseVector) Scalar(alpha float32) Matrix {
+func (s *DenseVector) Scalar(alpha float64) Matrix {
 	return Scalar(context.Background(), s, alpha)
 }
 
@@ -217,7 +217,7 @@ func (s *DenseVector) Values() int {
 
 // Clear removes all elements from a vector
 func (s *DenseVector) Clear() {
-	s.values = make([]float32, s.l)
+	s.values = make([]float64, s.l)
 }
 
 // Enumerate iterates through all non-zero elements, order is not guaranteed
@@ -264,7 +264,7 @@ func (s *denseVectorIterator) next() {
 }
 
 // Next moves the iterator and returns the row, column and value
-func (s *denseVectorIterator) Next() (int, int, float32) {
+func (s *denseVectorIterator) Next() (int, int, float64) {
 	s.next()
 
 	return s.rOld, 0, s.matrix.AtVec(s.rOld)
@@ -287,7 +287,7 @@ func (s *denseVectorMap) HasNext() bool {
 }
 
 // Map move the iterator and uses a higher order function to changes the elements current value
-func (s *denseVectorMap) Map(f func(int, int, float32) float32) {
+func (s *denseVectorMap) Map(f func(int, int, float64) float64) {
 	s.next()
 
 	s.matrix.SetVec(s.rOld, f(s.rOld, 0, s.matrix.AtVec(s.rOld)))
