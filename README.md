@@ -5,4 +5,4 @@
 
 A sparse linear algebra library
 
-Only supports float64 types
+Supports float32 and float64 types
