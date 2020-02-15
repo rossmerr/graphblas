@@ -6,3 +6,5 @@
 A sparse linear algebra library
 
 Supports float32 and float64 types
+
+Requires the OpenCL headers, such as:  `apt-get install opencl-headers`

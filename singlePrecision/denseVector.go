@@ -12,7 +12,7 @@ import (
 
 // DenseVector a vector
 type DenseVector struct {
-	l      int // length of the sparse vector
+	l      int // length of the vector
 	values []float32
 }
 
