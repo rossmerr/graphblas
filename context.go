@@ -1,7 +1,7 @@
-package GraphBLAS
+package graphblas
 
 import (
-	"golang.org/x/net/context"
+	"context"
 )
 
 // Mode for blocking

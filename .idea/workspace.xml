@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b1841788-1fd0-4fc5-8dac-d4af7bfe2b77" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/go.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/singleprecision/const.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/singleprecision/traversal/breadthfirst/breadthFirst.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/AUTHORS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/CONTRIBUTORS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/PATENTS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/context/context.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/context/go17.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/context/go19.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/context/pre_go17.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/net/context/pre_go19.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/binaryOp.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/binaryOp.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/boolOp/monoIDBool.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/boolop/monoIDBool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/boolOp/monoIDBool_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/boolop/monoIDBool_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/boolOp/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/boolop/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/boolOp/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/boolop/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float32Op/monoIDFloat32.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float32op/monoIDFloat32.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float32Op/monoIDFloat32_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float32op/monoIDFloat32_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float32Op/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float32op/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float32Op/operatorsBool.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float32op/operatorsBool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float32Op/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float32op/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float64Op/monoIDFloat64.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float64op/monoIDFloat64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float64Op/monoIDFloat64_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float64op/monoIDFloat64_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float64Op/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float64op/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float64Op/operatorsBool.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float64op/operatorsBool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/binaryOp/float64Op/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/binaryop/float64op/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/context.go" beforeDir="false" afterPath="$PROJECT_DIR$/context.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/benchmark_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/benchmark_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/consts.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/consts.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/cscMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/cscMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/csrMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/csrMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/denseMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/denseMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/denseVector.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/denseVector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/enumerate.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/enumerate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/map.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/map.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/reduced/reduced.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/reduced/reduced.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/reduced/reduced_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/reduced/reduced_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/skewSymmetric/skewSymmetric.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/skewsymmetric/skewSymmetric.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/skewSymmetric/skewSymmetric_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/skewsymmetric/skewSymmetric_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/strassen/benchmark_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/strassen/benchmark_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/strassen/strassen.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/strassen/strassen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/strassen/strassen_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/strassen/strassen_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/symmetric/symmetric.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/symmetric/symmetric.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/math/symmetric/symmetric_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/math/symmetric/symmetric_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/matrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/matrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/matrix_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/matrix_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/mutexMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/mutexMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/sparseMatrixRegistry.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/sparseMatrixRegistry.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/sparseMatrixRegistry_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/sparseMatrixRegistry_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/sparseVector.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/sparseVector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/traversal/breadthFirst/breadthFirst.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/traversal/breadthfirst/breadthFirst.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/traversal/breadthFirst/breadthFirst_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/traversal/breadthfirst/breadthFirst_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/vector.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/vector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doublePrecision/vector_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/doubleprecision/vector_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mask.go" beforeDir="false" afterPath="$PROJECT_DIR$/mask.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/const.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/cscMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/cscMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/csrMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/csrMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/denseMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/denseMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/denseVector.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/denseVector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/enumerate.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/enumerate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/map.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/map.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/reduced/reduced.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/reduced/reduced.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/reduced/reduced_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/reduced/reduced_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/skewSymmetric/skewSymmetric.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/skewsymmetric/skewSymmetric.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/skewSymmetric/skewSymmetric_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/skewsymmetric/skewSymmetric_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/strassen/benchmark_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/strassen/benchmark_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/strassen/strassen.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/strassen/strassen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/strassen/strassen_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/strassen/strassen_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/symmetric/symmetric.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/symmetric/symmetric.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/math/symmetric/symmetric_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/math/symmetric/symmetric_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/matrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/matrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/matrix_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/matrix_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/mutexMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/mutexMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/sparseMatrixRegistry.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/sparseMatrixRegistry.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/sparseMatrixRegistry_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/sparseMatrixRegistry_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/sparseVector.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/sparseVector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/traversal/breadthFirst/breadthFirst.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/traversal/breadthFirst/breadthFirst_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/traversal/breadthfirst/breadthFirst_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/vector.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/vector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/singlePrecision/vector_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/singleprecision/vector_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/type.go" beforeDir="false" afterPath="$PROJECT_DIR$/type.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/boolOp/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/boolop/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/boolOp/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/boolop/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/float32Op/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/float32op/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/float32Op/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/float32op/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/float64Op/operators.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/float64op/operators.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/float64Op/operators_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/float64op/operators_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unaryOp/unaryOp.go" beforeDir="false" afterPath="$PROJECT_DIR$/unaryop/unaryOp.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file:///usr/lib/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1mXF9LWBHLLsKiD5Lw7YWpytGAN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.folding" />
+  </component>
+  <component name="RunManager">
+    <configuration name="go test graphblas" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="graphblas" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.go test graphblas" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+</project>

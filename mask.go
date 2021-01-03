@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package GraphBLAS
+package graphblas
 
 // Mask is used to control how computed values are stored in the output from a method
 type Mask interface {
