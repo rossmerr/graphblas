@@ -4,3 +4,5 @@ debug.test
 *.test
 *.prof
 *.svg
+/.vscode/
+/.idea/
