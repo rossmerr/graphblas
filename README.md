@@ -7,3 +7,21 @@
 A sparse linear algebra library implementing may of the ideas from the [GraphBLAS Forum](https://graphblas.github.io/) in Go.
 
 Supports float32 and float64 types
+
+```go
+array := [][]float64{
+		[]float64{0, 0, 0, 1, 0, 0, 0},
+		[]float64{1, 0, 0, 0, 0, 0, 0},
+		[]float64{0, 0, 0, 1, 0, 1, 1},
+		[]float64{1, 0, 0, 0, 0, 0, 1},
+		[]float64{0, 1, 0, 0, 0, 0, 1},
+		[]float64{0, 0, 1, 0, 1, 0, 0},
+		[]float64{0, 1, 0, 0, 0, 0, 0},
+    }
+    
+g := doubleprecision.NewDenseMatrixFromArray(array)
+
+atx := breadthfirst.Search(context.Background(), g, 3, func(i doubleprecision.Vector) bool {
+    return i.AtVec(5) == 1
+})
+```    
