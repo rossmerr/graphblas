@@ -6,8 +6,9 @@
 package breadthfirst
 
 import (
+	"context"
+
 	"github.com/rossmerr/graphblas/f64"
-	"golang.org/x/net/context"
 )
 
 // Search a breadth-first search v is the source
