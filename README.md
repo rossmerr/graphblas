@@ -19,9 +19,9 @@ array := [][]float64{
 		[]float64{0, 1, 0, 0, 0, 0, 0},
     }
     
-g := doubleprecision.NewDenseMatrixFromArray(array)
+g := f64.NewDenseMatrixFromArray(array)
 
-atx := breadthfirst.Search(context.Background(), g, 3, func(i doubleprecision.Vector) bool {
+atx := breadthfirst.Search(context.Background(), g, 3, func(i f64.Vector) bool {
     return i.AtVec(5) == 1
 })
 ```    
