@@ -11,7 +11,7 @@ import (
 	"github.com/rossmerr/graphblas/f64"
 )
 
-// Search a breadth-first search v is the source
+// Search a breadth-first search s is the source
 func Search(ctx context.Context, a f64.Matrix, s int, c func(f64.Vector) bool) f64.Vector {
 	n := a.Rows()
 	// vertices visited in each level
