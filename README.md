@@ -6,7 +6,7 @@
 
 A sparse linear algebra library implementing may of the ideas from the [GraphBLAS Forum](https://graphblas.github.io/) in Go.
 
-Supports float32 and float64 types
+Supports int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64 | uintptr | float32 | float64
 
 ```go
 array := [][]float64{
@@ -19,9 +19,9 @@ array := [][]float64{
 		[]float64{0, 1, 0, 0, 0, 0, 0},
     }
     
-g := f64.NewDenseMatrixFromArray(array)
+g := graphblas.NewDenseMatrixFromArray[float64](array)
 
-atx := breadthfirst.Search(context.Background(), g, 3, func(i f64.Vector) bool {
+atx := breadthfirst.Search[float64](context.Background(), g, 3, func(i graphblas.Vector) bool {
     return i.AtVec(5) == 1
 })
 ```    
