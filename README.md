@@ -19,9 +19,9 @@ array := [][]float64{
 		[]float64{0, 1, 0, 0, 0, 0, 0},
     }
     
-g := graphblas.NewDenseMatrixFromArray[float64](array)
+g := graphblas.NewDenseMatrixFromArray(array)
 
-atx := breadthfirst.Search[float64](context.Background(), g, 3, func(i graphblas.Vector) bool {
+atx := breadthfirst.Search[float64](context.Background(), g, 3, func(i graphblas.Vector[float64]) bool {
     return i.AtVec(5) == 1
 })
 ```    
