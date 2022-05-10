@@ -8,8 +8,8 @@ A sparse linear algebra library implementing may of the ideas from the [GraphBLA
 
 Sparse Matrix Formats:
 		Compressed Sparse Row (CSR)
-		Compressed Sparse Column (CSC) format
-		sparse vectors
+		Compressed Sparse Column (CSC) 
+		Sparse Vector
 
 Supports int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64 | uintptr | float32 | float64
 
