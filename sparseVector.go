@@ -84,7 +84,7 @@ func (s *SparseVector[T]) SetVec(i int, value T) {
 			s.values[pointer] = value
 		}
 	} else {
-		s.insert(pointer, i, Zero[T]())
+		s.insert(pointer, i, value)
 	}
 }
 

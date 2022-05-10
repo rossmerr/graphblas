@@ -31,7 +31,7 @@ func Test_Reduce(t *testing.T) {
 	slice <- 1
 	done <- struct{}{}
 	for out := range result {
-		if 2 != out {
+		if out != 2 {
 			t.Errorf("MonoIDBool = %+v, want %+v", out, 2)
 		}
 	}
