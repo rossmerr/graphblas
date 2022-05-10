@@ -18,35 +18,56 @@ func FirstArgument[T constraints.Number]() BinaryOp[T] {
 
 // SecondArgument f(x, y) = y
 func SecondArgument[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		return in2
+	})
 }
 
 // Minimum f(x, y) = (x < y) ? x : y
 func Minimum[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		if in1 < in2 {
+			return in1
+		}
+		return in2
+	})
 }
 
 // Maximum f(x, y) = (x > y) ? x : y
 func Maximum[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		if in1 > in2 {
+			return in1
+		}
+
+		return in2
+	})
 }
 
 // Addition f(x, y) = x + y
 func Addition[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		return in1 + in2
+	})
 }
 
 // Subtraction f(x, y) = x - y
 func Subtraction[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		return in1 - in2
+	})
 }
 
 // Multiplication f(x, y) = x * y
 func Multiplication[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		return in1 * in2
+	})
 }
 
 // Division f(x, y) = x / y
 func Division[T constraints.Number]() BinaryOp[T] {
-	return nil
+	return NewBinaryOp(func(in1, in2 T) T {
+		return in1 / in2
+	})
 }
