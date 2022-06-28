@@ -73,10 +73,10 @@ func (s *CSCMatrix[T]) Rows() int {
 
 // Update does a At and Set on the matrix element at r-th, c-th
 func (s *CSCMatrix[T]) Update(r, c int, f func(T) T) {
-	s.UpdateReturnPointer(r, c, f)
+	s.SetReturnPointer(r, c, f)
 }
 
-func (s *CSCMatrix[T]) UpdateReturnPointer(r, c int, f func(T) T) (pointer int, start int) {
+func (s *CSCMatrix[T]) SetReturnPointer(r, c int, f func(T) T) (pointer int, start int) {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
