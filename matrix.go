@@ -7,11 +7,6 @@ package graphblas
 
 import "github.com/rossmerr/graphblas/constraints"
 
-type MatrixCompressed[T constraints.Number] interface {
-	SetReturnPointer(r, c int, value T) (pointer int, start int)
-	UpdateReturnPointer(r, c int, f func(T) T) (pointer int, start int)
-}
-
 // Matrix interface
 type Matrix[T constraints.Number] interface {
 	Mask
@@ -77,4 +72,10 @@ type Matrix[T constraints.Number] interface {
 
 	// Clear removes all elements from a matrix
 	Clear()
+}
+
+type MatrixCompressed[T constraints.Number] interface {
+	Matrix[T]
+	SetReturnPointer(r, c int, value T) (pointer int, start int)
+	UpdateReturnPointer(r, c int, f func(T) T) (pointer int, start int)
 }
