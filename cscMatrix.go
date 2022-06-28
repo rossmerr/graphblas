@@ -73,6 +73,10 @@ func (s *CSCMatrix[T]) Rows() int {
 
 // Update does a At and Set on the matrix element at r-th, c-th
 func (s *CSCMatrix[T]) Update(r, c int, f func(T) T) {
+	s.UpdateReturnPointer(r, c, f)
+}
+
+func (s *CSCMatrix[T]) UpdateReturnPointer(r, c int, f func(T) T) (pointer int, start int) {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -90,9 +94,12 @@ func (s *CSCMatrix[T]) Update(r, c int, f func(T) T) {
 		} else {
 			s.values[pointerStart] = value
 		}
+
+		return pointerStart, 0
 	} else {
 		zero := Zero[T]()
-		s.insert(pointerStart, r, c, f(zero))
+		col := s.insert(pointerStart, r, c, f(zero))
+		return pointerStart, col
 	}
 }
 
@@ -167,9 +174,9 @@ func (s *CSCMatrix[T]) RowsAtToArray(r int) []T {
 	return rows
 }
 
-func (s *CSCMatrix[T]) insert(pointer, r, c int, value T) {
+func (s *CSCMatrix[T]) insert(pointer, r, c int, value T) int {
 	if IsZero(value) {
-		return
+		return 0
 	}
 
 	s.rows = append(s.rows[:pointer], append([]int{r}, s.rows[pointer:]...)...)
@@ -178,6 +185,8 @@ func (s *CSCMatrix[T]) insert(pointer, r, c int, value T) {
 	for i := c + 1; i <= s.c; i++ {
 		s.colStart[i]++
 	}
+
+	return s.c
 }
 
 func (s *CSCMatrix[T]) remove(pointer, c int) {

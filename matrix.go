@@ -7,6 +7,10 @@ package graphblas
 
 import "github.com/rossmerr/graphblas/constraints"
 
+type MatrixCompressed[T constraints.Number] interface {
+	UpdateReturnPointer(r, c int, value T) (pointer int, start int)
+}
+
 // Matrix interface
 type Matrix[T constraints.Number] interface {
 	Mask
