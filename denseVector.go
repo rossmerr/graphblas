@@ -53,6 +53,21 @@ func (s *DenseVector[T]) Size() int {
 	return s.l
 }
 
+// Re-size the vector, will cut if the new size is smaller than the old size
+func (s *DenseVector[T]) ReSize(size int) int {
+	if size > s.l {
+		length := size - s.l
+		arr := make([]T, length)
+		s.values = append(s.values, arr...)
+	} else if size < s.l {
+		length := s.l - size
+		s.values = append([]T(nil), s.values[:length]...)
+	}
+
+	s.l = len(s.values)
+	return s.l
+}
+
 // Length of the vector
 func (s *DenseVector[T]) Length() int {
 	return s.l
