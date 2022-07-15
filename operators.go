@@ -124,7 +124,7 @@ func elementWiseMultiply[T constraints.Number](ctx context.Context, s, m Matrix[
 		target = setSource
 		iterator = m.Enumerate()
 		source = s
-	} else if IsSparseMatrix(s) {
+	} else if IsSparseMatrix[T](s) {
 		iterator = s.Enumerate()
 		source = m
 	} else {
@@ -189,7 +189,7 @@ func Add[T constraints.Number](ctx context.Context, s, m Matrix[T], mask Mask, m
 
 	var iterator Enumerate[T]
 	var source Matrix[T]
-	if IsSparseMatrix(s) {
+	if IsSparseMatrix[T](s) {
 		iterator = s.Enumerate()
 		source = m
 	} else {
@@ -364,7 +364,7 @@ func Apply[T constraints.Number](ctx context.Context, in Matrix[T], mask Mask, u
 }
 
 // Negative the negative of a matrix
-func Negative[T constraints.Number](ctx context.Context, s Matrix[T], mask Mask, matrix Matrix[T]) {
+func Negative[T constraints.Number](ctx context.Context, s MatrixLogical[T], mask Mask, matrix MatrixLogical[T]) {
 	if mask == nil {
 		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
@@ -439,7 +439,7 @@ func TransposeToCSC[T constraints.Number](ctx context.Context, s Matrix[T]) Matr
 }
 
 // Equal the two matrices are equal
-func Equal[T constraints.Number](ctx context.Context, s, m Matrix[T]) bool {
+func Equal[T constraints.Number](ctx context.Context, s, m MatrixLogical[T]) bool {
 	if s == nil && m == nil {
 		return true
 	}
@@ -470,7 +470,7 @@ func Equal[T constraints.Number](ctx context.Context, s, m Matrix[T]) bool {
 	}
 
 	var iterator Enumerate[T]
-	var matrix Matrix[T]
+	var matrix MatrixLogical[T]
 
 	// Check for a sparse matrix as we want to use its Enumerate operation
 	// Because the use of the At operation on a sparse matrix is expensive
@@ -499,7 +499,7 @@ func Equal[T constraints.Number](ctx context.Context, s, m Matrix[T]) bool {
 }
 
 // NotEqual the two matrices are not equal
-func NotEqual[T constraints.Number](ctx context.Context, s, m Matrix[T]) bool {
+func NotEqual[T constraints.Number](ctx context.Context, s, m MatrixLogical[T]) bool {
 	return !Equal(ctx, s, m)
 }
 
@@ -539,24 +539,24 @@ func ReduceMatrixToVectorWithMonoID[T constraints.Number](ctx context.Context, s
 }
 
 // ReduceVectorToScalar perform's a reduction on the Matrix
-func ReduceVectorToScalar[T constraints.Number](ctx context.Context, s Vector[T], mask Mask) T {
+func ReduceVectorToScalar[T constraints.Number](ctx context.Context, s VectorLogial[T], mask Mask) T {
 	return ReduceMatrixToScalar[T](ctx, s, mask)
 }
 
 // ReduceVectorToScalarWithMonoID perform's a reduction on the Matrix
 // monoid used in the element-wise reduction operation
-func ReduceVectorToScalarWithMonoID[T constraints.Number](ctx context.Context, s Vector[T], monoID binaryop.MonoID[T], mask Mask) T {
+func ReduceVectorToScalarWithMonoID[T constraints.Number](ctx context.Context, s VectorLogial[T], monoID binaryop.MonoID[T], mask Mask) T {
 	return ReduceMatrixToScalarWithMonoID[T](ctx, s, monoID, mask)
 }
 
 // ReduceMatrixToScalar perform's a reduction on the Matrix
-func ReduceMatrixToScalar[T constraints.Number](ctx context.Context, s Matrix[T], mask Mask) T {
+func ReduceMatrixToScalar[T constraints.Number](ctx context.Context, s MatrixLogical[T], mask Mask) T {
 	return ReduceMatrixToScalarWithMonoID(ctx, s, DefaultMonoIDAddition[T](), mask)
 }
 
 // ReduceMatrixToScalarWithMonoID perform's a reduction on the Matrix
 // monoid used in the element-wise reduction operation
-func ReduceMatrixToScalarWithMonoID[T constraints.Number](ctx context.Context, s Matrix[T], monoID binaryop.MonoID[T], mask Mask) T {
+func ReduceMatrixToScalarWithMonoID[T constraints.Number](ctx context.Context, s MatrixLogical[T], monoID binaryop.MonoID[T], mask Mask) T {
 	done := make(chan struct{})
 	slice := make(chan T)
 	defer close(slice)

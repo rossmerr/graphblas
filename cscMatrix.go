@@ -127,7 +127,7 @@ func (s *CSCMatrix[T]) SetReturnPointer(r, c int, value T) (pointer int, start i
 }
 
 // ColumnsAt return the columns at c-th
-func (s *CSCMatrix[T]) ColumnsAt(c int) Vector[T] {
+func (s *CSCMatrix[T]) ColumnsAt(c int) VectorLogial[T] {
 	if c < 0 || c >= s.c {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
@@ -145,7 +145,7 @@ func (s *CSCMatrix[T]) ColumnsAt(c int) Vector[T] {
 }
 
 // RowsAt return the rows at r-th
-func (s *CSCMatrix[T]) RowsAt(r int) Vector[T] {
+func (s *CSCMatrix[T]) RowsAt(r int) VectorLogial[T] {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -232,6 +232,10 @@ func (s *CSCMatrix[T]) rowIndex(r, c int) (int, int) {
 }
 
 // Copy copies the matrix
+func (s *CSCMatrix[T]) CopyLogical() MatrixLogical[T] {
+	return s.Copy()
+}
+
 func (s *CSCMatrix[T]) Copy() Matrix[T] {
 	matrix := newCSCMatrix[T](s.r, s.c, len(s.values))
 
@@ -262,6 +266,7 @@ func (s *CSCMatrix[T]) Multiply(m Matrix[T]) Matrix[T] {
 // Add addition of a matrix by another matrix
 func (s *CSCMatrix[T]) Add(m Matrix[T]) Matrix[T] {
 	matrix := s.Copy()
+
 	Add[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
@@ -269,32 +274,33 @@ func (s *CSCMatrix[T]) Add(m Matrix[T]) Matrix[T] {
 // Subtract subtracts one matrix from another matrix
 func (s *CSCMatrix[T]) Subtract(m Matrix[T]) Matrix[T] {
 	matrix := m.Copy()
+
 	Subtract[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Negative the negative of a matrix
-func (s *CSCMatrix[T]) Negative() Matrix[T] {
+func (s *CSCMatrix[T]) Negative() MatrixLogical[T] {
 	matrix := s.Copy()
+
 	Negative[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
-func (s *CSCMatrix[T]) Transpose() Matrix[T] {
-	matrix := newCSCMatrix[T](s.c, s.r, 0)
-
+func (s *CSCMatrix[T]) Transpose() MatrixLogical[T] {
+	matrix := newCSCMatrix[T](s.Columns(), s.Rows(), 0)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Equal the two matrices are equal
-func (s *CSCMatrix[T]) Equal(m Matrix[T]) bool {
+func (s *CSCMatrix[T]) Equal(m MatrixLogical[T]) bool {
 	return Equal[T](context.Background(), s, m)
 }
 
 // NotEqual the two matrices are not equal
-func (s *CSCMatrix[T]) NotEqual(m Matrix[T]) bool {
+func (s *CSCMatrix[T]) NotEqual(m MatrixLogical[T]) bool {
 	return NotEqual[T](context.Background(), s, m)
 }
 

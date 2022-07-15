@@ -7,8 +7,7 @@ package graphblas
 
 import "github.com/rossmerr/graphblas/constraints"
 
-// Matrix interface
-type Matrix[T constraints.Number] interface {
+type MatrixLogical[T constraints.Scaler] interface {
 	Mask
 
 	// At returns the value of a matrix element at r-th, c-th
@@ -21,22 +20,52 @@ type Matrix[T constraints.Number] interface {
 	Update(r, c int, f func(T) T)
 
 	// ColumnsAt return the columns at c-th
-	ColumnsAt(c int) Vector[T]
+	ColumnsAt(c int) VectorLogial[T]
 
 	// RowsAt return the rows at r-th
-	RowsAt(r int) Vector[T]
+	RowsAt(r int) VectorLogial[T]
 
 	// RowsAtToArray return the rows at r-th
 	RowsAtToArray(r int) []T
 
 	// Copy copies the matrix
-	Copy() Matrix[T]
+	CopyLogical() MatrixLogical[T]
 
 	// Enumerate iterates through all non-zero elements, order is not guaranteed
 	Enumerate() Enumerate[T]
 
 	// Map iterates and replace each element with the result of applying a function to its value
 	Map() Map[T]
+
+	// Transpose swaps the rows and columns
+	//  C ⊕= Aᵀ
+	Transpose() MatrixLogical[T]
+
+	// Equal the two matrices are equal
+	Equal(m MatrixLogical[T]) bool
+
+	// NotEqual the two matrices are not equal
+	NotEqual(m MatrixLogical[T]) bool
+
+	// Size of the matrix
+	Size() int
+
+	// The number of elements in the matrix (non-zero counted for dense matrices)
+	Values() int
+
+	// Clear removes all elements from a matrix
+	Clear()
+
+	// Negative the negative of a matrix
+	Negative() MatrixLogical[T]
+}
+
+// Matrix interface
+type Matrix[T constraints.Number] interface {
+	MatrixLogical[T]
+
+	// Copy copies the matrix
+	Copy() Matrix[T]
 
 	// Scalar multiplication of a matrix by alpha
 	Scalar(alpha T) Matrix[T]
@@ -50,28 +79,6 @@ type Matrix[T constraints.Number] interface {
 
 	// Subtract subtracts one matrix from another matrix
 	Subtract(m Matrix[T]) Matrix[T]
-
-	// Negative the negative of a matrix
-	Negative() Matrix[T]
-
-	// Transpose swaps the rows and columns
-	//  C ⊕= Aᵀ
-	Transpose() Matrix[T]
-
-	// Equal the two matrices are equal
-	Equal(m Matrix[T]) bool
-
-	// NotEqual the two matrices are not equal
-	NotEqual(m Matrix[T]) bool
-
-	// Size of the matrix
-	Size() int
-
-	// The number of elements in the matrix (non-zero counted for dense matrices)
-	Values() int
-
-	// Clear removes all elements from a matrix
-	Clear()
 }
 
 type MatrixCompressed[T constraints.Number] interface {

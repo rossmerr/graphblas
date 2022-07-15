@@ -59,7 +59,7 @@ func (s *MutexMatrix[T]) Set(r, c int, value T) {
 }
 
 // ColumnsAt return the columns at c-th
-func (s *MutexMatrix[T]) ColumnsAt(c int) Vector[T] {
+func (s *MutexMatrix[T]) ColumnsAt(c int) VectorLogial[T] {
 	s.RLock()
 	defer s.RUnlock()
 
@@ -67,7 +67,7 @@ func (s *MutexMatrix[T]) ColumnsAt(c int) Vector[T] {
 }
 
 // RowsAt return the rows at r-th
-func (s *MutexMatrix[T]) RowsAt(r int) Vector[T] {
+func (s *MutexMatrix[T]) RowsAt(r int) VectorLogial[T] {
 	s.RLock()
 	defer s.RUnlock()
 
@@ -83,7 +83,7 @@ func (s *MutexMatrix[T]) RowsAtToArray(r int) []T {
 }
 
 // Copy copies the matrix
-func (s *MutexMatrix[T]) Copy() Matrix[T] {
+func (s *MutexMatrix[T]) Copy() MatrixLogical[T] {
 	s.RLock()
 	defer s.RUnlock()
 
@@ -123,7 +123,7 @@ func (s *MutexMatrix[T]) Subtract(m Matrix[T]) Matrix[T] {
 }
 
 // Negative the negative of a matrix
-func (s *MutexMatrix[T]) Negative() Matrix[T] {
+func (s *MutexMatrix[T]) Negative() MatrixLogical[T] {
 	s.RLock()
 	defer s.RUnlock()
 
@@ -131,7 +131,7 @@ func (s *MutexMatrix[T]) Negative() Matrix[T] {
 }
 
 // Transpose swaps the rows and columns
-func (s *MutexMatrix[T]) Transpose() Matrix[T] {
+func (s *MutexMatrix[T]) Transpose() MatrixLogical[T] {
 	s.RLock()
 	defer s.RUnlock()
 
@@ -139,7 +139,7 @@ func (s *MutexMatrix[T]) Transpose() Matrix[T] {
 }
 
 // Equal the two matrices are equal
-func (s *MutexMatrix[T]) Equal(m Matrix[T]) bool {
+func (s *MutexMatrix[T]) Equal(m MatrixLogical[T]) bool {
 	s.RLock()
 	defer s.RUnlock()
 
@@ -147,7 +147,7 @@ func (s *MutexMatrix[T]) Equal(m Matrix[T]) bool {
 }
 
 // NotEqual the two matrices are not equal
-func (s *MutexMatrix[T]) NotEqual(m Matrix[T]) bool {
+func (s *MutexMatrix[T]) NotEqual(m MatrixLogical[T]) bool {
 	s.RLock()
 	defer s.RUnlock()
 

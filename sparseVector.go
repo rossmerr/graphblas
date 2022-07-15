@@ -136,7 +136,7 @@ func (s *SparseVector[T]) Set(r, c int, value T) {
 }
 
 // ColumnsAt return the columns at c-th
-func (s *SparseVector[T]) ColumnsAt(c int) Vector[T] {
+func (s *SparseVector[T]) ColumnsAt(c int) VectorLogial[T] {
 	if c < 0 || c >= s.Columns() {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
@@ -145,7 +145,7 @@ func (s *SparseVector[T]) ColumnsAt(c int) Vector[T] {
 }
 
 // RowsAt return the rows at r-th
-func (s *SparseVector[T]) RowsAt(r int) Vector[T] {
+func (s *SparseVector[T]) RowsAt(r int) VectorLogial[T] {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -225,6 +225,10 @@ func (s *SparseVector[T]) Copy() Matrix[T] {
 	return s.copy()
 }
 
+func (s *SparseVector[T]) CopyLogical() MatrixLogical[T] {
+	return s.copy()
+}
+
 // Scalar multiplication of a vector by alpha
 func (s *SparseVector[T]) Scalar(alpha T) Matrix[T] {
 	return Scalar[T](context.Background(), s, alpha)
@@ -239,39 +243,39 @@ func (s *SparseVector[T]) Multiply(m Matrix[T]) Matrix[T] {
 
 // Add addition of a metrix by another metrix
 func (s *SparseVector[T]) Add(m Matrix[T]) Matrix[T] {
-	matrix := s.Copy()
+	matrix := s.copy()
 	Add[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Subtract subtracts one metrix from another metrix
 func (s *SparseVector[T]) Subtract(m Matrix[T]) Matrix[T] {
-	matrix := m.Copy()
+	matrix := s.copy()
 	Subtract[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Negative the negative of a metrix
-func (s *SparseVector[T]) Negative() Matrix[T] {
-	matrix := s.Copy()
+func (s *SparseVector[T]) Negative() MatrixLogical[T] {
+	matrix := s.copy()
 	Negative[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
-func (s *SparseVector[T]) Transpose() Matrix[T] {
+func (s *SparseVector[T]) Transpose() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Equal the two metrics are equal
-func (s *SparseVector[T]) Equal(m Matrix[T]) bool {
+func (s *SparseVector[T]) Equal(m MatrixLogical[T]) bool {
 	return Equal[T](context.Background(), s, m)
 }
 
 // NotEqual the two metrix are not equal
-func (s *SparseVector[T]) NotEqual(m Matrix[T]) bool {
+func (s *SparseVector[T]) NotEqual(m MatrixLogical[T]) bool {
 	return NotEqual[T](context.Background(), s, m)
 }
 

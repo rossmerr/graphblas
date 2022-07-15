@@ -116,7 +116,7 @@ func (s *DenseVector[T]) Set(r, c int, value T) {
 }
 
 // ColumnsAt return the columns at c-th
-func (s *DenseVector[T]) ColumnsAt(c int) Vector[T] {
+func (s *DenseVector[T]) ColumnsAt(c int) VectorLogial[T] {
 	if c < 0 || c >= s.Columns() {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
@@ -125,7 +125,7 @@ func (s *DenseVector[T]) ColumnsAt(c int) Vector[T] {
 }
 
 // RowsAt return the rows at r-th
-func (s *DenseVector[T]) RowsAt(r int) Vector[T] {
+func (s *DenseVector[T]) RowsAt(r int) VectorLogial[T] {
 	if r < 0 || r >= s.Rows() {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -156,17 +156,6 @@ func (s *DenseVector[T]) copy() *DenseVector[T] {
 	vector := NewDenseVector[T](s.l)
 
 	for i, v := range s.values {
-		vector.SetVec(i, v)
-	}
-
-	return vector
-}
-
-// Copy copies the vector
-func (s *DenseVector[T]) Copy() Matrix[T] {
-	vector := NewDenseVector[T](s.l)
-
-	for i, v := range s.values {
 		if v != Default[T]() {
 			vector.SetVec(i, v)
 		} else {
@@ -175,6 +164,15 @@ func (s *DenseVector[T]) Copy() Matrix[T] {
 	}
 
 	return vector
+}
+
+func (s *DenseVector[T]) Copy() Matrix[T] {
+	return s.copy()
+}
+
+// Copy copies the vector
+func (s *DenseVector[T]) CopyLogical() MatrixLogical[T] {
+	return s.copy()
 }
 
 // Scalar multiplication of a vector by alpha
@@ -204,26 +202,26 @@ func (s *DenseVector[T]) Subtract(m Matrix[T]) Matrix[T] {
 }
 
 // Negative the negative of a metrix
-func (s *DenseVector[T]) Negative() Matrix[T] {
+func (s *DenseVector[T]) Negative() MatrixLogical[T] {
 	matrix := s.Copy()
 	Negative[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
-func (s *DenseVector[T]) Transpose() Matrix[T] {
+func (s *DenseVector[T]) Transpose() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Equal the two vectors are equal
-func (s *DenseVector[T]) Equal(m Matrix[T]) bool {
+func (s *DenseVector[T]) Equal(m MatrixLogical[T]) bool {
 	return Equal[T](context.Background(), s, m)
 }
 
 // NotEqual the two vectors are not equal
-func (s *DenseVector[T]) NotEqual(m Matrix[T]) bool {
+func (s *DenseVector[T]) NotEqual(m MatrixLogical[T]) bool {
 	return NotEqual[T](context.Background(), s, m)
 }
 

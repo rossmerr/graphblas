@@ -8,7 +8,7 @@ package graphblas
 import "github.com/rossmerr/graphblas/constraints"
 
 // Map replace each element with the result of applying a function to its value
-type Map[T constraints.Number] interface {
+type Map[T constraints.Scaler] interface {
 	// HasNext checks for the next element in the matrix
 	HasNext() bool
 

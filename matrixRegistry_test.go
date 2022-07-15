@@ -15,7 +15,7 @@ func TestSparseMatrixRegistry_IsSparseMatrix(t *testing.T) {
 
 	tests := []struct {
 		name     string
-		s        graphblas.Matrix[float64]
+		s        graphblas.MatrixLogical[float64]
 		isSparse bool
 	}{
 		{

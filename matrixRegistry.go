@@ -24,7 +24,7 @@ func RegisterMatrix(matrix reflect.Type) {
 }
 
 // IsSparseMatrix is 's' a sparse matrix
-func IsSparseMatrix[T constraints.Number](s Matrix[T]) bool {
+func IsSparseMatrix[T constraints.Scaler](s MatrixLogical[T]) bool {
 	t := reflect.TypeOf(s).Elem()
 	_, found := sparseMatrixRegistry[t.Name()]
 	return found

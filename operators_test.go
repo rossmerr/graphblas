@@ -13,7 +13,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func setupMatrix(m graphblas.Matrix[float64]) {
+func setupMatrix(m graphblas.MatrixLogical[float64]) {
 	m.Set(0, 0, 0)
 	m.Set(0, 1, 1)
 	m.Set(0, 2, 0)
@@ -503,7 +503,7 @@ func TestMatrix_ReduceMatrixToScalar(t *testing.T) {
 
 	tests := []struct {
 		name string
-		s    graphblas.Matrix[float64]
+		s    graphblas.MatrixLogical[float64]
 	}{
 		{
 			name: "DenseMatrix",
@@ -536,7 +536,7 @@ func TestMatrix_ReduceVectorToScalar(t *testing.T) {
 
 	tests := []struct {
 		name string
-		s    graphblas.Vector[float64]
+		s    graphblas.VectorLogial[float64]
 	}{
 		{
 			name: "DenseVector",

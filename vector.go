@@ -9,10 +9,7 @@ import (
 	"github.com/rossmerr/graphblas/constraints"
 )
 
-// Vector interface
-type Vector[T constraints.Number] interface {
-	Matrix[T]
-
+type vector[T constraints.Scaler] interface {
 	// AtVec returns the value of a vector element at i-th
 	AtVec(i int) T
 
@@ -21,4 +18,16 @@ type Vector[T constraints.Number] interface {
 
 	// Length of the vector
 	Length() int
+}
+
+type VectorLogial[T constraints.Scaler] interface {
+	MatrixLogical[T]
+
+	vector[T]
+}
+
+type Vector[T constraints.Number] interface {
+	Matrix[T]
+
+	vector[T]
 }

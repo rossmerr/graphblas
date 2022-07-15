@@ -119,7 +119,7 @@ func (s *CSRMatrix[T]) SetReturnPointer(r, c int, value T) (pointer int, start i
 }
 
 // ColumnsAt return the columns at c-th
-func (s *CSRMatrix[T]) ColumnsAt(c int) Vector[T] {
+func (s *CSRMatrix[T]) ColumnsAt(c int) VectorLogial[T] {
 	if c < 0 || c >= s.c {
 		log.Panicf("Column '%+v' is invalid", c)
 	}
@@ -138,7 +138,7 @@ func (s *CSRMatrix[T]) ColumnsAt(c int) Vector[T] {
 }
 
 // RowsAt return the rows at r-th
-func (s *CSRMatrix[T]) RowsAt(r int) Vector[T] {
+func (s *CSRMatrix[T]) RowsAt(r int) VectorLogial[T] {
 	if r < 0 || r >= s.r {
 		log.Panicf("Row '%+v' is invalid", r)
 	}
@@ -225,6 +225,10 @@ func (s *CSRMatrix[T]) columnIndex(r, c int) (int, int) {
 }
 
 // Copy copies the matrix
+func (s *CSRMatrix[T]) CopyLogical() MatrixLogical[T] {
+	return s.Copy()
+}
+
 func (s *CSRMatrix[T]) Copy() Matrix[T] {
 	matrix := newCSRMatrix[T](s.r, s.c, len(s.values))
 
@@ -267,26 +271,26 @@ func (s *CSRMatrix[T]) Subtract(m Matrix[T]) Matrix[T] {
 }
 
 // Negative the negative of a matrix
-func (s *CSRMatrix[T]) Negative() Matrix[T] {
+func (s *CSRMatrix[T]) Negative() MatrixLogical[T] {
 	matrix := s.Copy()
 	Negative[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
-func (s *CSRMatrix[T]) Transpose() Matrix[T] {
+func (s *CSRMatrix[T]) Transpose() MatrixLogical[T] {
 	matrix := newCSRMatrix[T](s.c, s.r, 0)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Equal the two matrices are equal
-func (s *CSRMatrix[T]) Equal(m Matrix[T]) bool {
+func (s *CSRMatrix[T]) Equal(m MatrixLogical[T]) bool {
 	return Equal[T](context.Background(), s, m)
 }
 
 // NotEqual the two matrices are not equal
-func (s *CSRMatrix[T]) NotEqual(m Matrix[T]) bool {
+func (s *CSRMatrix[T]) NotEqual(m MatrixLogical[T]) bool {
 	return NotEqual[T](context.Background(), s, m)
 }
 
