@@ -7,7 +7,7 @@ package graphblas
 
 import "github.com/rossmerr/graphblas/constraints"
 
-type MatrixLogical[T constraints.Scaler] interface {
+type MatrixLogical[T constraints.Type] interface {
 	Mask
 
 	// At returns the value of a matrix element at r-th, c-th

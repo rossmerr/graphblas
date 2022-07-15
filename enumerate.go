@@ -8,7 +8,7 @@ package graphblas
 import "github.com/rossmerr/graphblas/constraints"
 
 // Enumerate iterates over the matrix
-type Enumerate[T constraints.Scaler] interface {
+type Enumerate[T constraints.Type] interface {
 	// HasNext checks for the next element in the matrix
 	HasNext() bool
 
