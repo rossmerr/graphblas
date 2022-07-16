@@ -10,8 +10,8 @@ func Bubble(ctx context.Context, a graphblas.MatrixRune, n int) graphblas.Matrix
 	result := a.CopyLogical()
 	for j := 0; j < n-1; j++ {
 		for i := j + 1; i < n; i++ {
-			aj := a.RowsAt(j)
-			vi := a.RowsAt(i)
+			aj := result.RowsAt(j)
+			vi := result.RowsAt(i)
 			if graphblas.Compare(ctx, aj, vi) > 0 {
 				enumerator := vi.Enumerate()
 				for enumerator.HasNext() {
