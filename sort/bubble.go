@@ -14,13 +14,13 @@ func Bubble(ctx context.Context, a graphblas.MatrixRune, n int) graphblas.Matrix
 			vi := a.RowsAt(i)
 			if graphblas.Compare(ctx, aj, vi) > 0 {
 				enumerator := vi.Enumerate()
-				if enumerator.HasNext() {
+				for enumerator.HasNext() {
 					_, c, v := enumerator.Next()
 					result.Set(j, c, v)
 				}
 
 				enumerator = aj.Enumerate()
-				if enumerator.HasNext() {
+				for enumerator.HasNext() {
 					_, c, v := enumerator.Next()
 					result.Set(i, c, v)
 				}
