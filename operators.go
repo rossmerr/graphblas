@@ -441,31 +441,46 @@ func TransposeToCSC[T constraints.Number](ctx context.Context, s Matrix[T]) Matr
 
 // Compare returns an integer comparing two matrices lexicographically.
 func Compare(ctx context.Context, s, m MatrixLogical[rune]) int {
-	if s.Equal(m) {
+	select {
+	case <-ctx.Done():
 		return 0
+	default:
+		if s.Equal(m) {
+			return 0
+		}
 	}
-	if Less(ctx, s, m) {
-		return -1
+	select {
+	case <-ctx.Done():
+		return 0
+	default:
+		if Less(ctx, s, m) {
+			return -1
+		}
 	}
-
 	return +1
 }
 
 func Less(ctx context.Context, s, m MatrixLogical[rune]) bool {
-	return String(s) < String(m)
+	return String(ctx, s) < String(ctx, m)
 }
 
 func Greater(ctx context.Context, s, m MatrixLogical[rune]) bool {
-	return String(s) > String(m)
+	return String(ctx, s) > String(ctx, m)
 }
 
-func String(s MatrixLogical[rune]) string {
+func String(ctx context.Context, s MatrixLogical[rune]) string {
 	var b strings.Builder
 	b.Grow(s.Size())
 	enumator := s.Enumerate()
+
 	for enumator.HasNext() {
-		_, _, r := enumator.Next()
-		b.WriteRune(r)
+		select {
+		case <-ctx.Done():
+			return b.String()
+		default:
+			_, _, r := enumator.Next()
+			b.WriteRune(r)
+		}
 	}
 
 	return b.String()
