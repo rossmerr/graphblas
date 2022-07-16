@@ -463,7 +463,7 @@ func String(s MatrixLogical[rune]) string {
 	var b strings.Builder
 	b.Grow(s.Size())
 	enumator := s.Enumerate()
-	if enumator.HasNext() {
+	for enumator.HasNext() {
 		_, _, r := enumator.Next()
 		b.WriteRune(r)
 	}
