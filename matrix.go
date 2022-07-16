@@ -7,7 +7,7 @@ package graphblas
 
 import "github.com/rossmerr/graphblas/constraints"
 
-type MatrixLogical[T constraints.Type] interface {
+type matrix[T constraints.Type] interface {
 	Mask
 
 	// At returns the value of a matrix element at r-th, c-th
@@ -58,6 +58,14 @@ type MatrixLogical[T constraints.Type] interface {
 
 	// Negative the negative of a matrix
 	Negative() MatrixLogical[T]
+}
+
+type MatrixLogical[T constraints.Type] interface {
+	matrix[T]
+}
+
+type MatrixRune interface {
+	matrix[rune]
 }
 
 // Matrix interface

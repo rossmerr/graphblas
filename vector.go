@@ -31,3 +31,11 @@ type Vector[T constraints.Number] interface {
 
 	vector[T]
 }
+
+type VectorRune interface {
+	MatrixLogical[rune]
+
+	vector[rune]
+
+	Compare(v VectorRune) int
+}

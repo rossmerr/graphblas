@@ -13,14 +13,14 @@ import (
 )
 
 // DenseMatrix a dense matrix
-type DenseMatrix[T constraints.Number] struct {
+type DenseMatrix[T constraints.Type] struct {
 	c    int // number of rows in the sparse matrix
 	r    int // number of columns in the sparse matrix
 	data [][]T
 }
 
 // NewDenseMatrix returns a DenseMatrix
-func NewDenseMatrix[T constraints.Number](r, c int) *DenseMatrix[T] {
+func NewDenseMatrix[T constraints.Type](r, c int) *DenseMatrix[T] {
 	return newMatrix[T](r, c, nil)
 }
 
@@ -33,7 +33,7 @@ func NewDenseMatrixFromArray[T constraints.Number](data [][]T) *DenseMatrix[T] {
 	return s
 }
 
-func newMatrix[T constraints.Number](r, c int, initialise func([]T, int)) *DenseMatrix[T] {
+func newMatrix[T constraints.Type](r, c int, initialise func([]T, int)) *DenseMatrix[T] {
 	s := &DenseMatrix[T]{data: make([][]T, r), r: r, c: c}
 
 	for i := 0; i < r; i++ {

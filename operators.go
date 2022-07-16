@@ -7,6 +7,7 @@ package graphblas
 
 import (
 	"log"
+	"strings"
 
 	"context"
 
@@ -436,6 +437,38 @@ func TransposeToCSC[T constraints.Number](ctx context.Context, s Matrix[T]) Matr
 
 	Transpose[T](ctx, s, nil, matrix)
 	return matrix
+}
+
+// Compare returns an integer comparing two matrices lexicographically.
+func Compare(ctx context.Context, s, m MatrixLogical[rune]) int {
+	if s.Equal(m) {
+		return 0
+	}
+	if Less(ctx, s, m) {
+		return -1
+	}
+
+	return +1
+}
+
+func Less(ctx context.Context, s, m MatrixLogical[rune]) bool {
+	return String(s) < String(m)
+}
+
+func Greater(ctx context.Context, s, m MatrixLogical[rune]) bool {
+	return String(s) > String(m)
+}
+
+func String(s MatrixLogical[rune]) string {
+	var b strings.Builder
+	b.Grow(s.Size())
+	enumator := s.Enumerate()
+	if enumator.HasNext() {
+		_, _, r := enumator.Next()
+		b.WriteRune(r)
+	}
+
+	return b.String()
 }
 
 // Equal the two matrices are equal

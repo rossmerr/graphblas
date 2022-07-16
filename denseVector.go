@@ -13,18 +13,18 @@ import (
 )
 
 // DenseVector a vector
-type DenseVector[T constraints.Number] struct {
+type DenseVector[T constraints.Type] struct {
 	l      int // length of the sparse vector
 	values []T
 }
 
 // NewDenseVector returns a DenseVector
-func NewDenseVector[T constraints.Number](l int) *DenseVector[T] {
+func NewDenseVector[T constraints.Type](l int) *DenseVector[T] {
 	return &DenseVector[T]{l: l, values: make([]T, l)}
 }
 
 // NewDenseVectorFromArray returns a SparseVector
-func NewDenseVectorFromArray[T constraints.Number](data []T) *DenseVector[T] {
+func NewDenseVectorFromArray[T constraints.Type](data []T) *DenseVector[T] {
 	arr := make([]T, 0)
 	arr = append(arr, data...)
 	return &DenseVector[T]{l: len(data), values: arr}
