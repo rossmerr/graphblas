@@ -263,17 +263,10 @@ func (s *SparseVector[T]) Negative() MatrixLogical[T] {
 }
 
 // Transpose swaps the rows and columns
-func (s *SparseVector[T]) TransposeLogical() MatrixLogical[T] {
+func (s *SparseVector[T]) Transpose() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, &matrix)
 	return &matrix
-}
-
-// Transpose swaps the rows and columns
-func (s *SparseVector[T]) Transpose() Matrix[T] {
-	matrix := newMatrixNumber[T](s.Columns(), s.Rows(), nil)
-	Transpose[T](context.Background(), s, nil, matrix)
-	return matrix
 }
 
 // Equal the two metrics are equal

@@ -36,7 +36,7 @@ type matrix[T constraints.Type] interface {
 
 	// Transpose swaps the rows and columns
 	//  C ⊕= Aᵀ
-	TransposeLogical() MatrixLogical[T]
+	Transpose() MatrixLogical[T]
 
 	// Equal the two matrices are equal
 	Equal(m MatrixLogical[T]) bool
@@ -69,9 +69,7 @@ type Matrix[T constraints.Number] interface {
 
 	// Copy copies the matrix
 	Copy() Matrix[T]
-	// Transpose swaps the rows and columns
-	//  C ⊕= Aᵀ
-	Transpose() Matrix[T]
+
 	// Scalar multiplication of a matrix by alpha
 	Scalar(alpha T) Matrix[T]
 

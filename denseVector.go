@@ -250,17 +250,10 @@ func (s *DenseVectorNumber[T]) Negative() MatrixLogical[T] {
 }
 
 // Transpose swaps the rows and columns
-func (s *DenseVector[T]) TransposeLogical() MatrixLogical[T] {
+func (s *DenseVector[T]) Transpose() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, &matrix)
 	return &matrix
-}
-
-// Transpose swaps the rows and columns
-func (s *DenseVectorNumber[T]) Transpose() Matrix[T] {
-	matrix := newMatrixNumber[T](s.Columns(), s.Rows(), nil)
-	Transpose[T](context.Background(), s, nil, matrix)
-	return matrix
 }
 
 // Equal the two vectors are equal

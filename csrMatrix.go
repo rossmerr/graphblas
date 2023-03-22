@@ -278,12 +278,7 @@ func (s *CSRMatrix[T]) Negative() MatrixLogical[T] {
 }
 
 // Transpose swaps the rows and columns
-func (s *CSRMatrix[T]) TransposeLogical() MatrixLogical[T] {
-	return s.Transpose()
-}
-
-// Transpose swaps the rows and columns
-func (s *CSRMatrix[T]) Transpose() Matrix[T] {
+func (s *CSRMatrix[T]) Transpose() MatrixLogical[T] {
 	matrix := newCSRMatrix[T](s.c, s.r, 0)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix

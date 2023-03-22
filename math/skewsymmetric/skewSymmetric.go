@@ -18,7 +18,7 @@ func SkewSymmetric[T constraints.Number](s graphblas.Matrix[T]) bool {
 		return false
 	}
 
-	t := s.Transpose()
-	negativeTranspose := t.Negative()
-	return negativeTranspose.Equal(s)
+	n := s.Negative()
+	t := n.Transpose()
+	return t.Equal(s)
 }

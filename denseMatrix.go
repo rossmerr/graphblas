@@ -238,22 +238,15 @@ func (s *DenseMatrixNumber[T]) Subtract(m Matrix[T]) Matrix[T] {
 // Negative the negative of a matrix
 func (s *DenseMatrixNumber[T]) Negative() MatrixLogical[T] {
 	matrix := s.Copy()
-
 	Negative[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
-func (s *DenseMatrix[T]) TransposeLogical() MatrixLogical[T] {
+func (s *DenseMatrix[T]) Transpose() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, &matrix)
 	return &matrix
-}
-
-func (s *DenseMatrixNumber[T]) Transpose() Matrix[T] {
-	matrix := newMatrixNumber[T](s.Columns(), s.Rows(), nil)
-	Transpose[T](context.Background(), s, nil, matrix)
-	return matrix
 }
 
 // Equal the two matrices are equal
