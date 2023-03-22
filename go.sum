@@ -1,5 +1,3 @@
-github.com/rossmerr/bitvector v0.0.0-20230307153838-e3c616ef0f0b h1:z1kwfEYH0Lox9/CeghgERMyk8VMKiSDJY9CtXQ8aCc8=
-github.com/rossmerr/bitvector v0.0.0-20230307153838-e3c616ef0f0b/go.mod h1:SspG0ls/bZbhrZZh2jmLXxtfk9Chif7C+acDx1qT1KM=
 golang.org/x/net v0.0.0-20201224014010-6772e930b67b h1:iFwSg7t5GZmB/Q5TjiEAsdoLDrdJRC1RiF2WhuV29Qw=
 golang.org/x/net v0.0.0-20201224014010-6772e930b67b/go.mod h1:m0MpNAwzfU5UDzcl9v0D8zg8gWTRqZa9RBIspLL5mdg=
 golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
