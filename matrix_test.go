@@ -28,7 +28,7 @@ func TestMatrix_Update(t *testing.T) {
 	}{
 		{
 			name:  "DenseMatrix",
-			s:     graphblas.NewDenseMatrix[float64](2, 2),
+			s:     graphblas.NewDenseMatrixN[float64](2, 2),
 			want:  2,
 			value: 2,
 		},
@@ -85,7 +85,7 @@ func TestMatrix_SparseEnumerate(t *testing.T) {
 		m.Set(2, 2, 1)
 	}
 
-	dense := graphblas.NewDenseMatrix[float64](3, 3)
+	dense := graphblas.NewDenseMatrixN[float64](3, 3)
 	setup(dense)
 	denseCount := 0
 	for iterator := dense.Enumerate(); iterator.HasNext(); {
@@ -141,7 +141,7 @@ func TestMatrix_SparseMap(t *testing.T) {
 		m.Set(2, 2, 1)
 	}
 
-	dense := graphblas.NewDenseMatrix[float64](3, 3)
+	dense := graphblas.NewDenseMatrixN[float64](3, 3)
 	setup(dense)
 	denseCount := 0
 	for iterator := dense.Enumerate(); iterator.HasNext(); {
@@ -206,7 +206,7 @@ func TestMatrix_ColumnsAt(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
 		},
 		{
 			name: "CSCMatrix",
@@ -247,7 +247,7 @@ func TestMatrix_RowAt(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
 		},
 		{
 			name: "CSCMatrix",
@@ -290,7 +290,7 @@ func TestMatrix_Scalar(t *testing.T) {
 	}{
 		{
 			name:  "DenseMatrix",
-			s:     graphblas.NewDenseMatrix[float64](2, 2),
+			s:     graphblas.NewDenseMatrixN[float64](2, 2),
 			alpha: 2,
 		},
 		{
@@ -336,7 +336,7 @@ func TestMatrix_Negative(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
 		},
 		{
 			name: "CSCMatrix",
@@ -383,7 +383,7 @@ func TestMatrix_Transpose(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSCMatrix",
@@ -430,7 +430,7 @@ func TestMatrix_Equal(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSCMatrix",
@@ -476,7 +476,7 @@ func TestMatrix_NotEqual(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSCMatrix",
@@ -506,33 +506,33 @@ func TestMatrix_NotEqual_Size(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix Row",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
-			want: graphblas.NewDenseMatrix[float64](3, 2),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
+			want: graphblas.NewDenseMatrixN[float64](3, 2),
 		},
 		{
 			name: "DenseMatrix Column",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
-			want: graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
+			want: graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSCMatrix Row",
 			s:    graphblas.NewCSCMatrix[float64](2, 2),
-			want: graphblas.NewDenseMatrix[float64](3, 2),
+			want: graphblas.NewDenseMatrixN[float64](3, 2),
 		},
 		{
 			name: "CSCMatrix Column",
 			s:    graphblas.NewCSCMatrix[float64](2, 2),
-			want: graphblas.NewDenseMatrix[float64](2, 3),
+			want: graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSRMatrix Row",
 			s:    graphblas.NewCSRMatrix[float64](2, 2),
-			want: graphblas.NewDenseMatrix[float64](3, 2),
+			want: graphblas.NewDenseMatrixN[float64](3, 2),
 		},
 		{
 			name: "CSRMatrix Column",
 			s:    graphblas.NewCSRMatrix[float64](2, 2),
-			want: graphblas.NewDenseMatrix[float64](2, 3),
+			want: graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 	}
 	for _, tt := range tests {
@@ -569,7 +569,7 @@ func TestMatrix_Copy(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSCMatrix",
@@ -601,13 +601,13 @@ func TestMatrix_Multiply(t *testing.T) {
 		m.Set(1, 2, 6)
 	}
 
-	want := graphblas.NewDenseMatrix[float64](2, 2)
+	want := graphblas.NewDenseMatrixN[float64](2, 2)
 	want.Set(0, 0, 58)
 	want.Set(0, 1, 64)
 	want.Set(1, 0, 139)
 	want.Set(1, 1, 154)
 
-	matrix := graphblas.NewDenseMatrix[float64](3, 2)
+	matrix := graphblas.NewDenseMatrixN[float64](3, 2)
 	matrix.Set(0, 0, 7)
 	matrix.Set(0, 1, 8)
 	matrix.Set(1, 0, 9)
@@ -621,7 +621,7 @@ func TestMatrix_Multiply(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 3),
 		},
 		{
 			name: "CSCMatrix",
@@ -650,13 +650,13 @@ func TestMatrix_Add(t *testing.T) {
 		m.Set(1, 1, 6)
 	}
 
-	want := graphblas.NewDenseMatrix[float64](2, 2)
+	want := graphblas.NewDenseMatrixN[float64](2, 2)
 	want.Set(0, 0, 7)
 	want.Set(0, 1, 8)
 	want.Set(1, 0, 5)
 	want.Set(1, 1, -3)
 
-	matrix := graphblas.NewDenseMatrix[float64](2, 2)
+	matrix := graphblas.NewDenseMatrixN[float64](2, 2)
 	matrix.Set(0, 0, 4)
 	matrix.Set(0, 1, 0)
 	matrix.Set(1, 0, 1)
@@ -668,7 +668,7 @@ func TestMatrix_Add(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
 		},
 		{
 			name: "CSCMatrix",
@@ -698,13 +698,13 @@ func TestMatrix_Subtract(t *testing.T) {
 		m.Set(1, 1, 6)
 	}
 
-	want := graphblas.NewDenseMatrix[float64](2, 2)
+	want := graphblas.NewDenseMatrixN[float64](2, 2)
 	want.Set(0, 0, -1)
 	want.Set(0, 1, 8)
 	want.Set(1, 0, 3)
 	want.Set(1, 1, 15)
 
-	matrix := graphblas.NewDenseMatrix[float64](2, 2)
+	matrix := graphblas.NewDenseMatrixN[float64](2, 2)
 	matrix.Set(0, 0, 4)
 	matrix.Set(0, 1, 0)
 	matrix.Set(1, 0, 1)
@@ -716,7 +716,7 @@ func TestMatrix_Subtract(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 2),
+			s:    graphblas.NewDenseMatrixN[float64](2, 2),
 		},
 		{
 			name: "CSCMatrix",
@@ -755,7 +755,7 @@ func TestMatrix_Size(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](2, 3),
+			s:    graphblas.NewDenseMatrixN[float64](2, 3),
 			size: 6,
 		},
 		{
@@ -798,7 +798,7 @@ func TestMatrix_FromArray(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrixFromArray(setup),
+			s:    graphblas.NewDenseMatrixFromArrayN(setup),
 		},
 		{
 			name: "CSCMatrix",

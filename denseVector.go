@@ -18,16 +18,47 @@ type DenseVector[T constraints.Type] struct {
 	values []T
 }
 
+type DenseVectorNumber[T constraints.Number] struct {
+	DenseVector[T]
+}
+
 // NewDenseVector returns a DenseVector
 func NewDenseVector[T constraints.Type](l int) *DenseVector[T] {
-	return &DenseVector[T]{l: l, values: make([]T, l)}
+	return newDenseVectorType[T](l)
 }
 
 // NewDenseVectorFromArray returns a SparseVector
 func NewDenseVectorFromArray[T constraints.Type](data []T) *DenseVector[T] {
-	arr := make([]T, 0)
-	arr = append(arr, data...)
-	return &DenseVector[T]{l: len(data), values: arr}
+	v := newDenseVectorType[T](len(data))
+	v.values = data
+	return v
+}
+
+func NewDenseVectorN[T constraints.Number](l int) *DenseVectorNumber[T] {
+	return newDenseVectorNumber[T](l)
+}
+
+// NewDenseVectorFromArray returns a SparseVector
+func NewDenseVectorFromArrayN[T constraints.Number](data []T) *DenseVectorNumber[T] {
+	v := newDenseVectorNumber[T](len(data))
+	v.DenseVector.values = data
+	return v
+}
+
+func newDenseVector[T constraints.Type](l int) DenseVector[T] {
+	return DenseVector[T]{l: l, values: make([]T, l)}
+}
+
+func newDenseVectorType[T constraints.Type](l int) *DenseVector[T] {
+	s := newDenseVector[T](l)
+	return &s
+}
+
+func newDenseVectorNumber[T constraints.Number](l int) *DenseVectorNumber[T] {
+	s := &DenseVectorNumber[T]{
+		DenseVector: newDenseVector[T](l),
+	}
+	return s
 }
 
 // AtVec returns the value of a vector element at i-th
@@ -166,8 +197,18 @@ func (s *DenseVector[T]) copy() *DenseVector[T] {
 	return vector
 }
 
-func (s *DenseVector[T]) Copy() Matrix[T] {
-	return s.copy()
+func (s *DenseVectorNumber[T]) Copy() Matrix[T] {
+	vector := newDenseVectorNumber[T](s.l)
+
+	for i, v := range s.values {
+		if v != Default[T]() {
+			vector.SetVec(i, v)
+		} else {
+			vector.SetVec(i, v)
+		}
+	}
+
+	return vector
 }
 
 // Copy copies the vector
@@ -176,41 +217,48 @@ func (s *DenseVector[T]) CopyLogical() MatrixLogical[T] {
 }
 
 // Scalar multiplication of a vector by alpha
-func (s *DenseVector[T]) Scalar(alpha T) Matrix[T] {
+func (s *DenseVectorNumber[T]) Scalar(alpha T) Matrix[T] {
 	return Scalar[T](context.Background(), s, alpha)
 }
 
 // Multiply multiplies a vector by another vector
-func (s *DenseVector[T]) Multiply(m Matrix[T]) Matrix[T] {
-	matrix := newMatrix[T](m.Rows(), s.Columns(), nil)
+func (s *DenseVectorNumber[T]) Multiply(m Matrix[T]) Matrix[T] {
+	matrix := newMatrixNumber[T](m.Rows(), s.Columns(), nil)
 	MatrixMatrixMultiply[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Add addition of a vector by another vector
-func (s *DenseVector[T]) Add(m Matrix[T]) Matrix[T] {
+func (s *DenseVectorNumber[T]) Add(m Matrix[T]) Matrix[T] {
 	matrix := s.Copy()
 	Add[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Subtract subtracts one vector from another vector
-func (s *DenseVector[T]) Subtract(m Matrix[T]) Matrix[T] {
+func (s *DenseVectorNumber[T]) Subtract(m Matrix[T]) Matrix[T] {
 	matrix := m.Copy()
 	Subtract[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Negative the negative of a metrix
-func (s *DenseVector[T]) Negative() MatrixLogical[T] {
+func (s *DenseVectorNumber[T]) Negative() MatrixLogical[T] {
 	matrix := s.Copy()
 	Negative[T](context.Background(), s, nil, matrix)
 	return matrix
 }
 
 // Transpose swaps the rows and columns
-func (s *DenseVector[T]) Transpose() MatrixLogical[T] {
+func (s *DenseVector[T]) TransposeLogical() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
+	Transpose[T](context.Background(), s, nil, &matrix)
+	return &matrix
+}
+
+// Transpose swaps the rows and columns
+func (s *DenseVectorNumber[T]) Transpose() Matrix[T] {
+	matrix := newMatrixNumber[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }
@@ -251,7 +299,7 @@ func (s *DenseVector[T]) iterator() *denseVectorIterator[T] {
 	return i
 }
 
-type denseVectorIterator[T constraints.Number] struct {
+type denseVectorIterator[T constraints.Type] struct {
 	matrix *DenseVector[T]
 	size   int
 	last   int
@@ -286,7 +334,7 @@ func (s *denseVectorIterator[T]) Next() (int, int, T) {
 }
 
 // Map replace each element with the result of applying a function to its value
-func (s *DenseVector[T]) Map() Map[T] {
+func (s *DenseVectorNumber[T]) Map() Map[T] {
 	t := s.iterator()
 	i := &denseVectorMap[T]{t}
 	return i
@@ -309,6 +357,6 @@ func (s *denseVectorMap[T]) Map(f func(int, int, T) T) {
 }
 
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
-func (s *DenseVector[T]) Element(r, c int) bool {
+func (s *DenseVectorNumber[T]) Element(r, c int) bool {
 	return s.AtVec(r) > Default[T]()
 }

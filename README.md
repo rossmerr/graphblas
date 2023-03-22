@@ -24,7 +24,7 @@ array := [][]float64{
 		[]float64{0, 1, 0, 0, 0, 0, 0},
     }
 
-g := graphblas.NewDenseMatrixFromArray(array)
+g := graphblas.NewDenseMatrixFromArrayN(array)
 
 atx := breadthfirst.Search[float64](context.Background(), g, 3, func(i graphblas.Vector[float64]) bool {
     return i.AtVec(5) == 1

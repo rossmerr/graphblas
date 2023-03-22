@@ -34,7 +34,7 @@ func TestMatrix_Multiply(t *testing.T) {
 		m.Set(3, 3, 4)
 	}
 
-	matrix := graphblas.NewDenseMatrix[float64](4, 4)
+	matrix := graphblas.NewDenseMatrixN[float64](4, 4)
 	matrix.Set(0, 0, 1)
 	matrix.Set(0, 1, 2)
 	matrix.Set(0, 2, 3)
@@ -52,7 +52,7 @@ func TestMatrix_Multiply(t *testing.T) {
 	matrix.Set(3, 2, 3)
 	matrix.Set(3, 3, 4)
 
-	want := graphblas.NewDenseMatrix[float64](4, 4)
+	want := graphblas.NewDenseMatrixN[float64](4, 4)
 	want.Set(0, 0, 10)
 	want.Set(0, 1, 20)
 	want.Set(0, 2, 30)
@@ -76,7 +76,7 @@ func TestMatrix_Multiply(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](4, 4),
+			s:    graphblas.NewDenseMatrixN[float64](4, 4),
 		},
 		{
 			name: "CSCMatrix",

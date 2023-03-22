@@ -19,22 +19,39 @@ type DenseMatrix[T constraints.Type] struct {
 	data [][]T
 }
 
+type DenseMatrixNumber[T constraints.Number] struct {
+	DenseMatrix[T]
+}
+
 // NewDenseMatrix returns a DenseMatrix
 func NewDenseMatrix[T constraints.Type](r, c int) *DenseMatrix[T] {
-	return newMatrix[T](r, c, nil)
+	return newMatrixType[T](r, c, nil)
+}
+
+func NewDenseMatrixN[T constraints.Number](r, c int) *DenseMatrixNumber[T] {
+	return newMatrixNumber[T](r, c, nil)
 }
 
 // NewDenseMatrixFromArray returns a DenseMatrix
 func NewDenseMatrixFromArray[T constraints.Number](data [][]T) *DenseMatrix[T] {
 	r := len(data)
 	c := len(data[0])
-	s := &DenseMatrix[T]{data: data, r: r, c: c}
-
+	s := newMatrixType[T](r, c, nil)
+	s.data = data
 	return s
 }
 
-func newMatrix[T constraints.Type](r, c int, initialise func([]T, int)) *DenseMatrix[T] {
-	s := &DenseMatrix[T]{data: make([][]T, r), r: r, c: c}
+// NewDenseMatrixFromArray returns a DenseMatrix
+func NewDenseMatrixFromArrayN[T constraints.Number](data [][]T) *DenseMatrixNumber[T] {
+	r := len(data)
+	c := len(data[0])
+	s := newMatrixNumber[T](r, c, nil)
+	s.data = data
+	return s
+}
+
+func newMatrix[T constraints.Type](r, c int, initialise func([]T, int)) DenseMatrix[T] {
+	s := DenseMatrix[T]{data: make([][]T, r), r: r, c: c}
 
 	for i := 0; i < r; i++ {
 		s.data[i] = make([]T, c)
@@ -45,6 +62,18 @@ func newMatrix[T constraints.Type](r, c int, initialise func([]T, int)) *DenseMa
 	}
 
 	return s
+}
+
+func newMatrixType[T constraints.Type](r, c int, initialise func([]T, int)) *DenseMatrix[T] {
+	d := newMatrix[T](r, c, initialise)
+	return &d
+}
+
+func newMatrixNumber[T constraints.Number](r, c int, initialise func([]T, int)) *DenseMatrixNumber[T] {
+	d := &DenseMatrixNumber[T]{
+		DenseMatrix: newMatrix[T](r, c, initialise),
+	}
+	return d
 }
 
 // Columns the number of columns of the matrix
@@ -145,13 +174,26 @@ func (s *DenseMatrix[T]) RowsAtToArray(r int) []T {
 
 // Copy copies the matrix
 func (s *DenseMatrix[T]) CopyLogical() MatrixLogical[T] {
-	return s.Copy()
-}
-
-func (s *DenseMatrix[T]) Copy() Matrix[T] {
 	v := Default[T]()
 
-	matrix := newMatrix(s.Rows(), s.Columns(), func(row []T, r int) {
+	matrix := newMatrix[T](s.Rows(), s.Columns(), func(row []T, r int) {
+		for c := 0; c < s.Columns(); c++ {
+			v = s.data[r][c]
+			if v != Default[T]() {
+				row[c] = v
+			} else {
+				row[c] = v
+			}
+		}
+	})
+
+	return &matrix
+}
+
+func (s *DenseMatrixNumber[T]) Copy() Matrix[T] {
+	v := Default[T]()
+
+	matrix := newMatrixNumber[T](s.Rows(), s.Columns(), func(row []T, r int) {
 		for c := 0; c < s.Columns(); c++ {
 			v = s.data[r][c]
 			if v != Default[T]() {
@@ -166,19 +208,19 @@ func (s *DenseMatrix[T]) Copy() Matrix[T] {
 }
 
 // Scalar multiplication of a matrix by alpha
-func (s *DenseMatrix[T]) Scalar(alpha T) Matrix[T] {
+func (s *DenseMatrixNumber[T]) Scalar(alpha T) Matrix[T] {
 	return Scalar[T](context.Background(), s, alpha)
 }
 
 // Multiply multiplies a matrix by another matrix
-func (s *DenseMatrix[T]) Multiply(m Matrix[T]) Matrix[T] {
-	matrix := newMatrix[T](s.Rows(), m.Columns(), nil)
+func (s *DenseMatrixNumber[T]) Multiply(m Matrix[T]) Matrix[T] {
+	matrix := newMatrixNumber[T](s.Rows(), m.Columns(), nil)
 	MatrixMatrixMultiply[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
 
 // Add addition of a matrix by another matrix
-func (s *DenseMatrix[T]) Add(m Matrix[T]) Matrix[T] {
+func (s *DenseMatrixNumber[T]) Add(m Matrix[T]) Matrix[T] {
 	matrix := s.Copy()
 
 	Add[T](context.Background(), s, m, nil, matrix)
@@ -186,7 +228,7 @@ func (s *DenseMatrix[T]) Add(m Matrix[T]) Matrix[T] {
 }
 
 // Subtract subtracts one matrix from another matrix
-func (s *DenseMatrix[T]) Subtract(m Matrix[T]) Matrix[T] {
+func (s *DenseMatrixNumber[T]) Subtract(m Matrix[T]) Matrix[T] {
 	matrix := m.Copy()
 
 	Subtract[T](context.Background(), s, m, nil, matrix)
@@ -194,7 +236,7 @@ func (s *DenseMatrix[T]) Subtract(m Matrix[T]) Matrix[T] {
 }
 
 // Negative the negative of a matrix
-func (s *DenseMatrix[T]) Negative() MatrixLogical[T] {
+func (s *DenseMatrixNumber[T]) Negative() MatrixLogical[T] {
 	matrix := s.Copy()
 
 	Negative[T](context.Background(), s, nil, matrix)
@@ -202,8 +244,14 @@ func (s *DenseMatrix[T]) Negative() MatrixLogical[T] {
 }
 
 // Transpose swaps the rows and columns
-func (s *DenseMatrix[T]) Transpose() MatrixLogical[T] {
+func (s *DenseMatrix[T]) TransposeLogical() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
+	Transpose[T](context.Background(), s, nil, &matrix)
+	return &matrix
+}
+
+func (s *DenseMatrixNumber[T]) Transpose() Matrix[T] {
+	matrix := newMatrixNumber[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }
@@ -257,7 +305,7 @@ func (s *DenseMatrix[T]) iterator() *denseMatrixIterator[T] {
 	return i
 }
 
-type denseMatrixIterator[T constraints.Number] struct {
+type denseMatrixIterator[T constraints.Type] struct {
 	matrix *DenseMatrix[T]
 	size   int
 	last   int
@@ -293,7 +341,7 @@ func (s *denseMatrixIterator[T]) Next() (int, int, T) {
 }
 
 // Map replace each element with the result of applying a function to its value
-func (s *DenseMatrix[T]) Map() Map[T] {
+func (s *DenseMatrixNumber[T]) Map() Map[T] {
 	t := s.iterator()
 	i := &denseMatrixMap[T]{t}
 	return i
@@ -316,10 +364,10 @@ func (s *denseMatrixMap[T]) Map(f func(int, int, T) T) {
 }
 
 // Element of the mask for each tuple that exists in the matrix for which the value of the tuple cast to Boolean is true
-func (s *DenseMatrix[T]) Element(r, c int) bool {
+func (s *DenseMatrixNumber[T]) Element(r, c int) bool {
 	return s.element(r, c)
 }
 
-func (s *DenseMatrix[T]) element(r, c int) bool {
+func (s *DenseMatrixNumber[T]) element(r, c int) bool {
 	return s.At(r, c) > Default[T]()
 }

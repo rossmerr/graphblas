@@ -27,22 +27,22 @@ func MultiplyCrossoverPoint[T constraints.Number](ctx context.Context, a, b grap
 
 	n := b.Rows()
 	if n <= crossover {
-		matrix := graphblas.NewDenseMatrix[T](a.Rows(), b.Columns())
+		matrix := graphblas.NewDenseMatrixN[T](a.Rows(), b.Columns())
 		graphblas.MatrixMatrixMultiply[T](ctx, a, b, nil, matrix)
 		return matrix
 	}
 
 	size := n / 2
 
-	a11 := graphblas.NewDenseMatrix[T](size, size)
-	a12 := graphblas.NewDenseMatrix[T](size, size)
-	a21 := graphblas.NewDenseMatrix[T](size, size)
-	a22 := graphblas.NewDenseMatrix[T](size, size)
+	a11 := graphblas.NewDenseMatrixN[T](size, size)
+	a12 := graphblas.NewDenseMatrixN[T](size, size)
+	a21 := graphblas.NewDenseMatrixN[T](size, size)
+	a22 := graphblas.NewDenseMatrixN[T](size, size)
 
-	b11 := graphblas.NewDenseMatrix[T](size, size)
-	b12 := graphblas.NewDenseMatrix[T](size, size)
-	b21 := graphblas.NewDenseMatrix[T](size, size)
-	b22 := graphblas.NewDenseMatrix[T](size, size)
+	b11 := graphblas.NewDenseMatrixN[T](size, size)
+	b12 := graphblas.NewDenseMatrixN[T](size, size)
+	b21 := graphblas.NewDenseMatrixN[T](size, size)
+	b22 := graphblas.NewDenseMatrixN[T](size, size)
 
 	// dividing the matrices in 4 sub-matrices:
 	for r := 0; r < size; r++ {
@@ -85,7 +85,7 @@ func MultiplyCrossoverPoint[T constraints.Number](ctx context.Context, a, b grap
 	c21 := m[2].Add(m[4])
 	c22 := m[1].Subtract(m[2]).Add(m[3]).Add(m[6])
 
-	matrix := graphblas.NewDenseMatrix[T](c11.Rows()*2, c11.Rows()*2)
+	matrix := graphblas.NewDenseMatrixN[T](c11.Rows()*2, c11.Rows()*2)
 	shift := c11.Rows()
 
 	// Combine the results

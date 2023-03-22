@@ -8,7 +8,7 @@ package graphblas
 import "github.com/rossmerr/graphblas/constraints"
 
 type matrix[T constraints.Type] interface {
-	Mask
+	MaskLogical
 
 	// At returns the value of a matrix element at r-th, c-th
 	At(r, c int) T
@@ -34,12 +34,9 @@ type matrix[T constraints.Type] interface {
 	// Enumerate iterates through all non-zero elements, order is not guaranteed
 	Enumerate() Enumerate[T]
 
-	// Map iterates and replace each element with the result of applying a function to its value
-	Map() Map[T]
-
 	// Transpose swaps the rows and columns
 	//  C ⊕= Aᵀ
-	Transpose() MatrixLogical[T]
+	TransposeLogical() MatrixLogical[T]
 
 	// Equal the two matrices are equal
 	Equal(m MatrixLogical[T]) bool
@@ -55,9 +52,6 @@ type matrix[T constraints.Type] interface {
 
 	// Clear removes all elements from a matrix
 	Clear()
-
-	// Negative the negative of a matrix
-	Negative() MatrixLogical[T]
 }
 
 type MatrixLogical[T constraints.Type] interface {
@@ -70,11 +64,14 @@ type MatrixRune interface {
 
 // Matrix interface
 type Matrix[T constraints.Number] interface {
+	Mask
 	MatrixLogical[T]
 
 	// Copy copies the matrix
 	Copy() Matrix[T]
-
+	// Transpose swaps the rows and columns
+	//  C ⊕= Aᵀ
+	Transpose() Matrix[T]
 	// Scalar multiplication of a matrix by alpha
 	Scalar(alpha T) Matrix[T]
 
@@ -87,6 +84,12 @@ type Matrix[T constraints.Number] interface {
 
 	// Subtract subtracts one matrix from another matrix
 	Subtract(m Matrix[T]) Matrix[T]
+
+	// Negative the negative of a matrix
+	Negative() MatrixLogical[T]
+
+	// Map iterates and replace each element with the result of applying a function to its value
+	Map() Map[T]
 }
 
 type MatrixCompressed[T constraints.Number] interface {

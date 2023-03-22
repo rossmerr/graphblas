@@ -236,7 +236,7 @@ func (s *SparseVector[T]) Scalar(alpha T) Matrix[T] {
 
 // Multiply multiplies a vector by another vector
 func (s *SparseVector[T]) Multiply(m Matrix[T]) Matrix[T] {
-	matrix := newMatrix[T](m.Rows(), s.Columns(), nil)
+	matrix := newMatrixNumber[T](m.Rows(), s.Columns(), nil)
 	MatrixMatrixMultiply[T](context.Background(), s, m, nil, matrix)
 	return matrix
 }
@@ -263,8 +263,15 @@ func (s *SparseVector[T]) Negative() MatrixLogical[T] {
 }
 
 // Transpose swaps the rows and columns
-func (s *SparseVector[T]) Transpose() MatrixLogical[T] {
+func (s *SparseVector[T]) TransposeLogical() MatrixLogical[T] {
 	matrix := newMatrix[T](s.Columns(), s.Rows(), nil)
+	Transpose[T](context.Background(), s, nil, &matrix)
+	return &matrix
+}
+
+// Transpose swaps the rows and columns
+func (s *SparseVector[T]) Transpose() Matrix[T] {
+	matrix := newMatrixNumber[T](s.Columns(), s.Rows(), nil)
 	Transpose[T](context.Background(), s, nil, matrix)
 	return matrix
 }

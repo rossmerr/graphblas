@@ -23,17 +23,17 @@ func TestBreadthFirstSearch(t *testing.T) {
 		{0, 0, 1, 0, 1, 0, 0},
 		{0, 1, 0, 0, 0, 0, 0},
 	}
-	g := graphblas.NewDenseMatrixFromArray(array)
+	g := graphblas.NewDenseMatrixFromArrayN(array)
 
 	atx := breadthfirst.Search[float64](context.Background(), g, 3, func(i graphblas.Vector[float64]) bool {
 		return i.AtVec(5) == 1
 	})
 
 	if atx.AtVec(1) != 1 {
-		t.Errorf("AtVec(%+v) wanted = %+v", 1, 1)
+		t.Errorf("AtVec(%+v) wanted = %+v got %v", 1, 1, atx.AtVec(5))
 	}
 
 	if atx.AtVec(5) != 1 {
-		t.Errorf("AtVec(%+v) wanted = %+v", 5, 1)
+		t.Errorf("AtVec(%+v) wanted = %+v got %v", 5, 1, atx.AtVec(5))
 	}
 }

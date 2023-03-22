@@ -53,7 +53,7 @@ func TestMatrix_Reduced(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](3, 4),
+			s:    graphblas.NewDenseMatrixN[float64](3, 4),
 		},
 		{
 			name: "CSCMatrix",

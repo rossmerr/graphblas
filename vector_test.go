@@ -26,7 +26,7 @@ func TestVector_Update(t *testing.T) {
 	}{
 		{
 			name:  "DenseVector",
-			s:     graphblas.NewDenseVector[float64](2),
+			s:     graphblas.NewDenseVectorN[float64](2),
 			want:  2,
 			value: 2,
 		},
@@ -39,7 +39,7 @@ func TestVector_Update(t *testing.T) {
 		// Checks values get removed for sparse matrix
 		{
 			name:  "DenseVector",
-			s:     graphblas.NewDenseVector[float64](2),
+			s:     graphblas.NewDenseVectorN[float64](2),
 			want:  0,
 			value: 0,
 		},
@@ -75,7 +75,7 @@ func TestVector_ColumnsAt(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](2),
+			s:    graphblas.NewDenseVectorN[float64](2),
 		},
 		{
 			name: "SparseVector",
@@ -108,7 +108,7 @@ func TestVector_RowAt(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](2),
+			s:    graphblas.NewDenseVectorN[float64](2),
 		},
 		{
 			name: "SparseVector",
@@ -144,7 +144,7 @@ func TestVector_Scalar(t *testing.T) {
 	}{
 		{
 			name:  "DenseVector",
-			s:     graphblas.NewDenseVector[float64](2),
+			s:     graphblas.NewDenseVectorN[float64](2),
 			alpha: 2,
 		},
 		{
@@ -180,7 +180,7 @@ func TestVector_Negative(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](2),
+			s:    graphblas.NewDenseVectorN[float64](2),
 		},
 		{
 			name: "SparseVector",
@@ -216,7 +216,7 @@ func TestVector_Transpose(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](3),
+			s:    graphblas.NewDenseVectorN[float64](3),
 		},
 		{
 			name: "SparseVector",
@@ -252,7 +252,7 @@ func TestVector_Equal(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](3),
+			s:    graphblas.NewDenseVectorN[float64](3),
 		},
 		{
 			name: "SparseVector",
@@ -288,7 +288,7 @@ func TestVector_NotEqual(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](3),
+			s:    graphblas.NewDenseVectorN[float64](3),
 		},
 		{
 			name: "SparseVector",
@@ -324,7 +324,7 @@ func TestVector_Copy(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](3),
+			s:    graphblas.NewDenseVectorN[float64](3),
 		},
 		{
 			name: "SparseVector",
@@ -349,11 +349,11 @@ func TestVector_Multiply(t *testing.T) {
 		m.SetVec(2, 3)
 	}
 
-	want := graphblas.NewDenseMatrix[float64](2, 1)
+	want := graphblas.NewDenseMatrixN[float64](2, 1)
 	want.Set(0, 0, 27)
 	want.Set(1, 0, 41)
 
-	matrix := graphblas.NewDenseMatrix[float64](2, 3)
+	matrix := graphblas.NewDenseMatrixN[float64](2, 3)
 	matrix.Set(0, 0, 0)
 	matrix.Set(0, 1, 3)
 	matrix.Set(0, 2, 5)
@@ -367,7 +367,7 @@ func TestVector_Multiply(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](3),
+			s:    graphblas.NewDenseVectorN[float64](3),
 		},
 		{
 			name: "SparseVector",
@@ -392,11 +392,11 @@ func TestVector_Add(t *testing.T) {
 		m.SetVec(1, 8)
 	}
 
-	want := graphblas.NewDenseMatrix[float64](2, 1)
+	want := graphblas.NewDenseMatrixN[float64](2, 1)
 	want.Set(0, 0, 7)
 	want.Set(1, 0, 8)
 
-	matrix := graphblas.NewDenseVector[float64](2)
+	matrix := graphblas.NewDenseVectorN[float64](2)
 	matrix.SetVec(0, 4)
 	matrix.SetVec(1, 0)
 
@@ -406,7 +406,7 @@ func TestVector_Add(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](2),
+			s:    graphblas.NewDenseVectorN[float64](2),
 		},
 		{
 			name: "SparseVector",
@@ -430,11 +430,11 @@ func TestVector_Subtract(t *testing.T) {
 		m.SetVec(1, 8)
 	}
 
-	want := graphblas.NewDenseMatrix[float64](2, 1)
+	want := graphblas.NewDenseMatrixN[float64](2, 1)
 	want.Set(0, 0, -1)
 	want.Set(1, 0, 8)
 
-	matrix := graphblas.NewDenseMatrix[float64](2, 1)
+	matrix := graphblas.NewDenseMatrixN[float64](2, 1)
 	matrix.Set(0, 0, 4)
 	matrix.Set(1, 0, 0)
 
@@ -444,7 +444,7 @@ func TestVector_Subtract(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](2),
+			s:    graphblas.NewDenseVectorN[float64](2),
 		},
 		{
 			name: "SparseVector",
@@ -480,7 +480,7 @@ func TestVector_Size(t *testing.T) {
 	}{
 		{
 			name: "DenseVector",
-			s:    graphblas.NewDenseVector[float64](6),
+			s:    graphblas.NewDenseVectorN[float64](6),
 			size: 6,
 		},
 		{

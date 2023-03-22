@@ -16,13 +16,13 @@ import (
 func Search[T constraints.Number](ctx context.Context, a graphblas.Matrix[T], s int, c func(graphblas.Vector[T]) bool) graphblas.Vector[T] {
 	n := a.Rows()
 	// vertices visited in each level
-	var frontier graphblas.Vector[T] = graphblas.NewDenseVector[T](n)
+	var frontier graphblas.Vector[T] = graphblas.NewDenseVectorN[T](n)
 	frontier.SetVec(s, 1)
 
 	visited := frontier.Copy().(graphblas.Vector[T])
 
 	// result
-	result := graphblas.NewDenseVector[T](n)
+	result := graphblas.NewDenseVectorN[T](n)
 
 	// level in BFS traversal
 	d := 0

@@ -318,7 +318,8 @@ func Subtract[T constraints.Number](ctx context.Context, s, m Matrix[T], mask Ma
 }
 
 // Apply modifies edge weights by the UnaryOperator
-//  C ⊕= f(A)
+//
+//	C ⊕= f(A)
 func Apply[T constraints.Number](ctx context.Context, in Matrix[T], mask Mask, u unaryop.UnaryOp[T], matrix Matrix[T]) {
 	if mask == nil {
 		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
@@ -365,7 +366,7 @@ func Apply[T constraints.Number](ctx context.Context, in Matrix[T], mask Mask, u
 }
 
 // Negative the negative of a matrix
-func Negative[T constraints.Number](ctx context.Context, s MatrixLogical[T], mask Mask, matrix MatrixLogical[T]) {
+func Negative[T constraints.Number](ctx context.Context, s Matrix[T], mask Mask, matrix Matrix[T]) {
 	if mask == nil {
 		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
@@ -395,8 +396,9 @@ func Negative[T constraints.Number](ctx context.Context, s MatrixLogical[T], mas
 }
 
 // Transpose swaps the rows and columns
-//  C ⊕= Aᵀ
-func Transpose[T constraints.Number](ctx context.Context, s Matrix[T], mask Mask, matrix Matrix[T]) {
+//
+//	C ⊕= Aᵀ
+func Transpose[T constraints.Type](ctx context.Context, s MatrixLogical[T], mask Mask, matrix MatrixLogical[T]) {
 	if mask == nil {
 		mask = NewEmptyMask(matrix.Rows(), matrix.Columns())
 	}
@@ -487,7 +489,7 @@ func String(ctx context.Context, s MatrixLogical[rune]) string {
 }
 
 // Equal the two matrices are equal
-func Equal[T constraints.Number](ctx context.Context, s, m MatrixLogical[T]) bool {
+func Equal[T constraints.Type](ctx context.Context, s, m MatrixLogical[T]) bool {
 	if s == nil && m == nil {
 		return true
 	}
@@ -547,7 +549,7 @@ func Equal[T constraints.Number](ctx context.Context, s, m MatrixLogical[T]) boo
 }
 
 // NotEqual the two matrices are not equal
-func NotEqual[T constraints.Number](ctx context.Context, s, m MatrixLogical[T]) bool {
+func NotEqual[T constraints.Type](ctx context.Context, s, m MatrixLogical[T]) bool {
 	return !Equal(ctx, s, m)
 }
 
@@ -576,7 +578,7 @@ func ReduceMatrixToVector[T constraints.Number](ctx context.Context, s Matrix[T]
 // monoid used in the element-wise reduction operation
 func ReduceMatrixToVectorWithMonoID[T constraints.Number](ctx context.Context, s Matrix[T], monoID binaryop.MonoID[T], mask Mask) Vector[T] {
 
-	vector := NewDenseVector[T](s.Columns())
+	vector := NewDenseVectorN[T](s.Columns())
 	for c := 0; c < s.Columns(); c++ {
 		v := s.ColumnsAt(c)
 		scaler := ReduceVectorToScalarWithMonoID(ctx, v, monoID, mask)

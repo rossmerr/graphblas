@@ -33,7 +33,7 @@ func TestMatrix_Symmetric(t *testing.T) {
 	}{
 		{
 			name: "DenseMatrix",
-			s:    graphblas.NewDenseMatrix[float64](3, 3),
+			s:    graphblas.NewDenseMatrixN[float64](3, 3),
 			want: true,
 		},
 		{

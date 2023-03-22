@@ -98,7 +98,7 @@ func dense(n int) graphblas.Matrix[float64] {
 
 		}
 	}
-	a := graphblas.NewDenseMatrixFromArray(aData)
+	a := graphblas.NewDenseMatrixFromArrayN(aData)
 
 	bData := make([][]float64, n)
 	for r := range bData {
@@ -108,7 +108,7 @@ func dense(n int) graphblas.Matrix[float64] {
 
 		}
 	}
-	b := graphblas.NewDenseMatrixFromArray(bData)
+	b := graphblas.NewDenseMatrixFromArrayN(bData)
 
 	c := a.Multiply(b)
 	return c
