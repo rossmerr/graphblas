@@ -14,11 +14,11 @@ type String interface {
 }
 
 type Ordered interface {
-	Number | string
+	Number | rune
 }
 
 type Type interface {
-	Number | bool | string
+	Number | bool | rune
 	String
 	Logical
 }
